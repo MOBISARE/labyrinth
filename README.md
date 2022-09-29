@@ -1,6 +1,11 @@
 # labyrinth
 University ACL Project 
 
+# Utilisation
+
+- `./gradlew desktop:dist` pour build un .jar  dans le dossier `/labyrinth/desktop/desktop-num.version.jar`  
+- Exécuter le .jar
+
 # Fonctionnalités
 
 ## Résumé du jeu :
