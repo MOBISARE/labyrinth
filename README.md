@@ -56,8 +56,9 @@ Gestion des collisions (héros-murs)                    - 2
 
 Langage : JAVA.   
 Librairie Graphique : LibGDX  
-Logiciel de Gestion de Projet : Trello.  
+Logiciel de Gestion de Projet : Trello/YouTrack.  
 https://trello.com/w/projectlabyrinth5   
+https://labyrinth.youtrack.cloud/  
 Outil de centralisation du code : GitHub  
 https://github.com/MOBISARE/labyrinth  
 
