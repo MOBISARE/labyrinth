@@ -4,10 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Labyrinth extends ApplicationAdapter {
@@ -27,7 +24,8 @@ public class Labyrinth extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(220,200);
+		// Equivalent à rectangle de 20m par 15m
+		camera = new OrthographicCamera(20f,15f);
 		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
 		camera.update();
 
@@ -56,10 +54,13 @@ public class Labyrinth extends ApplicationAdapter {
 
 		stateTime += Gdx.graphics.getDeltaTime();
 
-		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+		Sprite currentFrame = new Sprite(walkAnimation.getKeyFrame(stateTime, true));
+		// héros 1m de large et 1.8m de haut;
+		currentFrame.setSize(1f, 1.8f);
+		currentFrame.setPosition(3f, 3f);
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(currentFrame, 50, 50);
+		currentFrame.draw(batch);
 		batch.end();
 	}
 	
