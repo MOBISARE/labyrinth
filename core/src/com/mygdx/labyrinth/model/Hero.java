@@ -1,4 +1,4 @@
-package com.mygdx.labyrinth.worldl;
+package com.mygdx.labyrinth.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class Hero implements WorldObject {
+public class Hero implements Entity {
 
     // Sprite qui contient l'image + la forme du hero
-    private Sprite hero;
+    private Sprite sprite;
+
     // Texture du héro complète
     private final Texture imgAnimHero;
     // Animation de la marche vers la droite
@@ -39,7 +40,9 @@ public class Hero implements WorldObject {
     // Flag marche vers le bas
     private boolean downMove;
     // Deplacement u/frame;
-    private float vitesse = 0.09f;
+    private float vitesse = 1f;
+
+    private float stateTime;
 
 
     /**
@@ -50,6 +53,7 @@ public class Hero implements WorldObject {
      * @param height
      */
     public Hero(float x, float y, float width, float height) {
+        this.stateTime = 0;
         this.position = new Vector2(x, y);
         this.width = width;
         this.height = height;
@@ -66,46 +70,38 @@ public class Hero implements WorldObject {
                 imgAnimHero.getWidth() / 3,
                 imgAnimHero.getHeight() / 4);
 
-        animationMarcheH = new Animation<TextureRegion>(0.15f, texturesHero[0]);
-        animationMarcheD = new Animation<TextureRegion>(0.15f, texturesHero[1]);
-        animationMarcheB = new Animation<TextureRegion>(0.15f, texturesHero[2]);
-        animationMarcheG = new Animation<TextureRegion>(0.15f, texturesHero[3]);
+        animationMarcheH = new Animation<>(0.225f, texturesHero[0]);
+        animationMarcheD = new Animation<>(0.225f, texturesHero[1]);
+        animationMarcheB = new Animation<>(0.225f, texturesHero[2]);
+        animationMarcheG = new Animation<>(0.225f, texturesHero[3]);
 
-        this.hero = new Sprite(animationMarcheD.getKeyFrame(0, true));
-    }
-
-    /**
-     * Met à jour les données "pyhsiqueé du héros
-     * @param deltaTime
-     */
-    @Override
-    public void update(float deltaTime) {
-        updateMotion(deltaTime);
+        this.sprite = new Sprite(animationMarcheD.getKeyFrame(0, true));
     }
 
     /**
      * Permet de dessiner le héros dans la fenêtre
-     * @param batch
      * @param deltaTime
      */
     @Override
-    public void draw(SpriteBatch batch, float deltaTime) {
+    public void render(SpriteBatch batch, float deltaTime) {
+        this.stateTime += deltaTime;
+        this.updateMotion(deltaTime);
         // Update du sprite à afficher
         if (velocite.x == 0f && velocite.y == 0f) {
-            hero.setRegion(texturesHero[2][1]);
+            sprite.setRegion(texturesHero[2][1]);
         } else if (velocite.x > 0) {
-            hero.setRegion(animationMarcheD.getKeyFrame(deltaTime, true));
+            sprite.setRegion(animationMarcheD.getKeyFrame(stateTime, true));
         } else if (velocite.x < 0) {
-            hero.setRegion(animationMarcheG.getKeyFrame(deltaTime, true));
+            sprite.setRegion(animationMarcheG.getKeyFrame(stateTime, true));
         } else if (velocite.y > 0) {
-            hero.setRegion(animationMarcheH.getKeyFrame(deltaTime, true));
+            sprite.setRegion(animationMarcheH.getKeyFrame(stateTime, true));
         } else if (velocite.y < 0) {
-            hero.setRegion(animationMarcheB.getKeyFrame(deltaTime, true));
+            sprite.setRegion(animationMarcheB.getKeyFrame(stateTime, true));
         }
 
-        hero.setSize(width, height);
-        hero.setPosition(position.x, position.y);
-        hero.draw(batch);
+        //sprite.setSize(width, height);
+        sprite.setPosition(position.x, position.y);
+        sprite.draw(batch);
     }
 
     /**
@@ -187,5 +183,9 @@ public class Hero implements WorldObject {
         velocite.nor();
         velocite.scl(vitesse);
         position.add(velocite);
+    }
+
+    public Vector2 getPosition() {
+        return position;
     }
 }

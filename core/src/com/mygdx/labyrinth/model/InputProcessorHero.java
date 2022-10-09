@@ -1,8 +1,7 @@
-package com.mygdx.labyrinth.inputProcessor;
+package com.mygdx.labyrinth.model;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.mygdx.labyrinth.worldl.Hero;
 
 public class InputProcessorHero implements InputProcessor {
 
