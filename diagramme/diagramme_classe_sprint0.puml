@@ -1,0 +1,80 @@
+@startuml
+class com.mygdx.labyrinth.model.Hero {
+- Sprite sprite
+- Texture imgAnimHero
+- TextureRegion[][] texturesHero
+- Animation<TextureRegion> animationMarcheD
+- Animation<TextureRegion> animationMarcheG
+- Animation<TextureRegion> animationMarcheH
+- Animation<TextureRegion> animationMarcheB
+- Vector2 position
+- float width
+- float height
+- Vector2 velocite
+- boolean leftMove
+- boolean rightMove
+- boolean upMove
+- boolean downMove
+- float vitesse
+- TiledMapTileLayer collisionLayer
+- float stateTime
++ void render(SpriteBatch,float)
++ void dispose()
++ void setLeftMove(boolean)
++ void setRightMove(boolean)
++ void setUpMove(boolean)
++ void setDownMove(boolean)
+- void updateMotion(float)
++ Vector2 getPosition()
+}
+class com.mygdx.labyrinth.game.Labyrinth {
+- List<Screen> levels
+- SpriteBatch batch
++ void create()
++ void render()
++ void dispose()
++ List<Screen> getLevels()
++ SpriteBatch getBatch()
+}
+interface com.mygdx.labyrinth.model.Entity {
+~ void render(SpriteBatch,float)
+~ void dispose()
+}
+class com.mygdx.labyrinth.model.InputProcessorHero {
+- Hero hero
++ boolean keyDown(int)
++ boolean keyUp(int)
++ boolean keyTyped(char)
++ boolean touchDown(int,int,int,int)
++ boolean touchUp(int,int,int,int)
++ boolean touchDragged(int,int,int)
++ boolean mouseMoved(int,int)
++ boolean scrolled(float,float)
+}
+class com.mygdx.labyrinth.game.level.Level0 {
+- Labyrinth rootGame
+- Hero hero
+- OrthographicCamera camera
+- Viewport viewport
+- OrthogonalTiledMapRenderer renderer
+- List<Entity> entities
+- int mapWidth
+- int mapHeight
++ void show()
++ void render(float)
++ void resize(int,int)
++ void pause()
++ void resume()
++ void hide()
++ void dispose()
++ Hero getHero()
++ List<Entity> getEntities()
+- void setPosCamera()
+}
+
+
+com.mygdx.labyrinth.model.Entity <|.. com.mygdx.labyrinth.model.Hero
+com.badlogic.gdx.Game <|-- com.mygdx.labyrinth.game.Labyrinth
+com.badlogic.gdx.InputProcessor <|.. com.mygdx.labyrinth.model.InputProcessorHero
+com.badlogic.gdx.Screen <|.. com.mygdx.labyrinth.game.level.Level0
+@enduml
