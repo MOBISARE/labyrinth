@@ -41,7 +41,7 @@ public class Hero implements Entity {
     // Flag marche vers le bas
     private boolean downMove;
     // Deplacement u/frame;
-    private float vitesse = 1f;
+    private float vitesse = 5f;
     //TiledMap pour les collisions
     private TiledMapTileLayer collisionLayer;
 
@@ -74,10 +74,10 @@ public class Hero implements Entity {
                 imgAnimHero.getWidth() / 3,
                 imgAnimHero.getHeight() / 4);
 
-        animationMarcheH = new Animation<>(0.225f, texturesHero[0]);
-        animationMarcheD = new Animation<>(0.225f, texturesHero[1]);
-        animationMarcheB = new Animation<>(0.225f, texturesHero[2]);
-        animationMarcheG = new Animation<>(0.225f, texturesHero[3]);
+        animationMarcheH = new Animation<>(0.15f, texturesHero[0]);
+        animationMarcheD = new Animation<>(0.15f, texturesHero[1]);
+        animationMarcheB = new Animation<>(0.15f, texturesHero[2]);
+        animationMarcheG = new Animation<>(0.15f, texturesHero[3]);
 
         this.sprite = new Sprite(animationMarcheD.getKeyFrame(0, true));
     }
@@ -200,7 +200,7 @@ public class Hero implements Entity {
 
         //On effectue le déplacement
         velocite.nor();
-        velocite.scl(vitesse);
+        velocite.scl(vitesse * Gdx.graphics.getDeltaTime());
         position.add(velocite);
 
         //On rectifie si déplacement interdit
