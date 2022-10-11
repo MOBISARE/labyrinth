@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -38,18 +39,17 @@ public final class Level0 implements Screen {
      * de gérer la physique
      */
     public Level0(Labyrinth rootGame) {
-
         this.rootGame = rootGame;
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
         this.viewport = new StretchViewport(320f, 180f, this.camera);
         this.viewport.apply();
-        TiledMap map = new TmxMapLoader().load("assets/levels/map_test.tmx");
+        TiledMap map = new TmxMapLoader().load("levels/map_test.tmx");
         this.renderer = new OrthogonalTiledMapRenderer(map);
 
         this.entities = new ArrayList<>();
-        this.hero = new Hero(0f,0f,1f,1.8f);
+        this.hero = new Hero(40f,40f,1f,1.8f, (TiledMapTileLayer) map.getLayers().get(0));
         InputProcessorHero inputProcessorHero = new InputProcessorHero(hero);
         Gdx.input.setInputProcessor(inputProcessorHero);
 

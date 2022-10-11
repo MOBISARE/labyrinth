@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 
 public class Hero implements Entity {
@@ -41,6 +42,8 @@ public class Hero implements Entity {
     private boolean downMove;
     // Deplacement u/frame;
     private float vitesse = 1f;
+    //TiledMap pour les collisions
+    private TiledMapTileLayer collisionLayer;
 
     private float stateTime;
 
@@ -52,7 +55,7 @@ public class Hero implements Entity {
      * @param width
      * @param height
      */
-    public Hero(float x, float y, float width, float height) {
+    public Hero(float x, float y, float width, float height, TiledMapTileLayer collisionLayer) {
         this.stateTime = 0;
         this.position = new Vector2(x, y);
         this.width = width;
@@ -61,6 +64,7 @@ public class Hero implements Entity {
         this.rightMove = false;
         this.upMove = false;
         this.downMove = false;
+        this.collisionLayer = collisionLayer;
 
         // Création du personnage à l'arrêt
         this.velocite = new Vector2(0f,0f);
@@ -153,20 +157,36 @@ public class Hero implements Entity {
      * @param delta
      */
     private void updateMotion(float delta) {
+        //Variables pour la gestion des collisions
+        int tileWidth = 16, tileHeight = 16;
+        boolean leftTiledBlocked = false, rightTiledBlocked = false, upTiledBlocked = false, downTiledBlocked = false;
+
+        //On stock les anciennes positions
+        float oldX = getPosition().x;
+        float oldY = getPosition().y;
+
         if (leftMove) {
             velocite.set(-0.09f, velocite.y);
+            //On vérifie si le déplacement est autorisé
+            leftTiledBlocked = collisionLayer.getCell((int)((position.x-1) / tileWidth), (int)((position.y + 1) / tileHeight)).getTile().getProperties().containsKey("blocked");
         }
 
         if (rightMove) {
             velocite.set(0.09f, velocite.y);
+            //On vérifie si le déplacement est autorisé
+            rightTiledBlocked = collisionLayer.getCell((int)((position.x + tileWidth + 1) / tileWidth), (int)((position.y + 1) / tileHeight)).getTile().getProperties().containsKey("blocked");
         }
 
         if (upMove) {
             velocite.set(velocite.x, 0.09f);
+            //On vérifie si le déplacement est autorisé
+            upTiledBlocked = collisionLayer.getCell((int)((position.x + (tileWidth/2)) / tileWidth), (int)((position.y + (tileHeight/2) + 1) / tileHeight)).getTile().getProperties().containsKey("blocked");
         }
 
         if (downMove) {
             velocite.set(velocite.x, -0.09f);
+            //On vérifie si le déplacement est autorisé
+            downTiledBlocked = collisionLayer.getCell((int)((position.x + (tileWidth/2)) / tileWidth), (int)(position.y / tileHeight)).getTile().getProperties().containsKey("blocked");
         }
 
         if (!rightMove && !leftMove && !downMove && !upMove) {
@@ -179,10 +199,21 @@ public class Hero implements Entity {
             }
         }
 
-
+        //On effectue le déplacement
         velocite.nor();
         velocite.scl(vitesse);
         position.add(velocite);
+
+        //On rectifie si déplacement interdit
+        if(leftTiledBlocked || rightTiledBlocked || upTiledBlocked || downTiledBlocked) {
+            position.x = oldX;
+            position.y = oldY;
+
+            if(leftTiledBlocked) leftMove = false;
+            if(rightTiledBlocked) rightMove = false;
+            if(upTiledBlocked) upMove = false;
+            if(downTiledBlocked) downMove = false;
+        }
     }
 
     public Vector2 getPosition() {
