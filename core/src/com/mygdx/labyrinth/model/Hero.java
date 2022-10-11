@@ -158,7 +158,6 @@ public class Hero implements Entity {
      */
     private void updateMotion(float delta) {
         //Variables pour la gestion des collisions
-        int tileWidth = 16, tileHeight = 16;
         boolean leftTiledBlocked = false, rightTiledBlocked = false, upTiledBlocked = false, downTiledBlocked = false;
 
         //On stock les anciennes positions
@@ -168,25 +167,25 @@ public class Hero implements Entity {
         if (leftMove) {
             velocite.set(-0.09f, velocite.y);
             //On vérifie si le déplacement est autorisé
-            leftTiledBlocked = collisionLayer.getCell((int)((position.x-1) / tileWidth), (int)((position.y + 1) / tileHeight)).getTile().getProperties().containsKey("blocked");
+            leftTiledBlocked = collisionLayer.getCell((int)(position.x - 1), (int)(position.y)).getTile().getProperties().containsKey("blocked");
         }
 
         if (rightMove) {
             velocite.set(0.09f, velocite.y);
             //On vérifie si le déplacement est autorisé
-            rightTiledBlocked = collisionLayer.getCell((int)((position.x + tileWidth + 1) / tileWidth), (int)((position.y + 1) / tileHeight)).getTile().getProperties().containsKey("blocked");
+            rightTiledBlocked = collisionLayer.getCell((int)(position.x + 1), (int)(position.y)).getTile().getProperties().containsKey("blocked");
         }
 
         if (upMove) {
             velocite.set(velocite.x, 0.09f);
             //On vérifie si le déplacement est autorisé
-            upTiledBlocked = collisionLayer.getCell((int)((position.x + (tileWidth/2)) / tileWidth), (int)((position.y + (tileHeight/2) + 1) / tileHeight)).getTile().getProperties().containsKey("blocked");
+            upTiledBlocked = collisionLayer.getCell((int)position.x, (int)(position.y + height)).getTile().getProperties().containsKey("blocked");
         }
 
         if (downMove) {
             velocite.set(velocite.x, -0.09f);
             //On vérifie si le déplacement est autorisé
-            downTiledBlocked = collisionLayer.getCell((int)((position.x + (tileWidth/2)) / tileWidth), (int)(position.y / tileHeight)).getTile().getProperties().containsKey("blocked");
+            downTiledBlocked = collisionLayer.getCell((int)position.x, (int)position.y-1).getTile().getProperties().containsKey("blocked");
         }
 
         if (!rightMove && !leftMove && !downMove && !upMove) {

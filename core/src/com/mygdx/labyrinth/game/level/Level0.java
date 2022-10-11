@@ -49,7 +49,7 @@ public final class Level0 implements Screen {
         this.renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
 
         this.entities = new ArrayList<>();
-        this.hero = new Hero(2f,2f,1f,1.5f, (TiledMapTileLayer) map.getLayers().get(0));
+        this.hero = new Hero(3f,3f,1f,1.5f, (TiledMapTileLayer) map.getLayers().get(0));
         InputProcessorHero inputProcessorHero = new InputProcessorHero(hero);
         Gdx.input.setInputProcessor(inputProcessorHero);
 
