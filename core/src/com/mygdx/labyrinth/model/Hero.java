@@ -103,7 +103,7 @@ public class Hero implements Entity {
             sprite.setRegion(animationMarcheB.getKeyFrame(stateTime, true));
         }
 
-        //sprite.setSize(width, height);
+        sprite.setSize(width, height);
         sprite.setPosition(position.x, position.y);
         sprite.draw(batch);
     }

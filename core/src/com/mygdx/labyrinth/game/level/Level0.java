@@ -41,15 +41,15 @@ public final class Level0 implements Screen {
     public Level0(Labyrinth rootGame) {
         this.rootGame = rootGame;
         this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camera.setToOrtho(false, 32f, 18f);
         this.camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
-        this.viewport = new StretchViewport(320f, 180f, this.camera);
+        this.viewport = new StretchViewport(32f, 18f, this.camera);
         this.viewport.apply();
         TiledMap map = new TmxMapLoader().load("levels/map_test.tmx");
-        this.renderer = new OrthogonalTiledMapRenderer(map);
+        this.renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
 
         this.entities = new ArrayList<>();
-        this.hero = new Hero(40f,40f,1f,1.8f, (TiledMapTileLayer) map.getLayers().get(0));
+        this.hero = new Hero(2f,2f,1f,1.5f, (TiledMapTileLayer) map.getLayers().get(0));
         InputProcessorHero inputProcessorHero = new InputProcessorHero(hero);
         Gdx.input.setInputProcessor(inputProcessorHero);
 
