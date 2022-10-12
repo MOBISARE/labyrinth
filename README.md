@@ -54,7 +54,7 @@ Gestion des collisions (héros-murs)                    - 2
 
 ### Outils utilisés :
 
-Langage : JAVA.   
+Langage : JAVA 11.   
 Librairie Graphique : LibGDX  
 Logiciel de Gestion de Projet : Trello/YouTrack.  
 https://trello.com/w/projectlabyrinth5   
