@@ -53,19 +53,40 @@ Affichage des murs                                     - 2
 Gestion des collisions (héros-murs)                    - 2  
 
 
-Retrospective
-Bugs au niveau des collisions à corriger.
-Il faudrait un meilleur travail d'équipe et que le reste des membres daigne venir et participer.
-
-
-Sprint Review
-Globalement toutes les tâches ont été réalisées.
+## Retrospective
 Equipe peu présente.
+Il faudrait un meilleur travail d'équipe et que le reste des membres vienne participer.
+
+
+## Sprint Review
+Bugs au niveau des collisions à corriger.
+Toutes les tâches ont été réalisées.
+
 
 <img src="./diagramme/Diagramme_de_classes.png">
 
 # Sprint 1
-Correctifs des collisions. Affichage de l'HUD (vie et score)
+Primaire
+-Correctifs des collisions.
+-Affichage de l'HUD (vie et score)
+  -Modifier la vie (soin/dégât)
+  -Incrémenter score
+
+-Monstre qui attaque mêlée
+  -Afficher
+  -Déplacement
+  -Attaque
+  
+-Attaque du héro à distance
+  -Ajout d'une arme
+  -Déplacement du projectile
+  -Collisions
+
+Secondaire
+-Ramasser des pièces pour le score
+-Ajouter du son
+
+
 
 
 ### Outils utilisés :
