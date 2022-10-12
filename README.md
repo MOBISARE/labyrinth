@@ -62,7 +62,7 @@ Sprint Review
 Globalement toutes les tâches ont été réalisées.
 Equipe peu présente.
 
-<img src="./diagramme/Diagramme_de_classe.png">
+<img src="./diagramme/Diagramme_de_classes.png">
 
 # Sprint 1
 Correctifs des collisions. Affichage de l'HUD (vie et score)
