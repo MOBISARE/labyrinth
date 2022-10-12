@@ -17,13 +17,14 @@ Il est placé dans une salle de départ et peut se déplacer de salle en salle.
 Il peut attaquer les ennemis à proximité ou à distance selon ses équipements.
 Il peut être affecté par les effets des cases sur lesquelles il se déplace.
 
-### Labyrinth : 
-Le labyrinthe est défini par défaut sur un fichier.
-Le labyrinthe est généré semi-aléatoirement le héros et les monstres ne peuvent pas traverser les murs.
-Le labyrinthe est généré à partir de salles prédéfinies agencées aléatoirement.
-Le labyrinthe est généré en fonction du niveau sélectionné. 
-Certains cases du labyrinthe sont spéciales :
-trésor : si le héros arrive sur la case il a gagné le jeu
+### Map : 
+La map est définie par un fichier créer avec TiledMap
+Il y aura des éléments avec lesquels le héro pourra intéragir.
+Un système de salles
+La map contiendra des ennemis
+La map est générée en fonction du niveau sélectionné
+
+Certains cases de la map sont spéciales :
 pièges : quand un personnage arrive sur la case il subit des dégâts 
 magiques : si un personnage arrive sur la case un effet est déclenché 
 passages : un personnage qui arrive sur la case est téléporté à un autre endroit
@@ -32,12 +33,12 @@ passages : un personnage qui arrive sur la case est téléporté à un autre end
 Des monstres sont placés de manière aléatoire dans le labyrinthe.
 Les monstres se déplacent de manière aléatoire.
 Les monstres se déplacent de manière intelligente en essayant d’attraper le héros.
-Les fantômes sont des monstres qui peuvent traverser les murs.
+
 
 ### Attaques :
 Le héros est tué au contact d’un monstre.
-Le héros peut attaquer les montres avec lesquelles il est en contact - les deux perdent des points de vie.
-Le héros peut attaquer les montres sur la case adjacente.
+Le héros peut attaquer les monstres avec lesquelles il est en contact - les deux perdent des points de vie.
+Le héros peut attaquer les monstres sur la case adjacente.
 
 
 
@@ -52,9 +53,25 @@ Affichage des murs                                     - 2
 Gestion des collisions (héros-murs)                    - 2  
 
 
+Retrospective
+Bugs au niveau des collisions à corriger.
+Il faudrait un meilleur travail d'équipe et que le reste des membres daigne venir et participer.
+
+
+Sprint Review
+Globalement toutes les tâches ont été réalisées.
+Equipe peu présente.
+
+<img src="./diagramme/Diagramme_de_classe.png">
+
+# Sprint 1
+Correctifs des collisions. Affichage de l'HUD (vie et score)
+
+
 ### Outils utilisés :
 
-Langage : JAVA 11.   
+Langage : JAVA 11.
+TiledMap : Logiciel de création de map
 Librairie Graphique : LibGDX  
 Logiciel de Gestion de Projet : Trello/YouTrack.  
 https://trello.com/w/projectlabyrinth5   
