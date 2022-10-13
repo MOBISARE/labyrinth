@@ -66,25 +66,25 @@ Toutes les tâches ont été réalisées.
 <img src="./diagramme/Diagramme_de_classes.png">
 
 # Sprint 1
-Primaire  
--Correctifs des collisions.  
--Affichage de l'HUD (vie et score)  
-  -Modifier la vie (soin/dégât)  
-  -Incrémenter score  
+## Primaire  
+- Correctifs des collisions.  
+- Affichage de l'HUD (vie et score)  
+  - Modifier la vie (soin/dégât)  
+  - Incrémenter score  
 
--Monstre qui attaque mêlée  
-  -Afficher  
-  -Déplacement  
-  -Attaque  
+- Monstre qui attaque mêlée  
+  - Afficher  
+  - Déplacement  
+  - Attaque  
   
--Attaque du héro à distance  
-  -Ajout d'une arme  
-  -Déplacement du projectile  
-  -Collisions  
+ - Attaque du héro à distance  
+  - A jout d'une arme  
+  - Déplacement du projectile  
+  - Collisions  
 
-Secondaire  
--Ramasser des pièces pour le score  
--Ajouter du son  
+## Secondaire  
+- Ramasser des pièces pour le score  
+- Ajouter du son  
 
 ### Outils utilisés :
 
