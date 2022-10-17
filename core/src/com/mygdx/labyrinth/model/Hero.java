@@ -167,25 +167,29 @@ public class Hero implements Entity {
         if (leftMove) {
             velocite.set(-0.09f, velocite.y);
             //On vérifie si le déplacement est autorisé
-            leftTiledBlocked = collisionLayer.getCell((int)(position.x - 1), (int)(position.y)).getTile().getProperties().containsKey("blocked");
+            leftTiledBlocked = collisionLayer.getCell((int)(position.x - 0.09), (int)(position.y)).getTile().getProperties().containsKey("blocked")
+                            || collisionLayer.getCell((int)(position.x - 0.09), (int)(position.y + (int)Math.floor(height))).getTile().getProperties().containsKey("blocked");
         }
 
         if (rightMove) {
             velocite.set(0.09f, velocite.y);
             //On vérifie si le déplacement est autorisé
-            rightTiledBlocked = collisionLayer.getCell((int)(position.x + 1), (int)(position.y)).getTile().getProperties().containsKey("blocked");
+            rightTiledBlocked = collisionLayer.getCell((int)(position.x + width + 0.09), (int)(position.y)).getTile().getProperties().containsKey("blocked")
+                             || collisionLayer.getCell((int)(position.x + width + 0.09), (int)(position.y + (int)Math.floor(height))).getTile().getProperties().containsKey("blocked");
         }
 
         if (upMove) {
             velocite.set(velocite.x, 0.09f);
             //On vérifie si le déplacement est autorisé
-            upTiledBlocked = collisionLayer.getCell((int)position.x, (int)(position.y + height)).getTile().getProperties().containsKey("blocked");
+            upTiledBlocked = collisionLayer.getCell((int)position.x, (int)(position.y + height + 0.09)).getTile().getProperties().containsKey("blocked")
+                          || collisionLayer.getCell((int)(position.x + Math.ceil(width)), (int)(position.y + height + 0.09)).getTile().getProperties().containsKey("blocked");
         }
 
         if (downMove) {
             velocite.set(velocite.x, -0.09f);
             //On vérifie si le déplacement est autorisé
-            downTiledBlocked = collisionLayer.getCell((int)position.x, (int)position.y-1).getTile().getProperties().containsKey("blocked");
+            downTiledBlocked = collisionLayer.getCell((int)position.x, (int)(position.y - 0.09)).getTile().getProperties().containsKey("blocked")
+                            || collisionLayer.getCell((int)(position.x + Math.ceil(width)), (int)(position.y - 0.09)).getTile().getProperties().containsKey("blocked");
         }
 
         if (!rightMove && !leftMove && !downMove && !upMove) {
