@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.labyrinth.game.level.Level0;
 
 public class Hero implements Entity {
 
@@ -18,13 +19,9 @@ public class Hero implements Entity {
     private final Texture imgAnimHero;
     // Animation de la marche vers la droite
     private final TextureRegion[][] texturesHero;
-    private final Animation<TextureRegion> animationMarcheD;
+    private final Animation<TextureRegion> animationRun;
     // Animation de la marche vers la gauche
-    private final Animation<TextureRegion> animationMarcheG;
-    // Animation de la marche vers le haut
-    private final Animation<TextureRegion> animationMarcheH;
-    // Animation de la marche vers le bas
-    private final Animation<TextureRegion> animationMarcheB;
+    private final Animation<TextureRegion> animationIdle;
     private Vector2 position;
     // Largeur du héro
     private float width;
@@ -47,6 +44,12 @@ public class Hero implements Entity {
 
     private float stateTime;
 
+    private int vie = 6;
+    private int argent = 0;
+    private enum Direction {
+        RIGTH, LEFT
+    }
+    private Direction direction;
 
     /**
      * Construit un héros à la position x, y et de taille width, height
@@ -65,21 +68,21 @@ public class Hero implements Entity {
         this.upMove = false;
         this.downMove = false;
         this.collisionLayer = collisionLayer;
+        this.direction = Direction.RIGTH;
 
         // Création du personnage à l'arrêt
         this.velocite = new Vector2(0f,0f);
 
-        imgAnimHero = new Texture(Gdx.files.internal("heros.png"));
+        imgAnimHero = new Texture(Gdx.files.internal("textures/animation_hero_knight.png"));
         this.texturesHero = TextureRegion.split(imgAnimHero,
-                imgAnimHero.getWidth() / 3,
-                imgAnimHero.getHeight() / 4);
+                imgAnimHero.getWidth() / 9,
+                imgAnimHero.getHeight());
 
-        animationMarcheH = new Animation<>(0.15f, texturesHero[0]);
-        animationMarcheD = new Animation<>(0.15f, texturesHero[1]);
-        animationMarcheB = new Animation<>(0.15f, texturesHero[2]);
-        animationMarcheG = new Animation<>(0.15f, texturesHero[3]);
-
-        this.sprite = new Sprite(animationMarcheD.getKeyFrame(0, true));
+        TextureRegion[] idle = {texturesHero[0][1], texturesHero[0][2], texturesHero[0][3], texturesHero[0][4]};
+        animationIdle = new Animation<>(0.15f, idle );
+        TextureRegion[] run = {texturesHero[0][5], texturesHero[0][6], texturesHero[0][7], texturesHero[0][8]};
+        animationRun = new Animation<>(0.10f, run );
+        this.sprite = new Sprite(animationIdle.getKeyFrame(0, true));
     }
 
     /**
@@ -90,17 +93,44 @@ public class Hero implements Entity {
     public void render(SpriteBatch batch, float deltaTime) {
         this.stateTime += deltaTime;
         this.updateMotion(deltaTime);
+
         // Update du sprite à afficher
-        if (velocite.x == 0f && velocite.y == 0f) {
-            sprite.setRegion(texturesHero[2][1]);
-        } else if (velocite.x > 0) {
-            sprite.setRegion(animationMarcheD.getKeyFrame(stateTime, true));
-        } else if (velocite.x < 0) {
-            sprite.setRegion(animationMarcheG.getKeyFrame(stateTime, true));
-        } else if (velocite.y > 0) {
-            sprite.setRegion(animationMarcheH.getKeyFrame(stateTime, true));
-        } else if (velocite.y < 0) {
-            sprite.setRegion(animationMarcheB.getKeyFrame(stateTime, true));
+        if (velocite.x == 0f && velocite.y == 0f && direction == Direction.RIGTH) {
+            TextureRegion frame = animationIdle.getKeyFrame(stateTime, true);
+            if (frame.isFlipX()) {
+                frame.flip(true, false);
+            }
+            sprite.setRegion(frame);
+        } else if (velocite.x == 0f && velocite.y == 0f && direction == Direction.LEFT) {
+            TextureRegion frame = animationIdle.getKeyFrame(stateTime, true);
+            if (!frame.isFlipX()) {
+                frame.flip(true, false);
+            }
+            sprite.setRegion(frame);
+        } else if (velocite.x > 0f) {
+            TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
+            if (frame.isFlipX()) {
+                frame.flip(true, false);
+            }
+            sprite.setRegion(frame);
+        } else if (velocite.x < 0f) {
+            TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
+            if (!frame.isFlipX()) {
+                frame.flip(true, false);
+            }
+            sprite.setRegion(frame);
+        } else if (velocite.y != 0f && direction == Direction.RIGTH) {
+            TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
+            if (frame.isFlipX()) {
+                frame.flip(true, false);
+            }
+            sprite.setRegion(frame);
+        } else if (velocite.y != 0f && direction == Direction.LEFT) {
+            TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
+            if (!frame.isFlipX()) {
+                frame.flip(true, false);
+            }
+            sprite.setRegion(frame);
         }
 
         sprite.setSize(width, height);
@@ -123,6 +153,7 @@ public class Hero implements Entity {
     public void setLeftMove(boolean t) {
         if (rightMove && t) rightMove = false;
         leftMove = t;
+        direction = Direction.LEFT;
     }
 
     /**+
@@ -132,6 +163,7 @@ public class Hero implements Entity {
     public void setRightMove(boolean t) {
         if (leftMove && t) leftMove = false;
         rightMove = t;
+        direction = Direction.RIGTH;
     }
 
     /**+
@@ -221,5 +253,21 @@ public class Hero implements Entity {
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public void setVie(int vie) {
+        this.vie = vie;
+    }
+
+    public int getVie() {
+        return vie;
+    }
+
+    public int getArgent() {
+        return this.argent;
+    }
+
+    public void addArgent(int n) {
+        this.argent += n;
     }
 }

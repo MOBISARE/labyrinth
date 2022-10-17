@@ -59,7 +59,16 @@ public class InputProcessorHero implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
-        return false;
+        if (character == 'p') {
+            hero.setVie(hero.getVie() - 1);
+        }
+        if (character == '+') {
+            hero.addArgent(1);
+        }
+        if (character == '-') {
+            hero.addArgent(-1);
+        }
+        return true;
     }
 
     @Override
