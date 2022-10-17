@@ -37,6 +37,7 @@ public class Labyrinth extends Game {
 	@Override
 	public void render() {
 		super.render();
+		hud.update();
 		batch.begin();
 		hud.draw(this.batch);
 		batch.end();

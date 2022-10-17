@@ -49,6 +49,7 @@ public class Hero implements Entity {
     private float stateTime;
 
     private int vie = 6;
+    private int argent = 0;
 
 
     /**
@@ -228,5 +229,13 @@ public class Hero implements Entity {
 
     public int getVie() {
         return vie;
+    }
+
+    public int getArgent() {
+        return this.argent;
+    }
+
+    public void addArgent(int n) {
+        this.argent += n;
     }
 }
