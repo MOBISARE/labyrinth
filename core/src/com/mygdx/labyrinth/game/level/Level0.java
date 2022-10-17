@@ -2,16 +2,20 @@ package com.mygdx.labyrinth.game.level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.labyrinth.controller.Observer;
 import com.mygdx.labyrinth.game.Labyrinth;
 import com.mygdx.labyrinth.model.InputProcessorHero;
 import com.mygdx.labyrinth.model.Hero;
@@ -39,6 +43,8 @@ public final class Level0 implements Screen {
     private int mapWidth;
     private int mapHeight;
 
+    private List<Observer> observers;
+
     /**
      * Classe principal qui contient l'ensemble des éléments du jeux et qui permet
      * de gérer la physique
@@ -61,6 +67,7 @@ public final class Level0 implements Screen {
         Gdx.input.setInputProcessor(inputProcessorHero);
 
         this.entities.add(this.hero);
+        this.observers = new ArrayList<>();
     }
 
 
@@ -147,5 +154,18 @@ public final class Level0 implements Screen {
 
         this.camera.position.set(x, y, 0);
         this.camera.update();
+        this.updateObservers();
+    }
+
+    public void addObserver(Observer o) {
+        this.observers.add(o);
+    }
+
+    private void updateObservers() {
+        this.observers.forEach(Observer::update);
+    }
+
+    public OrthographicCamera getCamera() {
+        return this.camera;
     }
 }

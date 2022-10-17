@@ -3,6 +3,7 @@ package com.mygdx.labyrinth.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.labyrinth.game.hud.HUD;
 import com.mygdx.labyrinth.game.level.Level0;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public class Labyrinth extends Game {
 
 	private SpriteBatch batch;
 
+	private HUD hud;
+
 
 	public Labyrinth() {
 		this.levels = new ArrayList<>();
@@ -23,7 +26,9 @@ public class Labyrinth extends Game {
 	public void create() {
 		// Sélecteur de niveaux
 		this.batch = new SpriteBatch();
-		this.levels.add(new Level0(this));
+		Level0 level0 = new Level0(this);
+		this.hud = new HUD(level0);
+		this.levels.add(level0);
 		this.setScreen(this.levels.get(0));
 
 		//TODO Basculer d'écran de levels
@@ -32,6 +37,9 @@ public class Labyrinth extends Game {
 	@Override
 	public void render() {
 		super.render();
+		batch.begin();
+		hud.draw(this.batch);
+		batch.end();
 	}
 
 	@Override
@@ -39,6 +47,7 @@ public class Labyrinth extends Game {
 		super.dispose();
 		this.levels.forEach(Screen::dispose);
 		this.batch.dispose();
+		this.hud.dispose();
 	}
 
 	public List<Screen> getLevels() {

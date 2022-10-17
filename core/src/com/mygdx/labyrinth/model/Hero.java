@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.labyrinth.game.level.Level0;
 
 public class Hero implements Entity {
 
@@ -46,6 +47,8 @@ public class Hero implements Entity {
     private TiledMapTileLayer collisionLayer;
 
     private float stateTime;
+
+    private int vie = 6;
 
 
     /**
@@ -217,5 +220,13 @@ public class Hero implements Entity {
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public void setVie(int vie) {
+        this.vie = vie;
+    }
+
+    public int getVie() {
+        return vie;
     }
 }
