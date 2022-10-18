@@ -1,6 +1,7 @@
 package com.mygdx.labyrinth.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -41,6 +42,9 @@ public class Hero implements Entity {
     private float vitesse = 5f;
     //TiledMap pour les collisions
     private TiledMapTileLayer collisionLayer;
+    //Son de déplacement Hero
+    private Sound sound;
+    private int deltaSound = 0;
 
     private float stateTime;
 
@@ -73,6 +77,7 @@ public class Hero implements Entity {
         // Création du personnage à l'arrêt
         this.velocite = new Vector2(0f,0f);
 
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound/sfx_step_grass_l.mp3"));
         imgAnimHero = new Texture(Gdx.files.internal("textures/animation_hero_knight.png"));
         this.texturesHero = TextureRegion.split(imgAnimHero,
                 imgAnimHero.getWidth() / 9,
@@ -136,6 +141,14 @@ public class Hero implements Entity {
         sprite.setSize(width, height);
         sprite.setPosition(position.x, position.y);
         sprite.draw(batch);
+
+        if((velocite.x != 0 || velocite.y != 0) && deltaSound==0 ) {
+            deltaSound=25;
+            long id = sound.play(0.1f);
+            sound.setPitch(id, 2);
+            sound.setLooping(id,false);
+        }
+        if(deltaSound != 0) deltaSound--;
     }
 
     /**
@@ -144,6 +157,7 @@ public class Hero implements Entity {
     @Override
     public void dispose() {
         imgAnimHero.dispose();
+        sound.dispose();
     }
 
     /**+

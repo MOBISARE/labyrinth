@@ -2,6 +2,7 @@ package com.mygdx.labyrinth.game.level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -35,6 +36,8 @@ public final class Level0 implements Screen {
 
     private final OrthogonalTiledMapRenderer renderer;
 
+    private Music music;
+
     /**
      * Contient la liste des éléments composants le monde
      */
@@ -60,6 +63,10 @@ public final class Level0 implements Screen {
         this.mapWidth = Integer.parseInt(map.getProperties().get("width").toString());
         this.mapHeight = Integer.parseInt(map.getProperties().get("height").toString());
         this.renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
+        this.music = Gdx.audio.newMusic(Gdx.files.internal("sound/backgroundMusic.mp3"));
+        music.setVolume(0.02f);
+        music.setLooping(true);
+        music.play();
 
         this.entities = new ArrayList<>();
         this.hero = new Hero(8f,8f,1f,1f, (TiledMapTileLayer) map.getLayers().get(0));
@@ -122,6 +129,7 @@ public final class Level0 implements Screen {
 
     public void dispose() {
         this.entities.forEach(Entity::dispose);
+        music.dispose();
     }
 
     public Hero getHero() {
