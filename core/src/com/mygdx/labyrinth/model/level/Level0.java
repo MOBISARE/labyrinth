@@ -1,4 +1,4 @@
-package com.mygdx.labyrinth.game.level;
+package com.mygdx.labyrinth.model.level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -16,15 +16,17 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.labyrinth.controller.Observer;
+import com.mygdx.labyrinth.exception.LabyrinthException;
 import com.mygdx.labyrinth.game.Labyrinth;
 import com.mygdx.labyrinth.model.InputProcessorHero;
 import com.mygdx.labyrinth.model.Hero;
 import com.mygdx.labyrinth.model.Entity;
+import com.mygdx.labyrinth.model.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Level0 implements Screen {
+public final class Level0 extends Observable implements Screen {
 
     private final Labyrinth rootGame;
     private final Hero hero;
@@ -50,6 +52,7 @@ public final class Level0 implements Screen {
      * de gérer la physique
      */
     public Level0(Labyrinth rootGame) {
+        super();
         this.rootGame = rootGame;
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, 20f, 18f);
@@ -153,19 +156,12 @@ public final class Level0 implements Screen {
         }
 
         this.camera.position.set(x, y, 0);
+        try {
+            notifierObservers("camera_position_event", this.camera);
+        } catch (LabyrinthException e) {
+            System.out.println(e.toString());
+        }
+
         this.camera.update();
-        this.updateObservers();
-    }
-
-    public void addObserver(Observer o) {
-        this.observers.add(o);
-    }
-
-    private void updateObservers() {
-        this.observers.forEach(Observer::update);
-    }
-
-    public OrthographicCamera getCamera() {
-        return this.camera;
     }
 }

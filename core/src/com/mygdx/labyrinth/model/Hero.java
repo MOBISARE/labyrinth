@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.labyrinth.game.level.Level0;
+import com.mygdx.labyrinth.exception.LabyrinthException;
 
-public class Hero implements Entity {
+public class Hero extends Observable implements Entity {
 
     // Sprite qui contient l'image + la forme du hero
     private Sprite sprite;
@@ -59,6 +59,7 @@ public class Hero implements Entity {
      * @param height
      */
     public Hero(float x, float y, float width, float height, TiledMapTileLayer collisionLayer) {
+        super();
         this.stateTime = 0;
         this.position = new Vector2(x, y);
         this.width = width;
@@ -257,6 +258,14 @@ public class Hero implements Entity {
 
     public void setVie(int vie) {
         this.vie = vie;
+        if (this.vie < 0) {
+            this.vie = 0;
+        }
+        try {
+            notifierObservers("vie_hero_event", this);
+        } catch (LabyrinthException e) {
+            System.out.println(e.toString());
+        }
     }
 
     public int getVie() {
@@ -269,5 +278,13 @@ public class Hero implements Entity {
 
     public void addArgent(int n) {
         this.argent += n;
+        if (argent < 0) {
+            argent = 0;
+        }
+        try {
+            notifierObservers("argent_hero_event", this);
+        } catch (LabyrinthException e) {
+            System.out.println(e.toString());
+        }
     }
 }
