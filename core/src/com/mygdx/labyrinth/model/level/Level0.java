@@ -90,8 +90,6 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         this.hero = new Hero(spawnHero.getProperties().get("x", float.class) / 16f
                 ,spawnHero.getProperties().get("y", float.class) / 16f
                 ,0.8f,1f);
-        InputProcessorHero inputProcessorHero = new InputProcessorHero(hero);
-        Gdx.input.setInputProcessor(inputProcessorHero);
 
         this.entities.add(this.hero);
     }
@@ -179,6 +177,14 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
      */
     public OrthographicCamera getCamera() {
         return camera;
+    }
+
+    /**
+     * Retourne le héro
+     * @return Hero
+     */
+    public Hero getHero() {
+        return hero;
     }
 
     /**

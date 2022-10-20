@@ -2,6 +2,7 @@ package com.mygdx.labyrinth.controller;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.mygdx.labyrinth.game.Labyrinth;
 import com.mygdx.labyrinth.model.Hero;
 
 /**
@@ -10,9 +11,11 @@ import com.mygdx.labyrinth.model.Hero;
 public class InputProcessorHero implements InputProcessor {
 
     private final Hero hero;
+    private final Labyrinth game;
 
-    public InputProcessorHero(Hero h) {
+    public InputProcessorHero(Hero h, Labyrinth g) {
         this.hero = h;
+        this.game = g;
     }
 
     @Override
@@ -71,6 +74,9 @@ public class InputProcessorHero implements InputProcessor {
         }
         if (character == '-') {
             hero.addArgent(-1);
+        }
+        if (character == 'c') {
+            game.toggleModeDebug();
         }
         return true;
     }

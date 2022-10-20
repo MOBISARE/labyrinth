@@ -1,8 +1,10 @@
 package com.mygdx.labyrinth.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.labyrinth.controller.InputProcessorHero;
 import com.mygdx.labyrinth.exception.LabyrinthException;
 import com.mygdx.labyrinth.game.hud.HUD;
 import com.mygdx.labyrinth.model.collision.CollisionManager;
@@ -19,6 +21,7 @@ public class Labyrinth extends Game {
 
 	private HUD hud;
 	private CollisionManager collisionManager;
+	private boolean enModeDebug = false;
 
 
 
@@ -34,7 +37,11 @@ public class Labyrinth extends Game {
 		this.hud = new HUD();
 		this.hud.setEvenType(level0);
 		this.levels.add(level0);
-		this.setScreen(this.levels.get(0));
+
+
+		InputProcessorHero inputProcessorHero = new InputProcessorHero(level0.getHero(), this);
+		Gdx.input.setInputProcessor(inputProcessorHero);
+
 		this.collisionManager = new CollisionManager(level0);
 
 		try {
@@ -43,6 +50,8 @@ public class Labyrinth extends Game {
 			throw new RuntimeException(e);
 		}
 
+
+		this.setScreen(this.levels.get(0));
 
 		//TODO Basculer d'écran de levels
 	}
@@ -55,7 +64,9 @@ public class Labyrinth extends Game {
 		hud.draw(this.batch);
 		batch.end();
 
-		collisionManager.debugRenderer(((Level0)levels.get(0)).getCamera());
+		if (enModeDebug) {
+			collisionManager.debugRenderer(((Level0) levels.get(0)).getCamera());
+		}
 	}
 
 	@Override
@@ -69,5 +80,12 @@ public class Labyrinth extends Game {
 
 	public SpriteBatch getBatch() {
 		return batch;
+	}
+
+	/**
+	 * Allume ou éteints le mode débug
+	 */
+	public void toggleModeDebug() {
+		enModeDebug = !enModeDebug;
 	}
 }
