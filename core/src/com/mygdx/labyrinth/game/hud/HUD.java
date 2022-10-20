@@ -1,111 +1,77 @@
 package com.mygdx.labyrinth.game.hud;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Vector3;
 import com.mygdx.labyrinth.controller.Observer;
-import com.mygdx.labyrinth.game.level.Level0;
-import com.mygdx.labyrinth.model.Hero;
-
-import java.awt.*;
+import com.mygdx.labyrinth.model.level.Level0;
 
 /**
  * Classe qui permet d'afficher l'HUD et les informations importantes
  * sur le héro (la vie / le score)
  */
-public class HUD implements Observer {
+public class HUD implements Observer{
 
-    private Level0 level;
-    private Texture coeurPlein;
-    private Texture coeurVide;
-    private Texture coeurHalf;
-    private Texture coin;
-    private BitmapFont policeHud;
+    //region Attributs
 
+    /**
+     * Position en haut à gauche de l'HUD
+     */
     private float x, y;
-    private final int VIE_MAX = 6;
-    private  int vieActuel;
+    /**
+     * Hud qui gère l'argent
+     */
+    private final ArgentHud argentHud;
+    /**
+     * Partie du hud qui gère la vie
+     */
+    private final VieHud vieHud;
 
-    public HUD(Level0 l) {
-        this.level = l;
-        initHud();
-    }
+    //endregion
 
-    private void initHud() {
-        this.coeurPlein = new Texture(Gdx.files.internal("textures/ui_heart_full.png"));
-        this.coeurHalf = new Texture(Gdx.files.internal("textures/ui_heart_half.png"));
-        this.coeurVide = new Texture(Gdx.files.internal("textures/ui_heart_empty.png"));
+    /**
+     * Constructeur par défaut
+     */
+    public HUD() {
         this.x = 0;
-        vieActuel = level.getHero().getVie();
-
-        // Initialisation de la police d'écriture
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/alagard.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 16;
-        parameter.borderWidth = 0.8f;
-        parameter.color = Color.YELLOW;
-        policeHud = generator.generateFont(parameter);
-        policeHud.setUseIntegerPositions(false);
-        policeHud.getData().setScale(1/30f);
-        generator.dispose();
-
-        this.coin = new Texture(Gdx.files.internal("textures/coin_anim_f0.png"));
-
+        this.y = 0;
+        this.argentHud = new ArgentHud("0");
+        this.vieHud = new VieHud(6);
     }
 
+    /**
+     * Dessine le hud à l'écran
+     * @param batch Batch
+     */
     public void draw(Batch batch) {
-        int pos = 0;
-
-        // Dessin des coeurs plein
-        for (int i = 0; i < vieActuel / 2; i++) {
-            batch.draw(coeurPlein, level.getCamera().position.x - level.getCamera().viewportWidth / 2f + 0.2f + pos,
-                    level.getCamera().position.y + level.getCamera().viewportHeight/2f - 1.2f,
-                    0.9f,
-                    0.9f);
-            pos++;
-        }
-
-        // Dessin des demi-coeur
-        if (vieActuel % 2 > 0) {
-            batch.draw(coeurHalf, level.getCamera().position.x - level.getCamera().viewportWidth / 2f + 0.2f + pos,
-                    level.getCamera().position.y + level.getCamera().viewportHeight/2f - 1.2f,
-                    0.9f,
-                    0.9f);
-            pos++;
-        }
-
-        // Dessin des coeurs vide
-        for (int i = 0; i < (VIE_MAX - vieActuel) / 2; i++) {
-            batch.draw(coeurVide, level.getCamera().position.x - level.getCamera().viewportWidth / 2f + 0.2f + pos,
-                    level.getCamera().position.y + level.getCamera().viewportHeight/2f - 1.2f,
-                    0.9f,
-                    0.9f);
-            pos++;
-        }
-
-        batch.draw(coin, level.getCamera().position.x - level.getCamera().viewportWidth / 2f + 4f,
-                level.getCamera().position.y + level.getCamera().viewportHeight / 2f - 1f,
-                0.7f,0.7f);
-
-
-        policeHud.draw(batch, level.getHero().getArgent() +"", level.getCamera().position.x - level.getCamera().viewportWidth / 2f + 5f,
-                level.getCamera().position.y + level.getCamera().viewportHeight / 2f - 0.5f);
+        vieHud.draw(batch, x, y);
+        argentHud.draw(batch, x, y);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param obj données de mise à jour
+     */
     @Override
-    public void update() {
-        this.vieActuel = level.getHero().getVie();
+    public void update(Object obj) {
+        x = ((OrthographicCamera)obj).position.x - ((OrthographicCamera)obj).viewportWidth / 2f;
+        y = ((OrthographicCamera)obj).position.y + ((OrthographicCamera)obj).viewportHeight / 2f;
     }
 
+    /**
+     * Libère les ressources
+     */
     public void dispose() {
-        this.coeurPlein.dispose();
-        this.coeurHalf.dispose();
-        this.coeurVide.dispose();
-        this.policeHud.dispose();
-        this.coin.dispose();
+        argentHud.dispose();
+        vieHud.dispose();
+    }
+
+    /**
+     * Permet de mettre en lien les observateurs et les observés
+     * @param l Level0
+     */
+    public void setEvenType(Level0 l) {
+        l.addObserver("camera_position_event", this);
+        l.addObserver("vie_hero_event", vieHud);
+        l.addObserver("argent_hero_event", argentHud);
     }
 }
