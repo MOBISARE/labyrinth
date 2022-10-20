@@ -1,8 +1,12 @@
-package com.mygdx.labyrinth.model;
+package com.mygdx.labyrinth.controller;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.mygdx.labyrinth.model.Hero;
 
+/**
+ * Gestion principal des déplacements du héro
+ */
 public class InputProcessorHero implements InputProcessor {
 
     private final Hero hero;

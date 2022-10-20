@@ -6,29 +6,26 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.labyrinth.exception.LabyrinthException;
+import com.mygdx.labyrinth.model.collision.Body;
+import com.mygdx.labyrinth.model.collision.BodyType;
 
 public class Hero extends Observable implements Entity {
 
+    //region Attributs
+
     // Sprite qui contient l'image + la forme du hero
-    private Sprite sprite;
+    private final Sprite sprite;
 
     // Texture du héro complète
     private final Texture imgAnimHero;
-    // Animation de la marche vers la droite
-    private final TextureRegion[][] texturesHero;
     private final Animation<TextureRegion> animationRun;
     // Animation de la marche vers la gauche
     private final Animation<TextureRegion> animationIdle;
-    private Vector2 position;
-    // Largeur du héro
-    private float width;
-    // Hauteur du héro
-    private float height;
     // Vélocité du héros
-    private Vector2 velocite;
+    private final Vector2 velocite;
     // Flag marche vers la gauche
     private boolean leftMove;
     // Flag marche vers la droite
@@ -40,7 +37,6 @@ public class Hero extends Observable implements Entity {
     // Deplacement u/frame;
     private float vitesse = 5f;
     //TiledMap pour les collisions
-    private TiledMapTileLayer collisionLayer;
 
     private float stateTime;
 
@@ -50,32 +46,39 @@ public class Hero extends Observable implements Entity {
         RIGTH, LEFT
     }
     private Direction direction;
+    private final Body body;
+
+    private final Vector2 oldPosition;
+
+    //endregion
+
+
+    //region Constructors
 
     /**
      * Construit un héros à la position x, y et de taille width, height
-     * @param x
-     * @param y
-     * @param width
-     * @param height
+     * @param x float
+     * @param y float
+     * @param width float
+     * @param height float
      */
-    public Hero(float x, float y, float width, float height, TiledMapTileLayer collisionLayer) {
+    public Hero(float x, float y, float width, float height) {
         super();
         this.stateTime = 0;
-        this.position = new Vector2(x, y);
-        this.width = width;
-        this.height = height;
+        this.body = new Body(new Rectangle(x, y, width, height), BodyType.HERO, this, true);
+        this.oldPosition = new Vector2(x, y);
         this.leftMove = false;
         this.rightMove = false;
         this.upMove = false;
         this.downMove = false;
-        this.collisionLayer = collisionLayer;
         this.direction = Direction.RIGTH;
 
         // Création du personnage à l'arrêt
         this.velocite = new Vector2(0f,0f);
 
         imgAnimHero = new Texture(Gdx.files.internal("textures/animation_hero_knight.png"));
-        this.texturesHero = TextureRegion.split(imgAnimHero,
+        // Animation de la marche vers la droite
+        TextureRegion[][] texturesHero = TextureRegion.split(imgAnimHero,
                 imgAnimHero.getWidth() / 9,
                 imgAnimHero.getHeight());
 
@@ -86,9 +89,102 @@ public class Hero extends Observable implements Entity {
         this.sprite = new Sprite(animationIdle.getKeyFrame(0, true));
     }
 
+    //endregion
+
+    //region Getter & Setter
+
+    @Override
+    public Body getBody() {
+        return body;
+    }
+
+    /**+
+     * Position le flag pour le déplacement vers la gauche
+     * @param t boolean
+     */
+    public void setLeftMove(boolean t) {
+        if (rightMove && t) rightMove = false;
+        leftMove = t;
+        direction = Direction.LEFT;
+    }
+
+    /**+
+     * Position le flag pour le déplacement vers la droite
+     * @param t boolean
+     */
+    public void setRightMove(boolean t) {
+        if (leftMove && t) leftMove = false;
+        rightMove = t;
+        direction = Direction.RIGTH;
+    }
+
+    /**+
+     * Position le flag pour le déplacement vers le haut
+     * @param t boolean
+     */
+    public void setUpMove(boolean t) {
+        if (downMove && t) downMove = false;
+        upMove = t;
+    }
+
+    /**+
+     * Position le flag pour le déplacement vers le bas
+     * @param t boolean
+     */
+    public void setDownMove(boolean t) {
+        if (upMove && t) upMove = false;
+        downMove = t;
+    }
+
+    public Vector2 getPosition() {
+        Vector2 v2 = new Vector2();
+        body.getBounds().getPosition(v2);
+        return v2;
+    }
+
+    public void setVie(int vie) {
+        this.vie = vie;
+        if (this.vie < 0) {
+            this.vie = 0;
+        }
+        try {
+            notifierObservers("vie_hero_event", this);
+        } catch (LabyrinthException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getVie() {
+        return vie;
+    }
+
+    public int getArgent() {
+        return this.argent;
+    }
+
+    public void addArgent(int n) {
+        this.argent += n;
+        if (argent < 0) {
+            argent = 0;
+        }
+        try {
+            notifierObservers("argent_hero_event", this);
+        } catch (LabyrinthException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setOldPosition() {
+        body.getBounds().setPosition(oldPosition.x, oldPosition.y);
+    }
+
+    //endregion
+
+
     /**
-     * Permet de dessiner le héros dans la fenêtre
-     * @param deltaTime
+     * {@inheritDoc}
+     * @param batch SpriteBatch, batch utilisé pour le rendu
+     * @param deltaTime float, temps écoulé depuis la dernière image affichée
      */
     @Override
     public void render(SpriteBatch batch, float deltaTime) {
@@ -134,95 +230,42 @@ public class Hero extends Observable implements Entity {
             sprite.setRegion(frame);
         }
 
-        sprite.setSize(width, height);
-        sprite.setPosition(position.x, position.y);
+        sprite.setSize(body.getBounds().width + 0.2f, body.getBounds().height + 0.5f);
+        sprite.setPosition(body.getBounds().x - 0.1f, body.getBounds().y);
         sprite.draw(batch);
     }
 
     /**
-     * Libère les ressources lorsque c'est nécessaire
+     * {@inheritDoc}
      */
     @Override
     public void dispose() {
         imgAnimHero.dispose();
     }
 
-    /**+
-     * Position le flag pour le déplacement vers la gauche
-     * @param t
-     */
-    public void setLeftMove(boolean t) {
-        if (rightMove && t) rightMove = false;
-        leftMove = t;
-        direction = Direction.LEFT;
-    }
-
-    /**+
-     * Position le flag pour le déplacement vers la droite
-     * @param t
-     */
-    public void setRightMove(boolean t) {
-        if (leftMove && t) leftMove = false;
-        rightMove = t;
-        direction = Direction.RIGTH;
-    }
-
-    /**+
-     * Position le flag pour le déplacement vers le haut
-     * @param t
-     */
-    public void setUpMove(boolean t) {
-        if (downMove && t) downMove = false;
-        upMove = t;
-    }
-
-    /**+
-     * Position le flag pour le déplacement vers le bas
-     * @param t
-     */
-    public void setDownMove(boolean t) {
-        if (upMove && t) upMove = false;
-        downMove = t;
-    }
-
     /**
      * Fonctione intermédiaire pour faire avancer le héro
-     * @param delta
+     * @param delta float
      */
     private void updateMotion(float delta) {
-        //Variables pour la gestion des collisions
-        boolean leftTiledBlocked = false, rightTiledBlocked = false, upTiledBlocked = false, downTiledBlocked = false;
 
-        //On stock les anciennes positions
-        float oldX = getPosition().x;
-        float oldY = getPosition().y;
+        // On récupère l'ancienne position au cas ou
+        oldPosition.set(body.getBounds().x, body.getBounds().y);
 
         if (leftMove) {
             velocite.set(-0.09f, velocite.y);
-            //On vérifie le déplacement
-            leftTiledBlocked = collisionLayer.getCell((int)(position.x - 0.09), (int)(position.y)).getTile().getProperties().containsKey("blocked")
-                            || collisionLayer.getCell((int)(position.x - 0.09), (int)(position.y + (int)Math.floor(height))).getTile().getProperties().containsKey("blocked");
         }
 
         if (rightMove) {
             velocite.set(0.09f, velocite.y);
-            //On vérifie le déplacement
-            rightTiledBlocked = collisionLayer.getCell((int)(position.x + width + 0.09), (int)(position.y)).getTile().getProperties().containsKey("blocked")
-                             || collisionLayer.getCell((int)(position.x + width + 0.09), (int)(position.y + (int)Math.floor(height))).getTile().getProperties().containsKey("blocked");
         }
 
         if (upMove) {
             velocite.set(velocite.x, 0.09f);
-            //On vérifie le déplacement
-            upTiledBlocked = collisionLayer.getCell((int)position.x, (int)(position.y + height + 0.09)).getTile().getProperties().containsKey("blocked")
-                          || collisionLayer.getCell((int)(position.x + Math.ceil(width)), (int)(position.y + height + 0.09)).getTile().getProperties().containsKey("blocked");
         }
 
         if (downMove) {
             velocite.set(velocite.x, -0.09f);
-            //On vérifie le déplacement est autorisé
-            downTiledBlocked = collisionLayer.getCell((int)position.x, (int)(position.y - 0.09)).getTile().getProperties().containsKey("blocked")
-                            || collisionLayer.getCell((int)(position.x + Math.ceil(width)), (int)(position.y - 0.09)).getTile().getProperties().containsKey("blocked");
         }
 
         if (!rightMove && !leftMove && !downMove && !upMove) {
@@ -238,53 +281,20 @@ public class Hero extends Observable implements Entity {
         //On effectue le déplacement
         velocite.nor();
         velocite.scl(vitesse * Gdx.graphics.getDeltaTime());
-        position.add(velocite);
-
-        //On rectifie si déplacement interdit
-        if(leftTiledBlocked || rightTiledBlocked || upTiledBlocked || downTiledBlocked) {
-            position.x = oldX;
-            position.y = oldY;
-
-            if(leftTiledBlocked) leftMove = false;
-            if(rightTiledBlocked) rightMove = false;
-            if(upTiledBlocked) upMove = false;
-            if(downTiledBlocked) downMove = false;
-        }
+        body.getBounds().setPosition(body.getBounds().x + velocite.x,
+                body.getBounds().y + velocite.y);
     }
 
-    public Vector2 getPosition() {
-        return position;
-    }
-
-    public void setVie(int vie) {
-        this.vie = vie;
-        if (this.vie < 0) {
-            this.vie = 0;
-        }
-        try {
-            notifierObservers("vie_hero_event", this);
-        } catch (LabyrinthException e) {
-            System.out.println(e.toString());
-        }
-    }
-
-    public int getVie() {
-        return vie;
-    }
-
-    public int getArgent() {
-        return this.argent;
-    }
-
-    public void addArgent(int n) {
-        this.argent += n;
-        if (argent < 0) {
-            argent = 0;
-        }
-        try {
-            notifierObservers("argent_hero_event", this);
-        } catch (LabyrinthException e) {
-            System.out.println(e.toString());
+    /**
+     * {@inheritDoc}
+     * @param b Body
+     */
+    @Override
+    public void handleCollision(Body b) {
+        switch (b.getBodyType()) {
+            case WALL:
+                setOldPosition();
+                break;
         }
     }
 }
