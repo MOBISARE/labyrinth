@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.labyrinth.exception.LabyrinthException;
 import com.mygdx.labyrinth.game.Labyrinth;
 import com.mygdx.labyrinth.controller.InputProcessorHero;
+import com.mygdx.labyrinth.model.Coin;
 import com.mygdx.labyrinth.model.Hero;
 import com.mygdx.labyrinth.model.Entity;
 import com.mygdx.labyrinth.model.Observable;
@@ -23,6 +24,7 @@ import com.mygdx.labyrinth.model.Observable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public final class Level0 extends Observable implements Screen, Iterable<Entity> {
 
@@ -99,6 +101,11 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
                 ,spawnHero.getProperties().get("y", float.class) / 16f
                 ,0.8f,1f);
 
+
+
+        // Creation de pièces
+        createRandomCoin(100);
+
         this.entities.add(this.hero);
     }
 
@@ -112,6 +119,7 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
 
         // UPDATE
         setPosCamera();
+        this.entities.removeIf(Entity::isDestroyed);
 
         // RENDER
         ScreenUtils.clear(0, 0, 0, 1);
@@ -197,6 +205,20 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
      */
     public Hero getHero() {
         return hero;
+    }
+
+    /**
+     * Créer un nombre aléatoire de pièces sur la map
+     * @param nb nombre de pièces crée
+     */
+    private void createRandomCoin(int nb) {
+        Random rand = new Random();
+
+        for (int i = 0; i < nb; i++) {
+            Coin c = new Coin((rand.nextFloat() * (mapWidth - 0.5f) + 0.25f),
+                    rand.nextFloat() * (mapHeight - 3.25f) + 1.25f, 0.4f,0.4f);
+            this.entities.add(c);
+        }
     }
 
     /**

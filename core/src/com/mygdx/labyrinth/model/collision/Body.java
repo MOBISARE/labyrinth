@@ -28,6 +28,11 @@ public class Body {
      */
     private final boolean isDynamic;
 
+    /**
+     * Indique si l'entité est détruite
+     */
+    private boolean isDestroyed;
+
     //endregion
 
     /**
@@ -42,6 +47,7 @@ public class Body {
         this.bodyType = t;
         entityParent = e;
         this.isDynamic = isDynamic;
+        this.isDestroyed = false;
     }
 
     /**
@@ -90,5 +96,20 @@ public class Body {
      */
     public boolean isDynamic() {
         return isDynamic;
+    }
+
+    /**
+     * Permet de détruire un body, celui-ci sera retiré du collision detector si c'est le cas
+     */
+    public void destroyed() {
+        this.isDestroyed = true;
+    }
+
+    /**
+     * Retourne vrai si le corps est détruit
+     * @return boolean
+     */
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 }

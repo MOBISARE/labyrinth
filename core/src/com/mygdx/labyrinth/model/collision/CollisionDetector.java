@@ -59,6 +59,9 @@ public class CollisionDetector {
      * Algorithme principale de détection des collisions
      */
     public void detecteCollision() {
+        dynamicBodies.removeIf(Body::isDestroyed);
+        staticBodies.removeIf(Body::isDestroyed);
+
         Body[] tab = dynamicBodies.toArray(Body[]::new);
 
         // On regarde d'abord si les objets qui bougent entrent en collision

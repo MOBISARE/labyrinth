@@ -31,4 +31,9 @@ public interface Entity {
      * @param b Body
      */
     void handleCollision(Body b);
+
+    /**
+     * Permet de savoir si l'entité est détruite ou pas
+     */
+    boolean isDestroyed();
 }

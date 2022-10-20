@@ -80,6 +80,7 @@ public class Hero extends Observable implements Entity {
         this.velocite = new Vector2(0f,0f);
 
         sound = Gdx.audio.newSound(Gdx.files.internal("sound/sfx_step_grass_l.mp3"));
+
         imgAnimHero = new Texture(Gdx.files.internal("textures/animation_hero_knight.png"));
         // Animation de la marche vers la droite
         TextureRegion[][] texturesHero = TextureRegion.split(imgAnimHero,
@@ -308,6 +309,16 @@ public class Hero extends Observable implements Entity {
             case WALL:
                 setOldPosition();
                 break;
+            case COIN:
+                addArgent(1);
+                b.destroyed();
+                b.getEntityParent().dispose();
+                break;
         }
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return false;
     }
 }
