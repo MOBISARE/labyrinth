@@ -89,7 +89,7 @@ public class Hero extends Observable implements Entity {
         TextureRegion[] idle = {texturesHero[0][1], texturesHero[0][2], texturesHero[0][3], texturesHero[0][4]};
         animationIdle = new Animation<>(0.15f, idle );
         TextureRegion[] run = {texturesHero[0][5], texturesHero[0][6], texturesHero[0][7], texturesHero[0][8]};
-        animationRun = new Animation<>(0.10f, run );
+        animationRun = new Animation<>(0.105f, run );
         this.sprite = new Sprite(animationIdle.getKeyFrame(0, true));
     }
 
@@ -240,7 +240,7 @@ public class Hero extends Observable implements Entity {
 
         if((velocite.x != 0 || velocite.y != 0) && deltaSound==0 ) {
             deltaSound=25;
-            long id = sound.play(0.1f);
+            long id = sound.play(0.2f);
             sound.setPitch(id, 2);
             sound.setLooping(id,false);
         }

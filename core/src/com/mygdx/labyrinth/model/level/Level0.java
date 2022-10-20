@@ -130,25 +130,6 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         this.renderer.render(new int[]{1});
     }
 
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    public void dispose() {
-        this.entities.forEach(Entity::dispose);
-        music.dispose();
-    }
-
-    public Hero getHero() {
-        return hero;
-    }
-
     public List<Entity> getEntities() {
         return entities;
     }
@@ -224,6 +205,7 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
     public void dispose() {
         this.entities.forEach(Entity::dispose);
         this.entities.clear();
+        music.dispose();
     }
 
     /**
