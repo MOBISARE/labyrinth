@@ -1,6 +1,7 @@
 package com.mygdx.labyrinth.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -41,6 +42,11 @@ public class Coin implements Entity {
      */
     private boolean isDestroyed;
 
+    /**
+     * Son de récupération d'une pièce
+     */
+    private Sound sound;
+
     //endregion
 
     /**
@@ -54,6 +60,7 @@ public class Coin implements Entity {
         this.isDestroyed = false;
         this.body = new Body(new Rectangle(x, y, width, height), BodyType.COIN, this, false);
         this.imgCoin = new Texture(Gdx.files.internal("textures/animation_coin.png"));
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sound/coin.wav"));
         TextureRegion[][] texturesCoin = TextureRegion.split(imgCoin, imgCoin.getWidth() / 4, imgCoin.getHeight());
 
         TextureRegion[] coin = {texturesCoin[0][0], texturesCoin[0][1], texturesCoin[0][2], texturesCoin[0][3]};
@@ -83,6 +90,7 @@ public class Coin implements Entity {
     public void dispose() {
         this.imgCoin.dispose();
         this.isDestroyed = true;
+        sound.play(0.2f);
     }
 
     /**
