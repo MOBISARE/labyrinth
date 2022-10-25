@@ -3,7 +3,6 @@ package com.mygdx.labyrinth.model.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -16,10 +15,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.labyrinth.exception.LabyrinthException;
 import com.mygdx.labyrinth.game.Labyrinth;
 import com.mygdx.labyrinth.controller.InputProcessorHero;
-import com.mygdx.labyrinth.model.Coin;
-import com.mygdx.labyrinth.model.Hero;
-import com.mygdx.labyrinth.model.Entity;
-import com.mygdx.labyrinth.model.Observable;
+import com.mygdx.labyrinth.model.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +35,8 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
      * Hero de la partie
      */
     private final Hero hero;
+
+    private final Enemy enemy;
 
     /**
      * Camera associé au niveau
@@ -100,6 +98,9 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         this.hero = new Hero(spawnHero.getProperties().get("x", float.class) / 16f
                 ,spawnHero.getProperties().get("y", float.class) / 16f
                 ,0.8f,1f);
+        this.enemy = new Enemy(spawnHero.getProperties().get("x", float.class) / 16f
+                ,spawnHero.getProperties().get("y", float.class) / 16f,
+                0.8f,1f);
 
 
 
@@ -107,6 +108,7 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         createRandomCoin(100);
 
         this.entities.add(this.hero);
+        this.entities.add(this.enemy);
     }
 
 

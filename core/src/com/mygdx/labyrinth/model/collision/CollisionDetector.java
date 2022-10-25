@@ -66,13 +66,12 @@ public class CollisionDetector {
 
         // On regarde d'abord si les objets qui bougent entrent en collision
         for (int i = 0; i < dynamicBodies.size(); i++) {
-            for (int j = i + 1; j < dynamicBodies.size(); i++) {
+            for (int j = i + 1; j < dynamicBodies.size(); j++) {
                 if (tab[i].getBounds().overlaps(tab[j].getBounds())) {
                     collisionEvents.add(new CollisionEvent(tab[i], tab[j]));
                 }
             }
         }
-
         // Ensuite on regarde si les body dynamique entrent en collision avec les éléments static
         for (Body b1 : dynamicBodies) {
             for (Body b2 : staticBodies) {

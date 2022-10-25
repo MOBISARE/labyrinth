@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.mygdx.labyrinth.controller.Observer;
 import com.mygdx.labyrinth.model.level.Level0;
 
+
 /**
  * Classe qui permet d'afficher l'HUD et les informations importantes
  * sur le héro (la vie / le score)

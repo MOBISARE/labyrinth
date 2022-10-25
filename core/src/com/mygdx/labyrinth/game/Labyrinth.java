@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.labyrinth.controller.InputProcessorHero;
 import com.mygdx.labyrinth.exception.LabyrinthException;
 import com.mygdx.labyrinth.game.hud.HUD;
-import com.mygdx.labyrinth.model.collision.CollisionManager;
 import com.mygdx.labyrinth.model.level.Level0;
+import com.mygdx.labyrinth.model.collision.CollisionManager;
+
 
 import java.util.ArrayList;
 import java.util.List;
