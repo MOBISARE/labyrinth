@@ -147,6 +147,14 @@ public class Hero extends Observable implements Entity {
         return v2;
     }
 
+    public float getPositionX() {
+        return body.getBounds().getX();
+    }
+
+    public float getPositionY() {
+        return body.getBounds().getY();
+    }
+
     public void setVie(int vie) {
         this.vie = vie;
         if (this.vie < 0) {
@@ -320,5 +328,13 @@ public class Hero extends Observable implements Entity {
     @Override
     public boolean isDestroyed() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Hero{");
+        sb.append("body=").append(body);
+        sb.append('}');
+        return sb.toString();
     }
 }

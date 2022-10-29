@@ -120,4 +120,16 @@ public class CollisionDetector {
         collisionEvents.clear();
         collisionEvents = null;
     }
+
+    public HashSet<Body> getStaticBodies() {
+        return staticBodies;
+    }
+
+    public HashSet<Body> getDynamicBodies() {
+        return dynamicBodies;
+    }
+
+    public LinkedList<CollisionEvent> getCollisionEvents() {
+        return collisionEvents;
+    }
 }

@@ -9,8 +9,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.mygdx.labyrinth.model.collision.Body;
 import com.mygdx.labyrinth.model.collision.BodyType;
+
+import java.util.Random;
 
 public class Enemy implements Entity{
 
@@ -26,7 +29,7 @@ public class Enemy implements Entity{
 
     private final Animation<TextureRegion> animationIdle;
 
-    private Vector2 position;
+    private Vector2 oldPosition;
 
     private Vector2 velocite;
 
@@ -35,6 +38,8 @@ public class Enemy implements Entity{
     private float height;
 
     private float stateTime;
+
+    private final Hero hero;
 
     private TiledMapTileLayer collisionLayer;
 
@@ -45,9 +50,10 @@ public class Enemy implements Entity{
     private Direction direction;
 
 
-    public Enemy(float x, float y, float width, float height){
+    public Enemy(float x, float y, float width, float height, Hero hero){
+        this.hero = hero;
         this.body = new Body(new Rectangle(x, y, width, height), BodyType.ENEMY, this, true);
-        this.position = new Vector2(x, y);
+        this.oldPosition = new Vector2(x, y);
         this.width = width;
         this.height = height;
         //this.collisionLayer = collisionLayer;
@@ -71,7 +77,7 @@ public class Enemy implements Entity{
     @Override
     public void render(SpriteBatch batch, float deltaTime) {
         this.stateTime += deltaTime;
-        this.move();
+        this.move(this.hero);
         if (velocite.x == 0f && velocite.y == 0f && direction == Direction.RIGTH) {
             TextureRegion frame = animationIdle.getKeyFrame(stateTime, true);
             if (frame.isFlipX()) {
@@ -111,7 +117,7 @@ public class Enemy implements Entity{
         }
 
         this.sprite.setSize(width, height);
-        this.sprite.setPosition(position.x, position.y);
+        this.sprite.setPosition(oldPosition.x, oldPosition.y);
         this.sprite.draw(batch);
 
 
@@ -127,16 +133,35 @@ public class Enemy implements Entity{
         return this.body;
     }
 
-    public void setposition() {
-        body.getBounds().setPosition(this.position.x, this.position.y);
+    public void setOldPosition() {
+        body.getBounds().setPosition(this.oldPosition.x, this.oldPosition.y);
     }
 
     @Override
     public void handleCollision(Body b) {
-        if(b.getBodyType().equals(BodyType.WALL)) {
-            setposition();
+        switch (b.getBodyType()) {
+            case WALL:
+                stop();
+                velocite.x = 0.09f;
+                oldPosition.x += velocite.x;
+                break;
+            case HERO:
+                if (b.getBounds().getX() <= this.oldPosition.x) {
+                    this.oldPosition.x += 0.1f;
+                } else {
+                    this.oldPosition.x -= 0.1f;
+                }
+                if (b.getBounds().getY() <= this.oldPosition.y) {
+                    this.oldPosition.y -= 0.1f;
+                } else {
+                    this.oldPosition.y += 0.1f;
+                }
+                setOldPosition();
+                break;
+            default:
+                //move();
+                break;
         }
-
     }
 
     @Override
@@ -144,9 +169,74 @@ public class Enemy implements Entity{
         return false;
     }
 
+    private void move(Hero hero) {
+
+        if (oldPosition.x < hero.getPositionX()) {
+            direction = Direction.RIGTH;
+            velocite.x = 0.05f;
+            oldPosition.x += velocite.x;
+        } else {
+            direction = Direction.LEFT;
+            velocite.x = -0.05f;
+            oldPosition.x += velocite.x;
+        }
+        if (oldPosition.y < hero.getPositionY()) {
+            velocite.y = 0.05f;
+            oldPosition.y += velocite.y;
+        } else {
+            velocite.y = 0.05f;
+            oldPosition.y -= velocite.y;
+        }
+        setOldPosition();
+    }
+
+    public void stop() {
+        velocite.x = 0;
+        oldPosition.x += velocite.x;
+        setOldPosition();
+    }
+
+/*
     public void move() {
+        // On récupère l'ancienne position au cas ou
+        //oldPosition.set(body.getBounds().x, body.getBounds().y);
+        Random random = new Random();
+        int timer = random.nextInt(5) + 1; //Intervalle [1-5] inclus
+        boolean isMovingRight = random.nextBoolean();
+        boolean isMovingUp = random.nextBoolean();
+        float time = 0;
+        while (time <= timer) {
+            if (isMovingRight) {
+                this.velocite.x = 0.05f;
+            } else {
+                this.velocite.x = -0.05f;
+            }
+            this.oldPosition.x += this.velocite.x;
+            if (isMovingUp) {
+                this.velocite.y = 0.05f;
+            } else {
+                this.velocite.y = -0.05f;
+            }
+            this.oldPosition.y += this.velocite.y;
+            setOldPosition();
+            time += 0.0001f;
+        }
+        this.velocite.x = 0;
+        this.velocite.y = 0;
+        //setOldPosition();
+
+
         // Si collision avec un bloc alors aller dans le sens opposé
-        velocite.x = -0.09f;
-        position.x += velocite.x;
+
+    }
+
+ */
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Enemy{");
+        sb.append("body=").append(body);
+        sb.append('}');
+        return sb.toString();
     }
 }

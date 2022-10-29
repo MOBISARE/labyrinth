@@ -99,8 +99,8 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
                 ,spawnHero.getProperties().get("y", float.class) / 16f
                 ,0.8f,1f);
         this.enemy = new Enemy(spawnHero.getProperties().get("x", float.class) / 16f
-                ,spawnHero.getProperties().get("y", float.class) / 16f,
-                0.8f,1f);
+                , spawnHero.getProperties().get("y", float.class) / 16f,
+                0.8f,1f, this.hero);
 
 
 
