@@ -1,6 +1,7 @@
 package com.mygdx.labyrinth.model.collision;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Classe qui permet de détécter les collision
@@ -80,6 +81,8 @@ public class CollisionDetector {
                 }
             }
         }
+
+        //System.out.println(Arrays.toString(Stream.of(tab).map(Body::getBodyType).toArray()));
     }
 
     /**

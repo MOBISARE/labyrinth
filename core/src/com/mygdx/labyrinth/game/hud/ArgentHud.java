@@ -59,7 +59,7 @@ public class ArgentHud implements Observer {
      */
     @Override
     public void update(Object obj) {
-        argentActuel = ((Hero)obj).getArgent() + "";
+        argentActuel = ((Hero)obj).getGold() + "";
     }
 
     /**

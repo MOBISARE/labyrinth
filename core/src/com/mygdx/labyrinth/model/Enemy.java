@@ -10,9 +10,14 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.mygdx.labyrinth.model.collision.Body;
 import com.mygdx.labyrinth.model.collision.BodyType;
+import com.mygdx.labyrinth.model.event.Event;
+import com.mygdx.labyrinth.model.event.TimeEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Enemy implements Entity{
@@ -39,8 +44,6 @@ public class Enemy implements Entity{
 
     private float stateTime;
 
-    private final Hero hero;
-
     private TiledMapTileLayer collisionLayer;
 
     private enum Direction {
@@ -49,15 +52,24 @@ public class Enemy implements Entity{
 
     private Direction direction;
 
+    private final String name;
 
-    public Enemy(float x, float y, float width, float height, Hero hero){
-        this.hero = hero;
+    private final List<Event> events;
+
+    private boolean waiting;
+
+
+    public Enemy(String name, float x, float y, float width, float height){
+        this.name = name;
         this.body = new Body(new Rectangle(x, y, width, height), BodyType.ENEMY, this, true);
         this.oldPosition = new Vector2(x, y);
         this.width = width;
         this.height = height;
         //this.collisionLayer = collisionLayer;
         this.direction = Direction.RIGTH;
+        this.events = new ArrayList<>();
+        Event timeEvent = new TimeEvent(dt -> this.setWaiting(false), 3000);
+        this.events.add(timeEvent);
 
         // Création du personnage à l'arrêt
         this.velocite = new Vector2(0f,0f);
@@ -77,7 +89,10 @@ public class Enemy implements Entity{
     @Override
     public void render(SpriteBatch batch, float deltaTime) {
         this.stateTime += deltaTime;
-        this.move(this.hero);
+        this.events.forEach(Event::update);
+        if(!this.waiting){
+            this.move();
+        }
         if (velocite.x == 0f && velocite.y == 0f && direction == Direction.RIGTH) {
             TextureRegion frame = animationIdle.getKeyFrame(stateTime, true);
             if (frame.isFlipX()) {
@@ -120,7 +135,12 @@ public class Enemy implements Entity{
         this.sprite.setPosition(oldPosition.x, oldPosition.y);
         this.sprite.draw(batch);
 
-
+        // On réinitialise tous les événements de type TimeEvent
+        this.events
+                .stream()
+                .filter(e -> e instanceof TimeEvent)
+                .filter(Event::isFinished)
+                .forEach(Event::reset);
     }
 
     @Override
@@ -139,23 +159,26 @@ public class Enemy implements Entity{
 
     @Override
     public void handleCollision(Body b) {
+        System.out.println("Waiting: " + waiting);
         switch (b.getBodyType()) {
             case WALL:
                 stop();
-                velocite.x = 0.09f;
+                velocite.x = 0.05f;
                 oldPosition.x += velocite.x;
                 break;
             case HERO:
-                if (b.getBounds().getX() <= this.oldPosition.x) {
-                    this.oldPosition.x += 0.1f;
+                this.stop();
+                this.waiting = true;
+               /* if (b.getBounds().getX() <= this.oldPosition.x) {
+                    this.oldPosition.x += 0.2f;
                 } else {
-                    this.oldPosition.x -= 0.1f;
+                    this.oldPosition.x -= 0.2f;
                 }
                 if (b.getBounds().getY() <= this.oldPosition.y) {
-                    this.oldPosition.y -= 0.1f;
+                    this.oldPosition.y -= 0.2f;
                 } else {
-                    this.oldPosition.y += 0.1f;
-                }
+                    this.oldPosition.y += 0.2f;
+                }*/
                 setOldPosition();
                 break;
             default:
@@ -169,7 +192,18 @@ public class Enemy implements Entity{
         return false;
     }
 
-    private void move(Hero hero) {
+    public void setWaiting(boolean waiting) {
+        this.waiting = waiting;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    private void move() {
+        Hero hero = (Hero) EntityManager.getInstance().findByName("Hero")
+                .orElseThrow(() -> new IllegalStateException("Erreur : Héro non trouvé"));
 
         if (oldPosition.x < hero.getPositionX()) {
             direction = Direction.RIGTH;
@@ -192,7 +226,7 @@ public class Enemy implements Entity{
 
     public void stop() {
         velocite.x = 0;
-        oldPosition.x += velocite.x;
+        velocite.y = 0;
         setOldPosition();
     }
 

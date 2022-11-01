@@ -6,8 +6,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.labyrinth.exception.LabyrinthException;
+import com.mygdx.labyrinth.model.EntityManager;
 import com.mygdx.labyrinth.model.level.Level0;
 import com.mygdx.labyrinth.model.Entity;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 /**
@@ -51,7 +55,7 @@ public class CollisionManager {
     public void init() throws LabyrinthException {
 
         // Ici on récupère l'ensemble des entité du niveau
-        for (Entity e: level) {
+        for (Entity e: EntityManager.getInstance().values()) {
             if (e.getBody() != null) {
                 collisionDetector.addBody(e.getBody());
             } else {
@@ -85,6 +89,11 @@ public class CollisionManager {
              * il faudra traiter le cas lorsque b1 entre en collision avec b2 et inversement
              */
             ce.getBody1().getEntityParent().handleCollision(ce.getBody2());
+
+            if(Objects.equals(ce.getBody1().getBodyType(), BodyType.ENEMY)
+                    && Objects.equals(ce.getBody2().getBodyType(), BodyType.HERO)){
+                ce.getBody2().getEntityParent().handleCollision(ce.getBody1());
+            }
         }
     }
 

@@ -36,4 +36,8 @@ public interface Entity {
      * Permet de savoir si l'entité est détruite ou pas
      */
     boolean isDestroyed();
+
+    default String getName(){
+        return "unknown";
+    }
 }
