@@ -87,8 +87,8 @@ public final class Level0 extends Observable implements Screen{
                 0.8f,
                 1f);
         Enemy enemy = new Enemy("Enemy_0",
-                spawnHero.getProperties().get("x", float.class) / 16f,
-                spawnHero.getProperties().get("y", float.class) / 16f,
+                spawnHero.getProperties().get("x", float.class) / 16f + 10f,
+                spawnHero.getProperties().get("y", float.class) / 16f + 10f,
                 0.8f,
                 1f);
 
