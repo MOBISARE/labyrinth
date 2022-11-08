@@ -89,7 +89,7 @@ public class Enemy implements Entity{
     @Override
     public void render(SpriteBatch batch, float deltaTime) {
         this.stateTime += deltaTime;
-        //this.events.forEach(Event::update);
+        this.events.forEach(Event::update);
         if(!this.waiting){
             this.move();
         }
@@ -136,11 +136,11 @@ public class Enemy implements Entity{
         this.sprite.draw(batch);
 
         // On réinitialise tous les événements de type TimeEvent
-        /*this.events
+        this.events
                 .stream()
                 .filter(e -> e instanceof TimeEvent)
                 .filter(Event::isFinished)
-                .forEach(Event::reset);*/
+                .forEach(Event::reset);
     }
 
     @Override
