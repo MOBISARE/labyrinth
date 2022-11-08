@@ -53,14 +53,13 @@ Affichage des murs                                     - 2
 Gestion des collisions (héros-murs)                    - 2  
 
 
-## Retrospective
-Equipe peu présente.
-Il faudrait un meilleur travail d'équipe et que le reste des membres vienne participer.
-
-
 ## Sprint Review
 Bugs au niveau des collisions à corriger.
 Toutes les tâches ont été réalisées.
+
+## Retrospective
+Equipe peu présente.
+Il faudrait un meilleur travail d'équipe et que le reste des membres vienne participer.
 
 
 <img src="./diagramme/Diagramme_de_classes.png">
@@ -78,7 +77,7 @@ Toutes les tâches ont été réalisées.
   - Attaque  
   
  - Attaque du héro à distance  
-  - A jout d'une arme  
+  - Ajout d'une arme  
   - Déplacement du projectile  
   - Collisions  
 
@@ -86,13 +85,40 @@ Toutes les tâches ont été réalisées.
 - Ramasser des pièces pour le score  
 - Ajouter du son  
 
+## Sprint Review
+
+Faits
+ -Ajout des pièces
+ -Ajout de l'ennemi
+ -Ajout de l'HUD
+ -Collisions
+ -Ajout du son
+ 
+Non faits
+ -Attaque du héros
+ -Ajout d'une arme
+ -Gestion de projectiles
+ 
+ Bugs à fixer
+  -Problèmes de collisions quand le monstre attaque le joueur
+  
+## Retrospective
+
+Membres de l'équipe toujours présents Florent, Sacha et Marie-Luc qui sont présents pour travailler.
+Les deux autres membres du groupe ne se sont toujours pas manifestés.
+
+Problème au niveau de l'architecture du projet, architecture MVC non convenable.
+Elle nous bloque sur certains points ce qui nous prendra plus de temps.
+
+ 
+<img src="./diagramme/Diagramme_de_classes_2.png"> 
+
 ### Outils utilisés :
 
 Langage : JAVA 11.
 TiledMap : Logiciel de création de map
 Librairie Graphique : LibGDX  
-Logiciel de Gestion de Projet : Trello/YouTrack.  
-https://trello.com/w/projectlabyrinth5   
+Logiciel de Gestion de Projet : YouTrack  
 https://labyrinth.youtrack.cloud/  
 Outil de centralisation du code : GitHub  
 https://github.com/MOBISARE/labyrinth  
