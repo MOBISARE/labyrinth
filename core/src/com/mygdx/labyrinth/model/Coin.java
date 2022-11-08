@@ -115,4 +115,12 @@ public class Coin implements Entity {
     public boolean isDestroyed() {
         return isDestroyed;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Coin{");
+        sb.append("body=").append(body);
+        sb.append('}');
+        return sb.toString();
+    }
 }

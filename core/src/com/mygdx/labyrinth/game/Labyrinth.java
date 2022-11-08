@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.labyrinth.controller.InputProcessorHero;
 import com.mygdx.labyrinth.exception.LabyrinthException;
 import com.mygdx.labyrinth.game.hud.HUD;
-import com.mygdx.labyrinth.model.collision.CollisionManager;
+import com.mygdx.labyrinth.model.EntityManager;
+import com.mygdx.labyrinth.model.Hero;
 import com.mygdx.labyrinth.model.level.Level0;
+import com.mygdx.labyrinth.model.collision.CollisionManager;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +25,6 @@ public class Labyrinth extends Game {
 	private HUD hud;
 	private CollisionManager collisionManager;
 	private boolean enModeDebug = false;
-
-
 
 	public Labyrinth() {
 		this.levels = new ArrayList<>();
@@ -39,7 +40,9 @@ public class Labyrinth extends Game {
 		this.levels.add(level0);
 
 
-		InputProcessorHero inputProcessorHero = new InputProcessorHero(level0.getHero(), this);
+		Hero hero = (Hero) EntityManager.getInstance().findByName("Hero")
+				.orElseThrow(() -> new IllegalStateException("Erreur : Héro non trouvé"));
+		InputProcessorHero inputProcessorHero = new InputProcessorHero(hero, this);
 		Gdx.input.setInputProcessor(inputProcessorHero);
 
 		this.collisionManager = new CollisionManager(level0);
@@ -88,4 +91,5 @@ public class Labyrinth extends Game {
 	public void toggleModeDebug() {
 		enModeDebug = !enModeDebug;
 	}
+
 }

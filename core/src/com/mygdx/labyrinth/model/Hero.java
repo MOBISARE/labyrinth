@@ -20,31 +20,31 @@ public class Hero extends Observable implements Entity {
     // Sprite qui contient l'image + la forme du hero
     private final Sprite sprite;
 
-    // Texture du héro complète
+    // Texture du héros complète
     private final Texture imgAnimHero;
     private final Animation<TextureRegion> animationRun;
     // Animation de la marche vers la gauche
     private final Animation<TextureRegion> animationIdle;
     // Vélocité du héros
-    private final Vector2 velocite;
+    private final Vector2 speedVector;
     // Flag marche vers la gauche
-    private boolean leftMove;
+    private boolean isMovingLeft;
     // Flag marche vers la droite
-    private boolean rightMove;
+    private boolean isMovingRight;
     // Flag marche vers le haut
-    private boolean upMove;
+    private boolean isMovingUp;
     // Flag marche vers le bas
-    private boolean downMove;
+    private boolean isMovingDown;
     // Deplacement u/frame;
-    private float vitesse = 5f;
+    private final float SPEED = 5f;
     //Son de déplacement Hero
     private Sound sound;
     private int deltaSound = 0;
 
     private float stateTime;
 
-    private int vie = 6;
-    private int argent = 0;
+    private int healthPoint;
+    private int gold;
     private enum Direction {
         RIGTH, LEFT
     }
@@ -70,14 +70,14 @@ public class Hero extends Observable implements Entity {
         this.stateTime = 0;
         this.body = new Body(new Rectangle(x, y, width, height), BodyType.HERO, this, true);
         this.oldPosition = new Vector2(x, y);
-        this.leftMove = false;
-        this.rightMove = false;
-        this.upMove = false;
-        this.downMove = false;
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.isMovingUp = false;
+        this.isMovingDown = false;
         this.direction = Direction.RIGTH;
 
         // Création du personnage à l'arrêt
-        this.velocite = new Vector2(0f,0f);
+        this.speedVector = new Vector2(0f,0f);
 
         sound = Gdx.audio.newSound(Gdx.files.internal("sound/sfx_step_grass_l.mp3"));
 
@@ -92,6 +92,8 @@ public class Hero extends Observable implements Entity {
         TextureRegion[] run = {texturesHero[0][5], texturesHero[0][6], texturesHero[0][7], texturesHero[0][8]};
         animationRun = new Animation<>(0.105f, run );
         this.sprite = new Sprite(animationIdle.getKeyFrame(0, true));
+        this.healthPoint = 6;
+        this.gold = 0;
     }
 
     //endregion
@@ -107,9 +109,9 @@ public class Hero extends Observable implements Entity {
      * Position le flag pour le déplacement vers la gauche
      * @param t boolean
      */
-    public void setLeftMove(boolean t) {
-        if (rightMove && t) rightMove = false;
-        leftMove = t;
+    public void setMovingLeft(boolean t) {
+        if (isMovingRight && t) isMovingRight = false;
+        isMovingLeft = t;
         direction = Direction.LEFT;
     }
 
@@ -117,9 +119,9 @@ public class Hero extends Observable implements Entity {
      * Position le flag pour le déplacement vers la droite
      * @param t boolean
      */
-    public void setRightMove(boolean t) {
-        if (leftMove && t) leftMove = false;
-        rightMove = t;
+    public void setMovingRight(boolean t) {
+        if (isMovingLeft && t) isMovingLeft = false;
+        isMovingRight = t;
         direction = Direction.RIGTH;
     }
 
@@ -127,18 +129,18 @@ public class Hero extends Observable implements Entity {
      * Position le flag pour le déplacement vers le haut
      * @param t boolean
      */
-    public void setUpMove(boolean t) {
-        if (downMove && t) downMove = false;
-        upMove = t;
+    public void setMovingUp(boolean t) {
+        if (isMovingDown && t) isMovingDown = false;
+        isMovingUp = t;
     }
 
     /**+
      * Position le flag pour le déplacement vers le bas
      * @param t boolean
      */
-    public void setDownMove(boolean t) {
-        if (upMove && t) upMove = false;
-        downMove = t;
+    public void setMovingDown(boolean t) {
+        if (isMovingUp && t) isMovingUp = false;
+        isMovingDown = t;
     }
 
     public Vector2 getPosition() {
@@ -147,10 +149,18 @@ public class Hero extends Observable implements Entity {
         return v2;
     }
 
-    public void setVie(int vie) {
-        this.vie = vie;
-        if (this.vie < 0) {
-            this.vie = 0;
+    public float getPositionX() {
+        return body.getBounds().getX();
+    }
+
+    public float getPositionY() {
+        return body.getBounds().getY();
+    }
+
+    public void setHealthPoint(int healthPoint) {
+        this.healthPoint = healthPoint;
+        if (this.healthPoint < 0) {
+            this.healthPoint = 0;
         }
         try {
             notifierObservers("vie_hero_event", this);
@@ -159,18 +169,18 @@ public class Hero extends Observable implements Entity {
         }
     }
 
-    public int getVie() {
-        return vie;
+    public int getHealthPoint() {
+        return healthPoint;
     }
 
-    public int getArgent() {
-        return this.argent;
+    public int getGold() {
+        return this.gold;
     }
 
     public void addArgent(int n) {
-        this.argent += n;
-        if (argent < 0) {
-            argent = 0;
+        this.gold += n;
+        if (gold < 0) {
+            gold = 0;
         }
         try {
             notifierObservers("argent_hero_event", this);
@@ -197,37 +207,37 @@ public class Hero extends Observable implements Entity {
         this.updateMotion(deltaTime);
 
         // Update du sprite à afficher
-        if (velocite.x == 0f && velocite.y == 0f && direction == Direction.RIGTH) {
+        if (speedVector.x == 0f && speedVector.y == 0f && direction == Direction.RIGTH) {
             TextureRegion frame = animationIdle.getKeyFrame(stateTime, true);
             if (frame.isFlipX()) {
                 frame.flip(true, false);
             }
             sprite.setRegion(frame);
-        } else if (velocite.x == 0f && velocite.y == 0f && direction == Direction.LEFT) {
+        } else if (speedVector.x == 0f && speedVector.y == 0f && direction == Direction.LEFT) {
             TextureRegion frame = animationIdle.getKeyFrame(stateTime, true);
             if (!frame.isFlipX()) {
                 frame.flip(true, false);
             }
             sprite.setRegion(frame);
-        } else if (velocite.x > 0f) {
+        } else if (speedVector.x > 0f) {
             TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
             if (frame.isFlipX()) {
                 frame.flip(true, false);
             }
             sprite.setRegion(frame);
-        } else if (velocite.x < 0f) {
+        } else if (speedVector.x < 0f) {
             TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
             if (!frame.isFlipX()) {
                 frame.flip(true, false);
             }
             sprite.setRegion(frame);
-        } else if (velocite.y != 0f && direction == Direction.RIGTH) {
+        } else if (speedVector.y != 0f && direction == Direction.RIGTH) {
             TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
             if (frame.isFlipX()) {
                 frame.flip(true, false);
             }
             sprite.setRegion(frame);
-        } else if (velocite.y != 0f && direction == Direction.LEFT) {
+        } else if (speedVector.y != 0f && direction == Direction.LEFT) {
             TextureRegion frame = animationRun.getKeyFrame(stateTime, true);
             if (!frame.isFlipX()) {
                 frame.flip(true, false);
@@ -239,7 +249,7 @@ public class Hero extends Observable implements Entity {
         sprite.setPosition(body.getBounds().x - 0.1f, body.getBounds().y);
         sprite.draw(batch);
 
-        if((velocite.x != 0 || velocite.y != 0) && deltaSound==0 ) {
+        if((speedVector.x != 0 || speedVector.y != 0) && deltaSound==0 ) {
             deltaSound=25;
             long id = sound.play(0.2f);
             sound.setPitch(id, 2);
@@ -266,37 +276,37 @@ public class Hero extends Observable implements Entity {
         // On récupère l'ancienne position au cas ou
         oldPosition.set(body.getBounds().x, body.getBounds().y);
 
-        if (leftMove) {
-            velocite.set(-0.09f, velocite.y);
+        if (isMovingLeft) {
+            speedVector.set(-0.09f, speedVector.y);
         }
 
-        if (rightMove) {
-            velocite.set(0.09f, velocite.y);
+        if (isMovingRight) {
+            speedVector.set(0.09f, speedVector.y);
         }
 
-        if (upMove) {
-            velocite.set(velocite.x, 0.09f);
+        if (isMovingUp) {
+            speedVector.set(speedVector.x, 0.09f);
         }
 
-        if (downMove) {
-            velocite.set(velocite.x, -0.09f);
+        if (isMovingDown) {
+            speedVector.set(speedVector.x, -0.09f);
         }
 
-        if (!rightMove && !leftMove && !downMove && !upMove) {
-            velocite.set(0f , 0f);
+        if (!isMovingRight && !isMovingLeft && !isMovingDown && !isMovingUp) {
+            speedVector.set(0f , 0f);
         } else {
-            if (!rightMove && !leftMove) {
-                velocite.set(0f , velocite.y);
-            } else if (!upMove && !downMove) {
-                velocite.set(velocite.x, 0f);
+            if (!isMovingRight && !isMovingLeft) {
+                speedVector.set(0f , speedVector.y);
+            } else if (!isMovingUp && !isMovingDown) {
+                speedVector.set(speedVector.x, 0f);
             }
         }
 
         //On effectue le déplacement
-        velocite.nor();
-        velocite.scl(vitesse * Gdx.graphics.getDeltaTime());
-        body.getBounds().setPosition(body.getBounds().x + velocite.x,
-                body.getBounds().y + velocite.y);
+        speedVector.nor();
+        speedVector.scl(SPEED * Gdx.graphics.getDeltaTime());
+        body.getBounds().setPosition(body.getBounds().x + speedVector.x,
+                body.getBounds().y + speedVector.y);
     }
 
     /**
@@ -314,11 +324,44 @@ public class Hero extends Observable implements Entity {
                 b.destroyed();
                 b.getEntityParent().dispose();
                 break;
+            case ENEMY:
+
+                this.setHealthPoint(this.healthPoint-1);
+                if (this.oldPosition.x <= b.getBounds().getX()) {
+                    this.oldPosition.x -= 0.3f;
+                } else {
+                    this.oldPosition.x += 0.3f;
+                }
+                if (this.oldPosition.y <= b.getBounds().getY()) {
+                    this.oldPosition.y -= 0.3f;
+                } else {
+                    this.oldPosition.y += 0.3f;
+                }
+                if (getHealthPoint() <= 0) {
+                    System.out.println("GAME OVER");
+                }
+                setOldPosition();
+                break;
+            default:
+                break;
         }
     }
 
     @Override
     public boolean isDestroyed() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return "Hero";
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Hero{");
+        sb.append("body=").append(body);
+        sb.append('}');
+        return sb.toString();
     }
 }

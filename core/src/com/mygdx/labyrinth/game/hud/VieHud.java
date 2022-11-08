@@ -57,7 +57,7 @@ public class VieHud implements Observer {
      */
     @Override
     public void update(Object obj) {
-        vieActuel = ((Hero) obj).getVie();
+        vieActuel = ((Hero) obj).getHealthPoint();
     }
 
     /**

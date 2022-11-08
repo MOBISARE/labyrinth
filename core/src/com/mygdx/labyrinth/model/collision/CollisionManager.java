@@ -6,8 +6,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.labyrinth.exception.LabyrinthException;
-import com.mygdx.labyrinth.model.Entity;
+import com.mygdx.labyrinth.model.EntityManager;
 import com.mygdx.labyrinth.model.level.Level0;
+import com.mygdx.labyrinth.model.Entity;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 
 /**
  * Classe qui gére l'ensemble des collisions du jeu
@@ -24,6 +29,7 @@ public class CollisionManager {
      * Niveau associé
      */
     private final Level0 level;
+
     /**
      * Moteur de rendu du debeggeur
      */
@@ -49,7 +55,7 @@ public class CollisionManager {
     public void init() throws LabyrinthException {
 
         // Ici on récupère l'ensemble des entité du niveau
-        for (Entity e: level) {
+        for (Entity e: EntityManager.getInstance().values()) {
             if (e.getBody() != null) {
                 collisionDetector.addBody(e.getBody());
             } else {
@@ -79,10 +85,15 @@ public class CollisionManager {
         collisionDetector.detecteCollision();
         while (collisionDetector.getEventsSize() > 0) {
             CollisionEvent ce = collisionDetector.removeFirstEvent();
-            /* Cette partie est importante est définie le sens de la collision
+            /* Cette partie est importante et défini le sens de la collision
              * il faudra traiter le cas lorsque b1 entre en collision avec b2 et inversement
              */
             ce.getBody1().getEntityParent().handleCollision(ce.getBody2());
+
+            if(Objects.equals(ce.getBody1().getBodyType(), BodyType.ENEMY)
+                    && Objects.equals(ce.getBody2().getBodyType(), BodyType.HERO)){
+                ce.getBody2().getEntityParent().handleCollision(ce.getBody1());
+            }
         }
     }
 
