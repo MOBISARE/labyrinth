@@ -12,6 +12,8 @@ public final class Resource {
 
     public static final String HERO_WALK_SOUND = "sound/sfx_step_grass_l.mp3";
 
+    public static final String MASKULL_TEXTURE = "textures/animation_maskull.png";
+
 
 
     private Resource() {

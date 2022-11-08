@@ -73,4 +73,8 @@ public final class EntityManager {
                 .orElseThrow(() -> new IllegalArgumentException("Entité non trouvée pour le nom : " + name));
         this.entities.remove(entity);
     }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
 }
