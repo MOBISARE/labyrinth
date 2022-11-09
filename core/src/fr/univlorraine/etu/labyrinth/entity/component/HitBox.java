@@ -15,4 +15,15 @@ public final class HitBox implements Component {
     public Rectangle getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("HitBox{");
+        sb.append("x= ").append(value.x).append(",");
+        sb.append("y= ").append(value.y).append(",");
+        sb.append("width= ").append(value.width).append(",");
+        sb.append("height= ").append(value.height);
+        sb.append('}');
+        return sb.toString();
+    }
 }

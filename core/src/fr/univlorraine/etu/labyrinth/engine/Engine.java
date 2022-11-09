@@ -3,7 +3,10 @@ package fr.univlorraine.etu.labyrinth.engine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import fr.univlorraine.etu.labyrinth.entity.Entity;
+import fr.univlorraine.etu.labyrinth.entity.component.FollowingCamera;
 import fr.univlorraine.etu.labyrinth.input.GamePadAction;
 import fr.univlorraine.etu.labyrinth.input.InputManager;
 import fr.univlorraine.etu.labyrinth.entity.EntityManager;
@@ -11,11 +14,11 @@ import fr.univlorraine.etu.labyrinth.screen.Level1Screen;
 
 public final class Engine extends Game {
 
-    public static final int WIDTH = 300;
+    public static final float WIDTH = 20f;
 
-    public static final int HEIGHT = WIDTH / 16 * 9;
+    public static final float HEIGHT = 18f;
 
-    public static final int SCALE = 4;
+    public static final float SCALE = 4;
 
     public static final int TILE_SIZE = 16;
 
@@ -56,5 +59,15 @@ public final class Engine extends Game {
 
     public InputManager getInputManager() {
         return inputManager;
+    }
+
+    public OrthographicCamera getCamera() {
+        return this.entityManager
+                .findByNameAndComponent("camera", FollowingCamera.class)
+                .getCamera();
+    }
+
+    public Entity getEntityByName(String name) {
+        return this.entityManager.findByName(name);
     }
 }

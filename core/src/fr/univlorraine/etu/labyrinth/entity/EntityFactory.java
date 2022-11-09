@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public final class EntityFactory {
 
-    public static final int COIN_SIZE = 8 * Engine.SCALE;
+    public static final float COIN_SIZE = 1/2f;
 
-    public static final float HERO_WIDTH = 16f * Engine.SCALE;
+    public static final float HERO_WIDTH = 1f;
 
-    public static final float HERO_HEIGHT = 28f * Engine.SCALE;
+    public static final float HERO_HEIGHT = 1f;
 
     public static final float MASKULL_WIDTH = HERO_WIDTH;
 
@@ -25,7 +25,7 @@ public final class EntityFactory {
     }
 
     public static Entity createCoin(String name, float randomXPosition, float randomYPosition) {
-        Entity entity = new Entity(name, "coin");
+        Entity entity = new Entity(name, "coins");
         entity.addComponent(new HitBox(randomXPosition, randomYPosition, COIN_SIZE, COIN_SIZE));
         entity.addComponent(new AnimatedSprite(Resource.COIN_TEXTURE, 4, 1, 0.12f));
         entity.addComponent(new SoundPlayer(Resource.COIN_SOUND));
@@ -41,10 +41,11 @@ public final class EntityFactory {
         );
 
         entity.addComponent(new AnimatedSpriteList(Resource.HERO_TEXTURE, 9, 1, animations));
-        entity.addComponent(new HitBox(startXPosition, startYPosition, HERO_WIDTH, HERO_HEIGHT - 8f * Engine.SCALE));
+        entity.addComponent(new HitBox(startXPosition, startYPosition, 1, 1.25f));
         entity.addComponent(new Direction(0, 0));
-        entity.addComponent(new Velocity(5f));
+        entity.addComponent(new Velocity(0.1f));
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND));
+        entity.addComponent(new DynamicBody());
 
         return entity;
     }
@@ -56,20 +57,27 @@ public final class EntityFactory {
     }
 
     public static Entity createMaskull(String name, float startXPosition, float startYPosition) {
-        Entity entity = new Entity(name, "enemy");
+        Entity entity = new Entity(name, "enemies");
         Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
                 "idle", new AnimatedSpriteList.AnimationData(0.15f, 0, 4),
                 "run", new AnimatedSpriteList.AnimationData(0.105f, 4, 8)
         );
         entity.addComponent(new AnimatedSpriteList(Resource.MASKULL_TEXTURE, 8, 1, animations));
-        entity.addComponent(new HitBox(startXPosition, startYPosition, MASKULL_WIDTH, MASKULL_HEIGHT - 8f * Engine.SCALE));
+        entity.addComponent(new HitBox(startXPosition, startYPosition, 1f, 1f));
         entity.addComponent(new Direction(0, 0));
-        entity.addComponent(new Velocity(2.5f));
+        entity.addComponent(new Velocity(0.05f));
         entity.addComponent(new Vision(
-                startXPosition + MASKULL_WIDTH / 2,
-                startYPosition + MASKULL_HEIGHT / 2,
-                100f * Engine.SCALE));
+                startXPosition ,
+                startYPosition,
+                10f));
+        entity.addComponent(new DynamicBody());
 
+        return entity;
+    }
+
+    public static Entity createWall(String name, float positionX, float positionY, float width, float height) {
+        Entity entity = new Entity(name, "walls");
+        entity.addComponent(new HitBox(positionX, positionY, width, height));
         return entity;
     }
 }
