@@ -3,7 +3,7 @@ University ACL Project
 
 # Utilisation
 
-- `./gradlew desktop:dist` pour build un .jar  dans le dossier `/labyrinth/desktop/desktop-num.version.jar`  
+- `./gradlew desktop:dist` pour build un .jar  dans le dossier `/labyrinth/desktop/build/libs/desktop-num.version.jar`  
 - Exécuter le .jar
 
 # Fonctionnalités
@@ -87,20 +87,20 @@ Il faudrait un meilleur travail d'équipe et que le reste des membres vienne par
 
 ## Sprint Review
 
-Faits
- -Ajout des pièces
- -Ajout de l'ennemi
- -Ajout de l'HUD
- -Collisions
- -Ajout du son
+Faits :
+ Possibilité de ramasser des pièces     - 3
+ Ajout de l'ennemi                      - 4
+ Affichage de l'HUD                     - 4
+ Fix des Collisions                     - 3
+ Ajout de sons                          - 2     
  
-Non faits
- -Attaque du héros
- -Ajout d'une arme
- -Gestion de projectiles
+Non faits : 
+ Attaque du héros                       - 5
+ Ajout d'une arme                       - 4
+ Gestion de projectiles                 - 4
  
  Bugs à fixer
-  -Problèmes de collisions quand le monstre attaque le joueur
+  - Problèmes de collisions quand le monstre attaque le joueur
   
 ## Retrospective
 
