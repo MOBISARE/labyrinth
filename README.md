@@ -118,7 +118,7 @@ Elle nous bloque sur certains points ce qui nous prendra plus de temps.
 Langage : JAVA 11.  
 TiledMap : Logiciel de création de map.  
 Librairie Graphique : LibGDX.  
-Logiciel de Gestion de Projet : YouTrack  
+Logiciel de Gestion de Projet : YouTrack 
 https://labyrinth.youtrack.cloud/  
 Outil de centralisation du code : GitHub 
 https://github.com/MOBISARE/labyrinth  
