@@ -115,9 +115,9 @@ Elle nous bloque sur certains points ce qui nous prendra plus de temps.
 
 ### Outils utilisés :
 
-Langage : JAVA 11.
-TiledMap : Logiciel de création de map
-Librairie Graphique : LibGDX  
+Langage : JAVA 11. 
+TiledMap : Logiciel de création de map. 
+Librairie Graphique : LibGDX.
 Logiciel de Gestion de Projet : YouTrack  
 https://labyrinth.youtrack.cloud/  
 Outil de centralisation du code : GitHub  
