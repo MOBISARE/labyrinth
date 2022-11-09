@@ -13,7 +13,7 @@ public final class DesktopLauncher {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setForegroundFPS(60);
         config.setTitle("Labyrinth");
-        config.setWindowedMode(Engine.SCALE * Engine.WIDTH,Engine.SCALE * Engine.HEIGHT);
+        config.setWindowedMode(1280,720);
         config.setResizable(true);
         config.useVsync(true);
         new Lwjgl3Application(new Engine(), config);

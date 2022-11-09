@@ -18,15 +18,16 @@ public final class FollowingCamera implements Component {
     }
 
     public void init() {
-        this.camera.setToOrtho(false);
+        this.camera.setToOrtho(false, 18f, 12f);
         this.viewport.apply();
         this.camera.position.set(
                 this.camera.viewportWidth / 2,
                 this.camera.viewportHeight / 2,
                 0);
+        this.camera.update();
     }
 
-    public void follow(float positionX, float positionY, int mapWidth, int mapHeight) {
+    public void follow(float positionX, float positionY, float mapWidth, float mapHeight) {
 
         float vw = this.camera.viewportWidth / 2f;
         this.camera.position.x = MathUtils.clamp(positionX, vw, mapWidth - vw);
