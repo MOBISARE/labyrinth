@@ -95,7 +95,7 @@ Faits :
  - Ajout de sons                          - 2     
  
 Non faits : 
- - Attaque du héros                       - 5
+ - Attaque de l'ennemi                    - 5
  - Ajout d'une arme                       - 4
  - Gestion de projectiles                 - 4
  
@@ -112,6 +112,21 @@ Elle nous bloque sur certains points ce qui nous prendra plus de temps.
 
  
 <img src="./diagramme/Diagramme_de_classes_2.png"> 
+
+
+# Sprint 2
+## Primaire   
+- Attaque de l'ennemi.
+- Ajout d'une arme de corps à corps.
+- Affichage d'un menu de début.
+- Affichage d'un menu de fin. 
+- Attaque du personnage.
+- Création du premier niveau.  
+
+## Secondaire
+- Ajout de potions de soin.
+- Ajout d'une arme à distance. 
+- Gestion des projectiles.
 
 ### Outils utilisés :
 
