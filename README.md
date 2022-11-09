@@ -89,13 +89,13 @@ Il faudrait un meilleur travail d'équipe et que le reste des membres vienne par
 
 Faits :
  - Possibilité de ramasser des pièces     - 3
+ - Attaque de l'ennemi                    - 5
  - Ajout de l'ennemi                      - 4
  - Affichage de l'HUD                     - 4
  - Fix des Collisions                     - 3
  - Ajout de sons                          - 2     
  
 Non faits : 
- - Attaque de l'ennemi                    - 5
  - Ajout d'une arme                       - 4
  - Gestion de projectiles                 - 4
  
@@ -116,7 +116,6 @@ Elle nous bloque sur certains points ce qui nous prendra plus de temps.
 
 # Sprint 2
 ## Primaire   
-- Attaque de l'ennemi.
 - Ajout d'une arme de corps à corps.
 - Affichage d'un menu de début.
 - Affichage d'un menu de fin. 
