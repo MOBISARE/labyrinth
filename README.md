@@ -88,16 +88,16 @@ Il faudrait un meilleur travail d'équipe et que le reste des membres vienne par
 ## Sprint Review
 
 Faits :
- Possibilité de ramasser des pièces     - 3
- Ajout de l'ennemi                      - 4
- Affichage de l'HUD                     - 4
- Fix des Collisions                     - 3
- Ajout de sons                          - 2     
+ 1. Possibilité de ramasser des pièces     - 3
+ 2. Ajout de l'ennemi                      - 4
+ 3. Affichage de l'HUD                     - 4
+ 4. Fix des Collisions                     - 3
+ 5. Ajout de sons                          - 2     
  
 Non faits : 
- Attaque du héros                       - 5
- Ajout d'une arme                       - 4
- Gestion de projectiles                 - 4
+ 1. Attaque du héros                       - 5
+ 2. Ajout d'une arme                       - 4
+ 3. Gestion de projectiles                 - 4
  
  Bugs à fixer
   - Problèmes de collisions quand le monstre attaque le joueur
