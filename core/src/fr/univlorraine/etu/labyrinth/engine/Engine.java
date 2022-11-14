@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import fr.univlorraine.etu.labyrinth.entity.Entity;
 import fr.univlorraine.etu.labyrinth.entity.component.FollowingCamera;
+import fr.univlorraine.etu.labyrinth.input.CursorAction;
 import fr.univlorraine.etu.labyrinth.input.GamePadAction;
 import fr.univlorraine.etu.labyrinth.input.InputManager;
 import fr.univlorraine.etu.labyrinth.entity.EntityManager;
@@ -37,14 +38,15 @@ public final class Engine extends Game {
     public void create() {
         // init screen par défaut.
         this.batch = new SpriteBatch();
-        this.inputManager.assign(Input.Keys.UP, GamePadAction.UP);
-        this.inputManager.assign(Input.Keys.DOWN, GamePadAction.DOWN);
-        this.inputManager.assign(Input.Keys.LEFT, GamePadAction.LEFT);
-        this.inputManager.assign(Input.Keys.RIGHT, GamePadAction.RIGHT);
-        this.inputManager.assign(Input.Keys.SPACE, GamePadAction.ATTACK);
-        this.inputManager.assign(Input.Keys.P, GamePadAction.PAUSE);
-        this.inputManager.assign(Input.Keys.ESCAPE, GamePadAction.EXIT);
+        this.inputManager.assignKey(Input.Keys.UP, GamePadAction.UP);
+        this.inputManager.assignKey(Input.Keys.DOWN, GamePadAction.DOWN);
+        this.inputManager.assignKey(Input.Keys.LEFT, GamePadAction.LEFT);
+        this.inputManager.assignKey(Input.Keys.RIGHT, GamePadAction.RIGHT);
+        this.inputManager.assignKey(Input.Keys.SPACE, GamePadAction.ATTACK);
+        this.inputManager.assignKey(Input.Keys.P, GamePadAction.PAUSE);
+        this.inputManager.assignKey(Input.Keys.ESCAPE, GamePadAction.EXIT);
 
+        this.inputManager.assignCursor(0, CursorAction.ATTACK);
         Gdx.input.setInputProcessor(this.inputManager);
         this.setScreen(new Level1Screen(this));
     }

@@ -6,9 +6,9 @@ public final class KeyBind {
 
     private final int keyCode;
 
-    private final GamePadAction action;
+    private final Bindable action;
 
-    public KeyBind(int keyCode, GamePadAction action) {
+    public KeyBind(int keyCode, Bindable action) {
         this.keyCode = keyCode;
         this.action = action;
     }
@@ -46,7 +46,7 @@ public final class KeyBind {
         return keyCode;
     }
 
-    public GamePadAction getAction() {
+    public Bindable getAction() {
         return action;
     }
 }

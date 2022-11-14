@@ -52,7 +52,7 @@ public final class EntityManager {
         return this.findByName(name).getComponent(componentType);
     }
 
-    public <C extends Component> List<C> findByComponent(Class<C> componentType) {
+    public <C extends Component> List<C> findOneByComponent(Class<C> componentType) {
 
 //        List<C> components = new ArrayList<>();
 //        for(Entity e: this.entities){
@@ -70,7 +70,7 @@ public final class EntityManager {
                 .collect(Collectors.toList());
     }
 
-    public <C extends Component> Entity findByComponent(C component) {
+    public <C extends Component> Entity findOneByComponent(C component) {
         Class<C> componentType = (Class<C>) component.getClass();
         return this.entities
                 .stream()
@@ -78,6 +78,15 @@ public final class EntityManager {
                 .filter(e -> Objects.equals(e.getComponent(componentType), component))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Entité non trouvée pour le composant : " + componentType + " " + component));
+    }
+
+    public <C extends Component> List<Entity> findByComponent(C component) {
+        Class<C> componentType = (Class<C>) component.getClass();
+        return this.entities
+                .stream()
+                .filter(e -> e.hasComponent(componentType))
+                .filter(e -> Objects.equals(e.getComponent(componentType), component))
+                .collect(Collectors.toList());
     }
 
     public void removeByName(String name) {
@@ -89,6 +98,10 @@ public final class EntityManager {
         this.entities.remove(entity);
         this.staticBodies.remove(entity);
         this.dynamicBodies.remove(entity);
+    }
+
+    public void remove(Collection <Entity> entities) {
+        this.entities.removeAll(entities);
     }
 
     public List<Entity> getEntities() {

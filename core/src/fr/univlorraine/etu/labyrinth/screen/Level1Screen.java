@@ -1,10 +1,9 @@
 package fr.univlorraine.etu.labyrinth.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
@@ -12,18 +11,20 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.univlorraine.etu.labyrinth.Resource;
 import fr.univlorraine.etu.labyrinth.engine.Engine;
 import fr.univlorraine.etu.labyrinth.entity.Entity;
 import fr.univlorraine.etu.labyrinth.entity.EntityFactory;
 import fr.univlorraine.etu.labyrinth.entity.component.*;
+import fr.univlorraine.etu.labyrinth.input.ClickPosition;
+import fr.univlorraine.etu.labyrinth.input.CursorAction;
 import fr.univlorraine.etu.labyrinth.input.GamePadAction;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.UUID;
 
 public final class Level1Screen implements Screen {
 
@@ -62,6 +63,10 @@ public final class Level1Screen implements Screen {
         Entity hero = EntityFactory.createHero(x, y);
         this.engine.getEntityManager().add(hero);
 
+        // WEAPON
+        Entity bow = EntityFactory.createBow("bow", x + 0.2f, y, 0.3f, 1);
+        this.engine.getEntityManager().add(bow);
+
         // MONSTERS
         // MASKULL
         Entity maskull = EntityFactory.createMaskull("maskull", x + 3, y + 3);
@@ -94,6 +99,9 @@ public final class Level1Screen implements Screen {
         this.updateCoins(delta);
         this.updateHero(delta);
         this.updateMaskull(delta);
+        this.updateBow(delta);
+        this.updateArrow(delta);
+
         this.checkCollision();
 
         // RENDER
@@ -106,6 +114,8 @@ public final class Level1Screen implements Screen {
         this.renderCoin();
         this.renderHero();
         this.renderMaskull();
+        this.renderBow();
+        this.renderArrow();
 
         this.engine.getBatch().end();
         this.drawHitBox(this.engine.getCamera());
@@ -143,8 +153,8 @@ public final class Level1Screen implements Screen {
 
     private void drawHitBox(OrthographicCamera camera) {
         this.debbug.setProjectionMatrix(camera.combined);
-        List<HitBox> hitBoxes = this.engine.getEntityManager().findByComponent(HitBox.class);
-        List<Vision> visions = this.engine.getEntityManager().findByComponent(Vision.class);
+        List<HitBox> hitBoxes = this.engine.getEntityManager().findOneByComponent(HitBox.class);
+        List<Vision> visions = this.engine.getEntityManager().findOneByComponent(Vision.class);
         this.debbug.begin(ShapeRenderer.ShapeType.Line);
         this.debbug.setColor(Color.RED);
         for (HitBox h : hitBoxes) {
@@ -256,6 +266,128 @@ public final class Level1Screen implements Screen {
         );
     }
 
+    private void updateBow(float deltaTime) {
+        Entity hero = this.engine.getEntityManager().findByName("hero");
+        Direction heroDirection = hero.getComponent(Direction.class);
+        HitBox heroHitBox = hero.getComponent(HitBox.class);
+
+        Entity bow = this.engine.getEntityManager().findByName("bow");
+        AnimatedSpriteList animatedSpriteList = bow.getComponent(AnimatedSpriteList.class);
+        HitBox hitBox = bow.getComponent(HitBox.class);
+
+        if (heroDirection.getValue().x > 0) {
+            hitBox.getValue().x = heroHitBox.getValue().x + 1f;
+        }
+
+        if (heroDirection.getValue().x < 0) {
+            hitBox.getValue().x = heroHitBox.getValue().x - 0.3f;
+        }
+
+        hitBox.getValue().y = heroHitBox.getValue().y;
+        animatedSpriteList.update(deltaTime);
+    }
+
+    private void renderBow() {
+        Entity hero = this.engine.getEntityManager().findByName("hero");
+        AnimatedSpriteList heroAnimatedSpriteList = hero.getComponent(AnimatedSpriteList.class);
+
+        Entity bow = this.engine.getEntityManager().findByName("bow");
+        AnimatedSpriteList animatedSpriteList = bow.getComponent(AnimatedSpriteList.class);
+        HitBox hitBox = bow.getComponent(HitBox.class);
+
+        TextureRegion sprite = animatedSpriteList.getFrame(true);
+
+        if (heroAnimatedSpriteList.isFlipX() && !sprite.isFlipX()) {
+            sprite.flip(true, false);
+        }
+        if (!heroAnimatedSpriteList.isFlipX() && sprite.isFlipX()) {
+            sprite.flip(true, false);
+        }
+
+        this.engine.getBatch().draw(
+                sprite,
+                hitBox.getValue().x,
+                hitBox.getValue().y,
+                sprite.getRegionWidth() / 16f,
+                sprite.getRegionHeight() / 16f
+        );
+
+    }
+
+    private void updateArrow(float deltaTime) {
+        Entity bow = this.engine.getEntityManager().findByName("bow");
+
+        if (this.engine.getInputManager().getCursor().isButtonClicked(CursorAction.ATTACK)) {
+
+            ClickPosition cp = this.engine.getInputManager().getCursor().getLastPosition(CursorAction.ATTACK);
+
+            HitBox bowHitBox = bow.getComponent(HitBox.class);
+            float dx = cp.getX() - (bowHitBox.getValue().width / 2);
+            float dy = cp.getY() - (bowHitBox.getValue().height / 2);
+
+            Entity arrow = EntityFactory.createArrow(
+                    "arrow-" + UUID.randomUUID(),
+                    "heroArrows",
+                    bowHitBox.getValue().x,
+                    bowHitBox.getValue().y,
+                    0.5f,
+                    1f,
+                    (float) Math.atan2(dx, dy)
+            );
+            this.engine.getEntityManager().add(arrow);
+        }
+
+        int mapWidth = this.map.getProperties().get("width", int.class);
+        int mapHeight = this.map.getProperties().get("height", int.class);
+        List<Entity> arrows = this.engine.getEntityManager().findByGroupName("heroArrows");
+        //System.out.println("ARROWS COUNT : " + arrows.size());
+        for (Entity a : arrows) {
+            Velocity velocity = a.getComponent(Velocity.class);
+            Trajectory trajectory = a.getComponent(Trajectory.class);
+            HitBox box = a.getComponent(HitBox.class);
+            box.getValue().x += (velocity.getValue()) * Math.cos(trajectory.getAngle());
+            box.getValue().y += (velocity.getValue()) * Math.sin(trajectory.getAngle());
+
+            if (box.getValue().x > mapWidth || box.getValue().y > mapHeight) {
+                a.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            }
+        }
+
+
+    }
+
+    private void renderArrow() {
+        List<Entity> arrows = this.engine.getEntityManager().findByGroupName("heroArrows");
+        for (Entity arrow : arrows) {
+            HitBox hitBox = arrow.getComponent(HitBox.class);
+            StaticSprite sprite = arrow.getComponent(StaticSprite.class);
+            TextureRegion texture = sprite.getTextureRegion();
+            Trajectory trajectory = arrow.getComponent(Trajectory.class);
+            float x = hitBox.getValue().x;
+            float y = hitBox.getValue().y;
+            float w = texture.getRegionWidth() / 16f;
+            float h = texture.getRegionHeight() / 16f;
+            float ox = w / 2;
+            float oy = h / 2;
+            float sx = 1f;
+            float sy = 1f;
+            float r = (float) Math.toDegrees(trajectory.getAngle());
+
+            this.engine.getBatch().draw(
+                    texture,
+                    x,
+                    y,
+                    ox,
+                    oy,
+                    w,
+                    h,
+                    sx,
+                    sy,
+                    r
+            );
+        }
+    }
+
     private void updateMaskull(float deltaTime) {
         Entity maskull = this.engine.getEntityByName("maskull");
         Entity hero = this.engine.getEntityByName("hero");
@@ -355,7 +487,7 @@ public final class Level1Screen implements Screen {
 //            hitboxes.add(e.getComponent(HitBox.class));
 //        }
 
-        List<HitBox> hitBoxes = this.engine.getEntityManager().findByComponent(HitBox.class);
+        List<HitBox> hitBoxes = this.engine.getEntityManager().findOneByComponent(HitBox.class);
 
         // Check collisions entre des entités dynamiques
         for (HitBox h0 : hitBoxes) {
@@ -368,6 +500,13 @@ public final class Level1Screen implements Screen {
             }
         }
 
+        List<Entity> entities = this.engine
+                .getEntityManager()
+                .findByComponent(CollisionStatus.MARK_AS_REMOVE);
+
+        System.out.println(entities);
+        this.engine.getEntityManager().remove(entities);
+
         // Check collisions entre des entités dynamiques et une entité
 
 
@@ -375,13 +514,18 @@ public final class Level1Screen implements Screen {
 
     private void handleCollision(HitBox source, HitBox target) {
 
-        Entity sourceEntity = this.engine.getEntityManager().findByComponent(source);
-        Entity targetEntity = this.engine.getEntityManager().findByComponent(target);
+        Entity sourceEntity = this.engine.getEntityManager().findOneByComponent(source);
+        Entity targetEntity = this.engine.getEntityManager().findOneByComponent(target);
 
         // Collision avec le champ de vision d'un ennemi
-        if (sourceEntity.hasComponent(Vision.class)) {
+        if (sourceEntity.hasComponent(Vision.class)
+                && Intersector.overlaps(sourceEntity.getComponent(Vision.class).getValue(),
+                target.getValue())) {
             Vision sourceVision = sourceEntity.getComponent(Vision.class);
             this.handleCollisionHeroToEnemyVision(sourceVision, target);
+            targetEntity.addComponent(CollisionStatus.SPOTTED);
+        } else {
+            targetEntity.addComponent(CollisionStatus.NONE);
         }
 
         // Collision avec une pièce
@@ -397,18 +541,21 @@ public final class Level1Screen implements Screen {
         }
 
         // Collision du héros avec un ennemi
-        //TODO
+        if (Objects.equals(sourceEntity.getGroupName(), "enemies")
+                && Objects.equals(targetEntity.getName(), "hero")) {
+            this.handleCollisionEnemyToHero(source, target);
+        }
 
         //System.out.println("Collision entre " + sourceEntity.getName() + " et " + targetEntity.getName());
 
     }
 
     private void handleCollisionHeroToCoin(HitBox source, HitBox target) {
-        Entity sourceEntity = this.engine.getEntityManager().findByComponent(source);
-        Entity targetEntity = this.engine.getEntityManager().findByComponent(target);
+        Entity sourceEntity = this.engine.getEntityManager().findOneByComponent(source);
+        Entity targetEntity = this.engine.getEntityManager().findOneByComponent(target);
         if (Objects.equals(sourceEntity.getName(), "hero")
                 && Objects.equals(targetEntity.getGroupName(), "coins")) {
-            this.engine.getEntityManager().removeByName(targetEntity.getName());
+            targetEntity.addComponent(CollisionStatus.MARK_AS_REMOVE);
         }
     }
 
@@ -416,20 +563,25 @@ public final class Level1Screen implements Screen {
     // Cependant elle pourrait servir pour gérer le comportement des ennemis si le héros se trouve dans son champs de vision
     // Par exemple tire un projectile vers le héros
     private void handleCollisionHeroToEnemyVision(Vision source, HitBox target) {
-        Entity sourceEntity = this.engine.getEntityManager().findByComponent(source);
-        Entity targetEntity = this.engine.getEntityManager().findByComponent(target);
-
-        if (Objects.equals(sourceEntity.getName(), "maskull")
-                && Objects.equals(targetEntity.getName(), "hero")) {
-            System.out.println(sourceEntity.getName() + " vous à repéré");
-
-
-        }
+        Entity sourceEntity = this.engine.getEntityManager().findOneByComponent(source);
+        Entity targetEntity = this.engine.getEntityManager().findOneByComponent(target);
+//
+//        System.out.println("SOURCE " + sourceEntity.getName());
+//        System.out.println("TARGET " + targetEntity.getName());
+//        if (Objects.equals(targetEntity.getName(), "maskull")
+//                && Objects.equals(sourceEntity.getName(), "hero")) {
+//            sourceEntity.addComponent(CollisionStatus.SPOTTED);
+//            System.out.println(sourceEntity.getName() + " a été repéré par " + targetEntity.getName());
+//
+//        } else {
+//            sourceEntity.addComponent(CollisionStatus.NONE);
+//        }
+        //System.out.println(targetEntity.getName() + " a été repéré par " + sourceEntity.getName());
     }
 
     private void handleCollisionToWall(HitBox source, HitBox target) {
-        Entity sourceEntity = this.engine.getEntityManager().findByComponent(source);
-        Entity targetEntity = this.engine.getEntityManager().findByComponent(target);
+        Entity sourceEntity = this.engine.getEntityManager().findOneByComponent(source);
+        Entity targetEntity = this.engine.getEntityManager().findOneByComponent(target);
 
         if (Objects.equals(targetEntity.getName(), "upWall")
                 || Objects.equals(targetEntity.getName(), "downWall")) {
@@ -447,5 +599,34 @@ public final class Level1Screen implements Screen {
 
     }
 
+    private void handleCollisionEnemyToHero(HitBox source, HitBox target) {
+        Entity sourceEntity = this.engine.getEntityManager().findOneByComponent(source);
+        Entity targetEntity = this.engine.getEntityManager().findOneByComponent(target);
+        Vision sourceVision = this.engine.getEntityManager().findOneByComponent(source).getComponent(Vision.class);
+
+        if (target.getValue().x < source.getValue().x
+                || target.getValue().x > source.getValue().x) {
+
+            source.getValue().x
+                    -= sourceEntity.getComponent(Direction.class).getValue().x
+                    * sourceEntity.getComponent(Velocity.class).getValue();
+
+            sourceVision.getValue().x
+                    -= sourceEntity.getComponent(Direction.class).getValue().x
+                    * sourceEntity.getComponent(Velocity.class).getValue();
+        }
+
+        if (target.getValue().y < source.getValue().y
+                || target.getValue().y > source.getValue().y) {
+
+            source.getValue().y
+                    -= sourceEntity.getComponent(Direction.class).getValue().y
+                    * sourceEntity.getComponent(Velocity.class).getValue();
+
+            sourceVision.getValue().y
+                    -= sourceEntity.getComponent(Direction.class).getValue().y
+                    * sourceEntity.getComponent(Velocity.class).getValue();
+        }
+    }
 
 }

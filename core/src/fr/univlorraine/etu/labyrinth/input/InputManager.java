@@ -11,8 +11,11 @@ public final class InputManager implements InputProcessor {
 
     private final Map<KeyBind, Boolean> keys;
 
+    private final Cursor cursor;
+
     public InputManager() {
         this.keys = new HashMap<>();
+        this.cursor = new Cursor();
     }
 
     public boolean isPressed(GamePadAction action) {
@@ -35,8 +38,12 @@ public final class InputManager implements InputProcessor {
                 .orElse(Boolean.FALSE);
     }
 
-    public void assign(int keycode, GamePadAction action) {
+    public void assignKey(int keycode, GamePadAction action) {
         this.keys.put(new KeyBind(keycode, action), false);
+    }
+
+    public void assignCursor(int button, CursorAction action) {
+        this.cursor.keys.put(new KeyBind(button, action), false);
     }
 
     @Override
@@ -59,6 +66,34 @@ public final class InputManager implements InputProcessor {
         boolean pushed;
         if (option.isPresent()) {
             this.keys.put(option.get(), pressed);
+
+            pushed = true;
+        } else {
+            pushed = false;
+        }
+        return pushed;
+    }
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    private boolean processCursor(int button, boolean pressed) {
+        Optional<KeyBind> option = this.cursor.keys
+                .keySet()
+                .stream()
+                .filter(e -> Objects.equals(button, e.getKeyCode()))
+                .findFirst();
+
+        boolean pushed;
+        if (option.isPresent()) {
+            this.cursor.keys.put(option.get(), pressed);
+            this.cursor
+                    .lastClickPosition
+                    .put((CursorAction) option
+                            .get()
+                            .getAction(),
+                            new ClickPosition(this.cursor.x, this.cursor.y));
             pushed = true;
         } else {
             pushed = false;
@@ -67,18 +102,15 @@ public final class InputManager implements InputProcessor {
     }
 
     @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
+        processCursor(button, true);
+        return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+        processCursor(button, false);
+        return true;
     }
 
     @Override
@@ -88,11 +120,19 @@ public final class InputManager implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        return false;
+        this.cursor.x = screenX;
+        this.cursor.y = screenY;
+        //System.out.println("Position (X :" + this.cursor.x + "; Y : "  + this.cursor.y + ")");
+        return true;
     }
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
         return false;
     }
+
+    public Cursor getCursor() {
+        return cursor;
+    }
 }
+

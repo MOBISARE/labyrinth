@@ -23,6 +23,16 @@ public final class Entity {
         this(name, "<unknown>");
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Entity{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", groupName='").append(groupName).append('\'');
+        sb.append(", componentsSize=").append(components.size());
+        sb.append('}');
+        return sb.toString();
+    }
+
     public <C extends Component> void addComponent(C component) {
         this.components.put(component.getClass(), component);
     }

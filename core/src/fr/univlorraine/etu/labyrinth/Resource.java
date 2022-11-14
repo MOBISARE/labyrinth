@@ -10,10 +10,13 @@ public final class Resource {
 
     public static final String HERO_TEXTURE = "textures/animation_hero_knight.png";
 
+    public static final String BOW_TEXTURE = "textures/bow.png";
+
+    public static final String ARROW_TEXTURE = "textures/arrow.png";
+
     public static final String HERO_WALK_SOUND = "sound/sfx_step_grass_l.mp3";
 
     public static final String MASKULL_TEXTURE = "textures/animation_maskull.png";
-
 
 
     private Resource() {

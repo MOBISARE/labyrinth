@@ -1,12 +1,10 @@
 package fr.univlorraine.etu.labyrinth.entity;
 
 import fr.univlorraine.etu.labyrinth.Resource;
-import fr.univlorraine.etu.labyrinth.engine.Engine;
 import fr.univlorraine.etu.labyrinth.entity.component.*;
 
 
 import java.util.Map;
-import java.util.UUID;
 
 public final class EntityFactory {
 
@@ -20,6 +18,8 @@ public final class EntityFactory {
 
     public static final float MASKULL_HEIGHT = HERO_HEIGHT;
 
+    public static final float ARROW_DISTANCE = 5f;
+
     private EntityFactory() {
 
     }
@@ -29,6 +29,7 @@ public final class EntityFactory {
         entity.addComponent(new HitBox(randomXPosition, randomYPosition, COIN_SIZE, COIN_SIZE));
         entity.addComponent(new AnimatedSprite(Resource.COIN_TEXTURE, 4, 1, 0.12f));
         entity.addComponent(new SoundPlayer(Resource.COIN_SOUND));
+        entity.addComponent(CollisionStatus.NONE);
         return entity;
     }
 
@@ -46,6 +47,7 @@ public final class EntityFactory {
         entity.addComponent(new Velocity(0.1f));
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND));
         entity.addComponent(new DynamicBody());
+        entity.addComponent(CollisionStatus.NONE);
 
         return entity;
     }
@@ -71,13 +73,45 @@ public final class EntityFactory {
                 startYPosition,
                 10f));
         entity.addComponent(new DynamicBody());
+        entity.addComponent(CollisionStatus.NONE);
 
         return entity;
     }
 
     public static Entity createWall(String name, float positionX, float positionY, float width, float height) {
         Entity entity = new Entity(name, "walls");
+
         entity.addComponent(new HitBox(positionX, positionY, width, height));
+        entity.addComponent(CollisionStatus.NONE);
         return entity;
+    }
+
+    public static Entity createBow(String name, float positionX, float positionY, float width, float height) {
+        Entity entity = new Entity(name);
+
+        Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
+                "idle", new AnimatedSpriteList.AnimationData(0.105f, 0, 1)
+        );
+
+        entity.addComponent(new HitBox(positionX, positionY, width, height));
+        entity.addComponent(new AnimatedSpriteList(Resource.BOW_TEXTURE, 1, 1, animations));
+        return entity;
+    }
+
+    public static Entity createArrow(String name,
+                                     String groupName,
+                                     float positionX,
+                                     float positionY,
+                                     float width,
+                                     float height, float radius) {
+        Entity entity = new Entity(name, groupName);
+        entity.addComponent(new HitBox(positionX, positionY, width, height));
+        entity.addComponent(new StaticSprite(Resource.ARROW_TEXTURE));
+        entity.addComponent(new Velocity(0.3f));
+        entity.addComponent(new DynamicBody());
+        entity.addComponent(new Trajectory(positionX, positionY, radius, ARROW_DISTANCE));
+        entity.addComponent(CollisionStatus.NONE);
+        return entity;
+
     }
 }
