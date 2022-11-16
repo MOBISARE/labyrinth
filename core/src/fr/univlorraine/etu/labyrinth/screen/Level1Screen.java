@@ -11,6 +11,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.univlorraine.etu.labyrinth.Resource;
 import fr.univlorraine.etu.labyrinth.engine.Engine;
@@ -319,11 +321,24 @@ public final class Level1Screen implements Screen {
 
         if (this.engine.getInputManager().getCursor().isButtonClicked(CursorAction.ATTACK)) {
 
+            // Attention renvoie l'origine est en haut à gauche !!!
             ClickPosition cp = this.engine.getInputManager().getCursor().getLastPosition(CursorAction.ATTACK);
 
             HitBox bowHitBox = bow.getComponent(HitBox.class);
             float dx = cp.getX() - (bowHitBox.getValue().width / 2);
             float dy = cp.getY() - (bowHitBox.getValue().height / 2);
+
+            // Récupération des coordonnée du clic (en pixel: origine en haut à gauche)
+            Vector3 mouseTmp = new Vector3(cp.getX(), cp.getY(), 0f);
+            // Pour récupérer les coordonnées on fonction du monde
+            this.engine.getCamera().unproject(mouseTmp);
+            Vector2 mouse = new Vector2(mouseTmp.x, mouseTmp.y);
+
+            Vector2 centerBow = new Vector2(bowHitBox.getValue().x - bowHitBox.getValue().width / 2f,
+                    bowHitBox.getValue().y + bowHitBox.getValue().height / 2f);
+
+
+            Vector2 direction = centerBow.sub(mouse);
 
             Entity arrow = EntityFactory.createArrow(
                     "arrow-" + UUID.randomUUID(),
@@ -332,7 +347,7 @@ public final class Level1Screen implements Screen {
                     bowHitBox.getValue().y,
                     0.5f,
                     1f,
-                    (float) Math.atan2(dx, dy)
+                    direction.nor().scl(0.2f)
             );
             this.engine.getEntityManager().add(arrow);
         }
@@ -345,8 +360,8 @@ public final class Level1Screen implements Screen {
             Velocity velocity = a.getComponent(Velocity.class);
             Trajectory trajectory = a.getComponent(Trajectory.class);
             HitBox box = a.getComponent(HitBox.class);
-            box.getValue().x += (velocity.getValue()) * Math.cos(trajectory.getAngle());
-            box.getValue().y += (velocity.getValue()) * Math.sin(trajectory.getAngle());
+            Vector2 posBox = new Vector2(box.getValue().x, box.getValue().y);
+            box.getValue().setPosition(posBox.sub(trajectory.getVector()));
 
             if (box.getValue().x > mapWidth || box.getValue().y > mapHeight) {
                 a.addComponent(CollisionStatus.MARK_AS_REMOVE);
@@ -367,11 +382,11 @@ public final class Level1Screen implements Screen {
             float y = hitBox.getValue().y;
             float w = texture.getRegionWidth() / 16f;
             float h = texture.getRegionHeight() / 16f;
-            float ox = w / 2;
-            float oy = h / 2;
+            float ox = w/2f;
+            float oy = h/2f;
             float sx = 1f;
             float sy = 1f;
-            float r = (float) Math.toDegrees(trajectory.getAngle());
+            float r = trajectory.getAngle() + 90f;
 
             this.engine.getBatch().draw(
                     texture,
@@ -504,7 +519,7 @@ public final class Level1Screen implements Screen {
                 .getEntityManager()
                 .findByComponent(CollisionStatus.MARK_AS_REMOVE);
 
-        System.out.println(entities);
+        //System.out.println(entities);
         this.engine.getEntityManager().remove(entities);
 
         // Check collisions entre des entités dynamiques et une entité

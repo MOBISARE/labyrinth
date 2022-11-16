@@ -1,5 +1,6 @@
 package fr.univlorraine.etu.labyrinth.entity;
 
+import com.badlogic.gdx.math.Vector2;
 import fr.univlorraine.etu.labyrinth.Resource;
 import fr.univlorraine.etu.labyrinth.entity.component.*;
 
@@ -103,13 +104,14 @@ public final class EntityFactory {
                                      float positionX,
                                      float positionY,
                                      float width,
-                                     float height, float radius) {
+                                     float height,
+                                     Vector2 direction) {
         Entity entity = new Entity(name, groupName);
         entity.addComponent(new HitBox(positionX, positionY, width, height));
         entity.addComponent(new StaticSprite(Resource.ARROW_TEXTURE));
         entity.addComponent(new Velocity(0.3f));
         entity.addComponent(new DynamicBody());
-        entity.addComponent(new Trajectory(positionX, positionY, radius, ARROW_DISTANCE));
+        entity.addComponent(new Trajectory(direction , ARROW_DISTANCE));
         entity.addComponent(CollisionStatus.NONE);
         return entity;
 

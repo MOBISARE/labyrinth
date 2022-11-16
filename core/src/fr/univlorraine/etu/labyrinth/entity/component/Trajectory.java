@@ -1,35 +1,35 @@
 package fr.univlorraine.etu.labyrinth.entity.component;
 
+import com.badlogic.gdx.math.Vector2;
+
 public final class Trajectory implements Component {
 
-    private final float startX;
-
-    private final float startY;
-
-    private final float angle;
+    private final Vector2 direction;
 
     private final float distance;
 
-    public Trajectory(float startX, float startY, float angle, float distance) {
-        this.startX = startX;
-        this.startY = startY;
-        this.angle = angle;
+    public Trajectory(Vector2 direction, float distance) {
+        this.direction = direction;
         this.distance = distance;
     }
 
     public float getStartX() {
-        return startX;
+        return direction.x;
     }
 
     public float getStartY() {
-        return startY;
+        return direction.y;
     }
 
     public float getAngle() {
-        return angle;
+        return direction.angleDeg();
     }
 
     public float getDistance() {
         return distance;
+    }
+
+    public Vector2 getVector() {
+        return direction;
     }
 }
