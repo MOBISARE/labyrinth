@@ -1,6 +1,7 @@
 package com.mygdx.labyrinth.model.collision;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Classe qui permet de détécter les collision
@@ -72,7 +73,6 @@ public class CollisionDetector {
                 }
             }
         }
-
         // Ensuite on regarde si les body dynamique entrent en collision avec les éléments static
         for (Body b1 : dynamicBodies) {
             for (Body b2 : staticBodies) {
@@ -81,6 +81,8 @@ public class CollisionDetector {
                 }
             }
         }
+
+        //System.out.println(Arrays.toString(Stream.of(tab).map(Body::getBodyType).toArray()));
     }
 
     /**
@@ -120,5 +122,17 @@ public class CollisionDetector {
         staticBodies = null;
         collisionEvents.clear();
         collisionEvents = null;
+    }
+
+    public HashSet<Body> getStaticBodies() {
+        return staticBodies;
+    }
+
+    public HashSet<Body> getDynamicBodies() {
+        return dynamicBodies;
+    }
+
+    public LinkedList<CollisionEvent> getCollisionEvents() {
+        return collisionEvents;
     }
 }

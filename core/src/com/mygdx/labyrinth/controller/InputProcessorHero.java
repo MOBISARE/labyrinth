@@ -23,19 +23,19 @@ public class InputProcessorHero implements InputProcessor {
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.LEFT:
-                hero.setLeftMove(true);
+                hero.setMovingLeft(true);
                 break;
             case Input.Keys.D:
             case Input.Keys.RIGHT:
-                hero.setRightMove(true);
+                hero.setMovingRight(true);
                 break;
             case Input.Keys.W:
             case Input.Keys.UP:
-                hero.setUpMove(true);
+                hero.setMovingUp(true);
                 break;
             case Input.Keys.S:
             case Input.Keys.DOWN:
-                hero.setDownMove(true);
+                hero.setMovingDown(true);
                 break;
         }
         return true;
@@ -46,19 +46,19 @@ public class InputProcessorHero implements InputProcessor {
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.LEFT:
-                hero.setLeftMove(false);
+                hero.setMovingLeft(false);
                 break;
             case Input.Keys.D:
             case Input.Keys.RIGHT:
-                hero.setRightMove(false);
+                hero.setMovingRight(false);
                 break;
             case Input.Keys.W:
             case Input.Keys.UP:
-                hero.setUpMove(false);
+                hero.setMovingUp(false);
                 break;
             case Input.Keys.S:
             case Input.Keys.DOWN:
-                hero.setDownMove(false);
+                hero.setMovingDown(false);
                 break;
         }
         return false;
@@ -67,7 +67,7 @@ public class InputProcessorHero implements InputProcessor {
     @Override
     public boolean keyTyped(char character) {
         if (character == 'p') {
-            hero.setVie(hero.getVie() - 1);
+            hero.setHealthPoint(hero.getHealthPoint() - 1);
         }
         if (character == '+') {
             hero.addArgent(1);

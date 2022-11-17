@@ -3,7 +3,6 @@ package com.mygdx.labyrinth.model.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -15,18 +14,13 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.labyrinth.exception.LabyrinthException;
 import com.mygdx.labyrinth.game.Labyrinth;
-import com.mygdx.labyrinth.controller.InputProcessorHero;
-import com.mygdx.labyrinth.model.Coin;
-import com.mygdx.labyrinth.model.Hero;
-import com.mygdx.labyrinth.model.Entity;
+import com.mygdx.labyrinth.model.*;
 import com.mygdx.labyrinth.model.Observable;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public final class Level0 extends Observable implements Screen, Iterable<Entity> {
+public final class Level0 extends Observable implements Screen{
 
     //region Attributs
 
@@ -35,10 +29,6 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
      */
     private final Labyrinth rootGame;
 
-    /**
-     * Hero de la partie
-     */
-    private final Hero hero;
 
     /**
      * Camera associé au niveau
@@ -56,11 +46,6 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
     private final OrthogonalTiledMapRenderer renderer;
 
     private Music music;
-
-    /**
-     * Contient la liste des éléments composants le monde
-     */
-    private final List<Entity> entities;
 
     /**
      * Largeur de la map
@@ -95,18 +80,25 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         music.setLooping(true);
         music.play();
 
-        this.entities = new ArrayList<>();
         MapObject spawnHero = renderer.getMap().getLayers().get("SpawnHero").getObjects().get("spawn_hero");
-        this.hero = new Hero(spawnHero.getProperties().get("x", float.class) / 16f
-                ,spawnHero.getProperties().get("y", float.class) / 16f
-                ,0.8f,1f);
+        Hero hero = new Hero(
+                spawnHero.getProperties().get("x", float.class) / 16f,
+                spawnHero.getProperties().get("y", float.class) / 16f,
+                0.8f,
+                1f);
+        Enemy enemy = new Enemy("Enemy_0",
+                spawnHero.getProperties().get("x", float.class) / 16f + 10f,
+                spawnHero.getProperties().get("y", float.class) / 16f + 10f,
+                0.8f,
+                1f);
 
 
 
         // Creation de pièces
         createRandomCoin(100);
 
-        this.entities.add(this.hero);
+        EntityManager.getInstance().add(hero);
+        EntityManager.getInstance().add(enemy);
     }
 
 
@@ -119,7 +111,7 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
 
         // UPDATE
         setPosCamera();
-        this.entities.removeIf(Entity::isDestroyed);
+        EntityManager.getInstance().removeIf(Entity::isDestroyed);
 
         // RENDER
         ScreenUtils.clear(0, 0, 0, 1);
@@ -132,14 +124,10 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         this.rootGame.getBatch().setProjectionMatrix(this.camera.combined);
         this.rootGame.getBatch().begin();
 
-        this.entities.forEach(e -> e.render(this.rootGame.getBatch(), delta));
+        EntityManager.getInstance().render(this.rootGame.getBatch(), delta);
 
         this.rootGame.getBatch().end();
         this.renderer.render(new int[]{1});
-    }
-
-    public List<Entity> getEntities() {
-        return entities;
     }
 
     /**
@@ -147,21 +135,22 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
      */
     private void setPosCamera() {
         float x, y = 0;
+        Hero hero = (Hero) EntityManager.getInstance().findByName("Hero").orElseThrow(() -> new IllegalArgumentException("Hero non trouvé"));
 
-        if (this.hero.getPosition().x - this.camera.viewportWidth / 2f < 0) {
+        if (hero.getPosition().x - this.camera.viewportWidth / 2f < 0) {
             x = this.camera.viewportWidth / 2f;
-        } else if (this.hero.getPosition().x + this.camera.viewportWidth / 2f > this.mapWidth){
+        } else if (hero.getPosition().x + this.camera.viewportWidth / 2f > this.mapWidth){
             x = this.mapWidth - this.camera.viewportWidth / 2f;
         } else {
-            x = this.hero.getPosition().x;
+            x = hero.getPosition().x;
         }
 
-        if (this.hero.getPosition().y - this.camera.viewportHeight / 2f < 0) {
+        if (hero.getPosition().y - this.camera.viewportHeight / 2f < 0) {
             y = this.camera.viewportHeight / 2f;
-        } else if (this.hero.getPosition().y + this.camera.viewportHeight / 2f > this.mapHeight) {
+        } else if (hero.getPosition().y + this.camera.viewportHeight / 2f > this.mapHeight) {
             y = this.mapHeight - this.camera.viewportHeight / 2f;
         } else {
-            y = this.hero.getPosition().y;
+            y = hero.getPosition().y;
         }
 
         this.camera.position.set(x, y, 0);
@@ -172,15 +161,6 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         }
 
         this.camera.update();
-    }
-
-    /**
-     * {@inheritDoc}
-     * @return
-     */
-    @Override
-    public Iterator<Entity> iterator() {
-        return entities.iterator();
     }
 
     /**
@@ -199,13 +179,6 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         return camera;
     }
 
-    /**
-     * Retourne le héro
-     * @return Hero
-     */
-    public Hero getHero() {
-        return hero;
-    }
 
     /**
      * Créer un nombre aléatoire de pièces sur la map
@@ -217,7 +190,7 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
         for (int i = 0; i < nb; i++) {
             Coin c = new Coin((rand.nextFloat() * (mapWidth - 0.5f) + 0.25f),
                     rand.nextFloat() * (mapHeight - 3.25f) + 1.25f, 0.4f,0.4f);
-            this.entities.add(c);
+            EntityManager.getInstance().add(c);
         }
     }
 
@@ -225,9 +198,8 @@ public final class Level0 extends Observable implements Screen, Iterable<Entity>
      * Libère les resources
      */
     public void dispose() {
-        this.entities.forEach(Entity::dispose);
-        this.entities.clear();
-        music.dispose();
+        EntityManager.getInstance().dispose();
+        this.music.dispose();
     }
 
     /**
