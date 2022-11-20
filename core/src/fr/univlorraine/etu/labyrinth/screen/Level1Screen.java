@@ -583,6 +583,8 @@ public final class Level1Screen implements Screen {
         if (Objects.equals(sourceEntity.getName(), "hero")
                 && Objects.equals(targetEntity.getGroupName(), "coins")) {
             targetEntity.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            Argent arg = sourceEntity.getComponent(Argent.class);
+            arg.setArgent(arg.getArgent() + 1);
         }
     }
 
@@ -700,7 +702,10 @@ public final class Level1Screen implements Screen {
                 dimensionHud.getWidth(),
                 dimensionHud.getHeight());
 
-        //this.engine.getBatch().draw();
+        fontHud.getFont().draw(this.engine.getBatch(),
+                argentHero.getArgent() +"",
+                posHud.getValue().x + 1.7f,
+                posHud.getValue().y + 1f);
     }
 
 }

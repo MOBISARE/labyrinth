@@ -137,7 +137,7 @@ public final class EntityFactory {
 
         entity.addComponent(new Dimension(height, width));
         entity.addComponent(new Position(pos.x, pos.y));
-        entity.addComponent(new Font(Resource.FONT_HUD, 16, 0.8f, Color.YELLOW, 1/30f));
+        entity.addComponent(new Font(Resource.FONT_HUD, 17, 0.5f, Color.YELLOW, 1/16f));
         entity.addComponent(new StaticSprite(Resource.IMAGE_COIN_HUD));
 
         return entity;
