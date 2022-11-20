@@ -23,10 +23,8 @@ import fr.univlorraine.etu.labyrinth.input.ClickPosition;
 import fr.univlorraine.etu.labyrinth.input.CursorAction;
 import fr.univlorraine.etu.labyrinth.input.GamePadAction;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Level1Screen implements Screen {
 
@@ -104,6 +102,7 @@ public final class Level1Screen implements Screen {
 
     @Override
     public void render(float delta) {
+
         // UPDATE
         this.updateCamera();
         this.updateCoins(delta);
@@ -507,21 +506,32 @@ public final class Level1Screen implements Screen {
     }
 
     private void checkCollision() {
-//        List<HitBox> hitboxes = new ArrayList<>();
-//        Set<Entity> dynamicBodies = this.engine.getEntityManager().getDynamicBodies();
-//
-//        for (Entity e : dynamicBodies) {
-//            hitboxes.add(e.getComponent(HitBox.class));
-//        }
+
+        ArrayList<Entity> dynamicBodies = new ArrayList<>(this.engine.getEntityManager().getDynamicBodies());
+        ArrayList<Entity> staticBodies = new ArrayList<>(this.engine.getEntityManager().getStaticBodies());
+
+        for (int i = 0; i < dynamicBodies.size(); i++) {
+            for (int j = i + 1; j < dynamicBodies.size(); j++) {
+                HitBox hb1 = dynamicBodies.get(i).getComponent(HitBox.class);
+                HitBox hb2 = dynamicBodies.get(j).getComponent(HitBox.class);
+                if (hb1.isActive() && hb2.isActive()) {
+                    if (hb1.getValue().overlaps(hb2.getValue())) {
+
+                    }
+                }
+            }
+       }
 
         List<HitBox> hitBoxes = this.engine.getEntityManager().findOneByComponent(HitBox.class);
 
         // Check collisions entre des entités dynamiques
-        for (HitBox h0 : hitBoxes) {
-            for (HitBox h1 : hitBoxes) {
-                if (!Objects.equals(h0.getValue(), h1.getValue())) {
-                    if (h0.getValue().overlaps(h1.getValue())) {
-                        this.handleCollision(h0, h1);
+        for (int i = 0; i < hitBoxes.size(); i++) {
+            for (int j = i + 1; j < hitBoxes.size(); j++) {
+                if (hitBoxes.get(i).isActive() && hitBoxes.get(j).isActive()) {
+                    if (hitBoxes.get(i).getValue().overlaps(hitBoxes.get(j).getValue())) {
+                        this.handleCollision(hitBoxes.get(i), hitBoxes.get(j));
+                        //System.out.println("collision");
+                        System.out.println(hitBoxes.get(i));
                     }
                 }
             }
@@ -531,7 +541,6 @@ public final class Level1Screen implements Screen {
                 .getEntityManager()
                 .findByComponent(CollisionStatus.MARK_AS_REMOVE);
 
-        //System.out.println(entities);
         this.engine.getEntityManager().remove(entities);
 
         // Check collisions entre des entités dynamiques et une entité

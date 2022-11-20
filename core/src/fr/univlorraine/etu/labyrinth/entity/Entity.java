@@ -13,6 +13,8 @@ public final class Entity {
 
     private final Map<Class<?>, Component> components;
 
+    private CollisionHandler collisionHandler;
+
     public Entity(String name, String groupName) {
         this.name = name;
         this.groupName = groupName;
@@ -55,5 +57,15 @@ public final class Entity {
 
     public String getGroupName() {
         return groupName;
+    }
+
+    public void handleCollision(Entity e) {
+        if (this.collisionHandler != null) {
+            this.collisionHandler.handleCollision(this, e);
+        }
+    }
+
+    public void setCollisionHandler(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
     }
 }

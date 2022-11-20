@@ -28,7 +28,7 @@ public final class EntityFactory {
 
     public static Entity createCoin(String name, float randomXPosition, float randomYPosition) {
         Entity entity = new Entity(name, "coins");
-        entity.addComponent(new HitBox(randomXPosition, randomYPosition, COIN_SIZE, COIN_SIZE));
+        entity.addComponent(new HitBox(randomXPosition, randomYPosition, COIN_SIZE, COIN_SIZE, true, false));
         entity.addComponent(new AnimatedSprite(Resource.COIN_TEXTURE, 4, 1, 0.12f));
         entity.addComponent(new SoundPlayer(Resource.COIN_SOUND));
         entity.addComponent(CollisionStatus.NONE);
@@ -44,7 +44,7 @@ public final class EntityFactory {
         );
 
         entity.addComponent(new AnimatedSpriteList(Resource.HERO_TEXTURE, 9, 1, animations));
-        entity.addComponent(new HitBox(startXPosition, startYPosition, 1, 1.25f));
+        entity.addComponent(new HitBox(startXPosition, startYPosition, 1, 1.25f, true, true));
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.1f));
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND));
@@ -52,6 +52,14 @@ public final class EntityFactory {
         entity.addComponent(CollisionStatus.NONE);
         entity.addComponent(new Vie(6));
         entity.addComponent(new Argent(0));
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            switch (e2.getName()) {
+                case "coin":
+                    System.out.println("Une pièce");
+                    break;
+            }
+        };
 
         return entity;
     }
@@ -69,7 +77,7 @@ public final class EntityFactory {
                 "run", new AnimatedSpriteList.AnimationData(0.105f, 4, 8)
         );
         entity.addComponent(new AnimatedSpriteList(Resource.MASKULL_TEXTURE, 8, 1, animations));
-        entity.addComponent(new HitBox(startXPosition, startYPosition, 1f, 1f));
+        entity.addComponent(new HitBox(startXPosition, startYPosition, 1f, 1f, true, true));
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.05f));
         entity.addComponent(new Vision(
@@ -85,7 +93,7 @@ public final class EntityFactory {
     public static Entity createWall(String name, float positionX, float positionY, float width, float height) {
         Entity entity = new Entity(name, "walls");
 
-        entity.addComponent(new HitBox(positionX, positionY, width, height));
+        entity.addComponent(new HitBox(positionX, positionY, width, height, true, false));
         entity.addComponent(CollisionStatus.NONE);
         return entity;
     }
@@ -97,7 +105,7 @@ public final class EntityFactory {
                 "idle", new AnimatedSpriteList.AnimationData(0.105f, 0, 1)
         );
 
-        entity.addComponent(new HitBox(positionX, positionY, width, height));
+        entity.addComponent(new HitBox(positionX, positionY, width, height, false, false));
         entity.addComponent(new AnimatedSpriteList(Resource.BOW_TEXTURE, 1, 1, animations));
         return entity;
     }
@@ -110,7 +118,7 @@ public final class EntityFactory {
                                      float height,
                                      Vector2 direction) {
         Entity entity = new Entity(name, groupName);
-        entity.addComponent(new HitBox(positionX, positionY, width, height));
+        entity.addComponent(new HitBox(positionX, positionY, width, height, true, true));
         entity.addComponent(new StaticSprite(Resource.ARROW_TEXTURE));
         entity.addComponent(new Velocity(0.3f));
         entity.addComponent(new DynamicBody());

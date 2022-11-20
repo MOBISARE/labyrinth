@@ -7,9 +7,13 @@ import com.badlogic.gdx.math.Shape2D;
 public final class HitBox implements Component {
 
     private final Rectangle value;
+    private boolean isActive;
+    private boolean isDynamic;
 
-    public HitBox(float x, float y, float w, float h) {
+    public HitBox(float x, float y, float w, float h, boolean isActive, boolean isDynamic) {
         this.value = new Rectangle(x, y, w, h);
+        this.isActive = isActive;
+        this.isDynamic = isDynamic;
     }
 
     public Rectangle getValue() {
@@ -25,5 +29,17 @@ public final class HitBox implements Component {
         sb.append("height= ").append(value.height);
         sb.append('}');
         return sb.toString();
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActity(boolean b) {
+        this.isActive = b;
+    }
+
+    public boolean isDynamic() {
+        return isDynamic;
     }
 }

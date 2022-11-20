@@ -2,6 +2,7 @@ package fr.univlorraine.etu.labyrinth.entity;
 
 import fr.univlorraine.etu.labyrinth.entity.component.Component;
 import fr.univlorraine.etu.labyrinth.entity.component.DynamicBody;
+import fr.univlorraine.etu.labyrinth.entity.component.HitBox;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ public final class EntityManager {
 
     public void sortBodies() {
         for (Entity e : this.entities) {
-            if (e.hasComponent(DynamicBody.class)) {
+            if (e.getComponent(HitBox.class) != null && e.getComponent(HitBox.class).isDynamic()) {
                 this.dynamicBodies.add(e);
             } else {
                 this.staticBodies.add(e);
@@ -90,14 +91,9 @@ public final class EntityManager {
     }
 
     public void removeByName(String name) {
-        Entity entity = this.entities
-                .stream()
-                .filter(e -> Objects.equals(e.getName(), name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Entité non trouvée pour le nom : " + name));
-        this.entities.remove(entity);
-        this.staticBodies.remove(entity);
-        this.dynamicBodies.remove(entity);
+        this.entities.removeIf( e -> e.getName().equals(name));
+        this.staticBodies.removeIf(e -> e.getName().equals(name));
+        this.dynamicBodies.removeIf(e -> e.getName().equals(name));
     }
 
     public void remove(Collection <Entity> entities) {
