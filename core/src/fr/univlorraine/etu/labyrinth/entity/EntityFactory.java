@@ -49,6 +49,7 @@ public final class EntityFactory {
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
+        entity.addComponent(new Vie(6));
 
         return entity;
     }
@@ -115,5 +116,17 @@ public final class EntityFactory {
         entity.addComponent(CollisionStatus.NONE);
         return entity;
 
+    }
+
+    public static Entity createLifeHud(String name, Vector2 pos, float width, float height) {
+        Entity entity = new Entity(name);
+
+        entity.addComponent(new Position(pos.x, pos.y));
+        StaticSprite[] sprites = {new StaticSprite(Resource.FULL_HEART),
+                new StaticSprite(Resource.HALF_HEART),
+                new StaticSprite(Resource.EMPTY_HEART)};
+        entity.addComponent(new HudLife(sprites, width, height));
+
+        return entity;
     }
 }

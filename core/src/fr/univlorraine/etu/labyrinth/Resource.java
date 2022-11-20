@@ -18,6 +18,11 @@ public final class Resource {
 
     public static final String MASKULL_TEXTURE = "textures/animation_maskull.png";
 
+    public static final String FULL_HEART = "textures/ui_heart_full.png";
+
+    public static final String HALF_HEART = "textures/ui_heart_half.png";
+
+    public static final String EMPTY_HEART = "textures/ui_heart_empty.png";
 
     private Resource() {
 

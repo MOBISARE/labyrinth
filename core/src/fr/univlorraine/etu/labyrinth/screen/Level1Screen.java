@@ -90,6 +90,12 @@ public final class Level1Screen implements Screen {
         this.engine.getEntityManager().add(leftWall);
         this.engine.getEntityManager().add(rightWall);
 
+        //HUD
+        Vector2 posHud = new Vector2(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f,
+                this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 2f);
+        Entity hudLife = EntityFactory.createLifeHud("hudLife", posHud, 1.5f, 1.5f);
+        this.engine.getEntityManager().add(hudLife);
+
 
         this.engine.getEntityManager().sortBodies();
     }
@@ -103,6 +109,7 @@ public final class Level1Screen implements Screen {
         this.updateMaskull(delta);
         this.updateBow(delta);
         this.updateArrow(delta);
+        this.updateHudLife(delta);
 
         this.checkCollision();
 
@@ -118,6 +125,7 @@ public final class Level1Screen implements Screen {
         this.renderMaskull();
         this.renderBow();
         this.renderArrow();
+        this.renderHudLife();
 
         this.engine.getBatch().end();
         this.drawHitBox(this.engine.getCamera());
@@ -641,6 +649,28 @@ public final class Level1Screen implements Screen {
             sourceVision.getValue().y
                     -= sourceEntity.getComponent(Direction.class).getValue().y
                     * sourceEntity.getComponent(Velocity.class).getValue();
+        }
+    }
+
+    private void updateHudLife(float delta) {
+        Entity hudLife = this.engine.getEntityManager().findByName("hudLife");
+        Position posHudLife = hudLife.getComponent(Position.class);
+        posHudLife.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f +0.3f,
+                this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 1.6f);
+    }
+
+    private void renderHudLife() {
+        Entity hudLife = this.engine.getEntityManager().findByName("hudLife");
+        HudLife hud = hudLife.getComponent(HudLife.class);
+        Position posHud = hudLife.getComponent(Position.class);
+        Vie vieHero = this.engine.getEntityManager().findByName("hero").getComponent(Vie.class);
+
+        for (int i = 0; i < vieHero.getVie() / 2; i++) {
+            this.engine.getBatch().draw(hud.getFullHeart().getTexture(),
+                    posHud.getValue().x + (float)i * 1.5f,
+                    posHud.getValue().y,
+                    hud.getWidth(),
+                    hud.getHeight());
         }
     }
 
