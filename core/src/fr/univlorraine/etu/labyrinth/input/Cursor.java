@@ -1,45 +1,30 @@
 package fr.univlorraine.etu.labyrinth.input;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import com.badlogic.gdx.math.Vector2;
 
-public final class Cursor {
+public class Cursor {
 
-    float x;
+    private boolean isPressed;
+    private Vector2 position;
 
-    float y;
-
-    final Map<KeyBind, Boolean> keys;
-
-    final Map<CursorAction, ClickPosition> lastClickPosition;
-
-    Cursor() {
-        this.x = 0;
-        this.y = 0;
-        this.keys = new HashMap<>();
-        this.lastClickPosition = new EnumMap<>(CursorAction.class);
+    public Cursor() {
+        this.isPressed = false;
+        this.position = new Vector2(0, 0);
     }
 
-    public float getX() {
-        return x;
+    public void setPressed(boolean pressed) {
+        isPressed = pressed;
     }
 
-    public float getY() {
-        return y;
+    public boolean isPressed() {
+        return isPressed;
     }
 
-    public boolean isButtonClicked(CursorAction action) {
-        return this.keys
-                .entrySet()
-                .stream().filter(e -> Objects.equals(e.getKey().getAction(), action))
-                .map(Map.Entry::getValue)
-                .findFirst()
-                .orElse(Boolean.FALSE);
+    public Vector2 getPosition() {
+        return position;
     }
 
-    public ClickPosition getLastPosition(CursorAction action) {
-        return this.lastClickPosition.get(action);
+    public void setPosition(int x, int y) {
+        this.position.set(x, y);
     }
 }

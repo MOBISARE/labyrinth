@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import fr.univlorraine.etu.labyrinth.entity.Entity;
 import fr.univlorraine.etu.labyrinth.entity.component.FollowingCamera;
-import fr.univlorraine.etu.labyrinth.input.CursorAction;
+import fr.univlorraine.etu.labyrinth.input.Cursor;
 import fr.univlorraine.etu.labyrinth.input.GamePadAction;
 import fr.univlorraine.etu.labyrinth.input.InputManager;
 import fr.univlorraine.etu.labyrinth.entity.EntityManager;
@@ -46,7 +46,7 @@ public final class Engine extends Game {
         this.inputManager.assignKey(Input.Keys.P, GamePadAction.PAUSE);
         this.inputManager.assignKey(Input.Keys.ESCAPE, GamePadAction.EXIT);
 
-        this.inputManager.assignCursor(0, CursorAction.ATTACK);
+        //this.inputManager.assignCursor(0, CursorAction.ATTACK);
         Gdx.input.setInputProcessor(this.inputManager);
         this.setScreen(new Level1Screen(this));
     }

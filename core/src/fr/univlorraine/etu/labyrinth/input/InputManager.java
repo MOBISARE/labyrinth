@@ -10,7 +10,6 @@ import java.util.Optional;
 public final class InputManager implements InputProcessor {
 
     private final Map<KeyBind, Boolean> keys;
-
     private final Cursor cursor;
 
     public InputManager() {
@@ -40,10 +39,6 @@ public final class InputManager implements InputProcessor {
 
     public void assignKey(int keycode, GamePadAction action) {
         this.keys.put(new KeyBind(keycode, action), false);
-    }
-
-    public void assignCursor(int button, CursorAction action) {
-        this.cursor.keys.put(new KeyBind(button, action), false);
     }
 
     @Override
@@ -79,26 +74,10 @@ public final class InputManager implements InputProcessor {
     }
 
     private boolean processCursor(int button, boolean pressed) {
-        Optional<KeyBind> option = this.cursor.keys
-                .keySet()
-                .stream()
-                .filter(e -> Objects.equals(button, e.getKeyCode()))
-                .findFirst();
-
-        boolean pushed;
-        if (option.isPresent()) {
-            this.cursor.keys.put(option.get(), pressed);
-            this.cursor
-                    .lastClickPosition
-                    .put((CursorAction) option
-                            .get()
-                            .getAction(),
-                            new ClickPosition(this.cursor.x, this.cursor.y));
-            pushed = true;
-        } else {
-            pushed = false;
+        if (button == 0) {
+            this.cursor.setPressed(pressed);
         }
-        return pushed;
+        return true;
     }
 
     @Override
@@ -119,11 +98,9 @@ public final class InputManager implements InputProcessor {
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        this.cursor.x = screenX;
-        this.cursor.y = screenY;
-        //System.out.println("Position (X :" + this.cursor.x + "; Y : "  + this.cursor.y + ")");
-        return true;
+    public boolean mouseMoved(int i, int i1) {
+        this.cursor.setPosition(i, i1);
+        return false;
     }
 
     @Override

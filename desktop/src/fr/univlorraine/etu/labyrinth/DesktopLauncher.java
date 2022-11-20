@@ -15,7 +15,6 @@ public final class DesktopLauncher {
         config.setTitle("Labyrinth");
         config.setWindowedMode(1280,720);
         config.setResizable(true);
-        config.useVsync(true);
         new Lwjgl3Application(new Engine(), config);
     }
 

@@ -34,6 +34,11 @@ public final class EntityManager {
         }
     }
 
+    public void clearBodies() {
+        this.dynamicBodies.clear();
+        this.staticBodies.clear();
+    }
+
     public List<Entity> findByGroupName(String groupName) {
         return this.entities
                 .stream()

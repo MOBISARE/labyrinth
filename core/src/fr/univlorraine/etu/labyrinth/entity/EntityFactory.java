@@ -44,22 +44,42 @@ public final class EntityFactory {
         );
 
         entity.addComponent(new AnimatedSpriteList(Resource.HERO_TEXTURE, 9, 1, animations));
-        entity.addComponent(new HitBox(startXPosition, startYPosition, 1, 1.25f, true, true));
+        HitBox hb = new HitBox(startXPosition, startYPosition, 0.7f, 1.2f, true, true);
+        entity.addComponent(hb);
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.1f));
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
         entity.addComponent(new Vie(6));
-        entity.addComponent(new Argent(0));
+        Argent arg = new Argent(0);
+        entity.addComponent(arg);
 
         CollisionHandler collisionHandler = (e1, e2) -> {
+
+            if (e2.getGroupName().equals("coins")) {
+                arg.setArgent(arg.getArgent() + 1);
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            }
+
             switch (e2.getName()) {
-                case "coin":
-                    System.out.println("Une pièce");
+                case "topWall":
+                case "botWall":
+                    hb.setY(hb.getOldPosition().y);
+                    break;
+                case "leftWall":
+                case "rightWall":
+                    hb.setX(hb.getOldPosition().x);
+                    break;
+                case "maskull":
+                    e2.getComponent(HitBox.class).setPosition(e2.getComponent(HitBox.class).getOldPosition().x,
+                            e2.getComponent(HitBox.class).getOldPosition().y);
+                    e2.getComponent(Vision.class).getValue().setPosition(e2.getComponent(HitBox.class).getOldPosition());
                     break;
             }
         };
+
+        entity.setCollisionHandler(collisionHandler);
 
         return entity;
     }
@@ -77,7 +97,7 @@ public final class EntityFactory {
                 "run", new AnimatedSpriteList.AnimationData(0.105f, 4, 8)
         );
         entity.addComponent(new AnimatedSpriteList(Resource.MASKULL_TEXTURE, 8, 1, animations));
-        entity.addComponent(new HitBox(startXPosition, startYPosition, 1f, 1f, true, true));
+        entity.addComponent(new HitBox(startXPosition, startYPosition, 0.9f, 1f, true, true));
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.05f));
         entity.addComponent(new Vision(
@@ -118,12 +138,24 @@ public final class EntityFactory {
                                      float height,
                                      Vector2 direction) {
         Entity entity = new Entity(name, groupName);
-        entity.addComponent(new HitBox(positionX, positionY, width, height, true, true));
+        HitBox hb = new HitBox(positionX, positionY, width, height, true, true);
+        entity.addComponent(hb);
         entity.addComponent(new StaticSprite(Resource.ARROW_TEXTURE));
         entity.addComponent(new Velocity(0.3f));
         entity.addComponent(new DynamicBody());
-        entity.addComponent(new Trajectory(direction , ARROW_DISTANCE));
+        Trajectory tj = new Trajectory(direction , ARROW_DISTANCE);
+        entity.addComponent(tj);
         entity.addComponent(CollisionStatus.NONE);
+        hb.getBox().setRotation(tj.getAngle() - 90f);
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            if (e2.getName().equals("maskull")) {
+                entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                System.out.println("touché");
+            }
+        };
+
+        entity.setCollisionHandler(collisionHandler);
         return entity;
 
     }
