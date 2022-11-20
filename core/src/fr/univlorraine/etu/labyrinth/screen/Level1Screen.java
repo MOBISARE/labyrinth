@@ -94,7 +94,9 @@ public final class Level1Screen implements Screen {
         Vector2 posHud = new Vector2(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f,
                 this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 2f);
         Entity hudLife = EntityFactory.createLifeHud("hudLife", posHud, 1.5f, 1.5f);
+        Entity hudArgent = EntityFactory.createHudArgent("hudArgent", posHud, 1.3f, 1.3f);
         this.engine.getEntityManager().add(hudLife);
+        this.engine.getEntityManager().add(hudArgent);
 
 
         this.engine.getEntityManager().sortBodies();
@@ -110,6 +112,7 @@ public final class Level1Screen implements Screen {
         this.updateBow(delta);
         this.updateArrow(delta);
         this.updateHudLife(delta);
+        this.updateHudArgent();
 
         this.checkCollision();
 
@@ -126,6 +129,7 @@ public final class Level1Screen implements Screen {
         this.renderBow();
         this.renderArrow();
         this.renderHudLife();
+        this.renderHudArgent();
 
         this.engine.getBatch().end();
         this.drawHitBox(this.engine.getCamera());
@@ -672,6 +676,31 @@ public final class Level1Screen implements Screen {
                     hud.getWidth(),
                     hud.getHeight());
         }
+    }
+
+    private void updateHudArgent() {
+        Entity hudLife = this.engine.getEntityManager().findByName("hudArgent");
+        Position posHudArgent = hudLife.getComponent(Position.class);
+        posHudArgent.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f +7f,
+                this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 1.4f);
+    }
+
+    private void renderHudArgent() {
+        Entity hudArgent = this.engine.getEntityManager().findByName("hudArgent");
+        Entity hero = this.engine.getEntityManager().findByName("hero");
+        Position posHud = hudArgent.getComponent(Position.class);
+        Dimension dimensionHud = hudArgent.getComponent(Dimension.class);
+        StaticSprite sprite = hudArgent.getComponent(StaticSprite.class);
+        Font fontHud = hudArgent.getComponent(Font.class);
+        Argent argentHero = hero.getComponent(Argent.class);
+
+        this.engine.getBatch().draw(sprite.getTexture(),
+                posHud.getValue().x,
+                posHud.getValue().y,
+                dimensionHud.getWidth(),
+                dimensionHud.getHeight());
+
+        //this.engine.getBatch().draw();
     }
 
 }

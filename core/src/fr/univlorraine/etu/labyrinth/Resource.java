@@ -24,6 +24,10 @@ public final class Resource {
 
     public static final String EMPTY_HEART = "textures/ui_heart_empty.png";
 
+    public static final String FONT_HUD = "fonts/alagard.ttf";
+
+    public static final String IMAGE_COIN_HUD = "textures/coin_anim_f0.png";
+
     private Resource() {
 
     }

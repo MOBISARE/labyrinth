@@ -1,5 +1,6 @@
 package fr.univlorraine.etu.labyrinth.entity;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import fr.univlorraine.etu.labyrinth.Resource;
 import fr.univlorraine.etu.labyrinth.entity.component.*;
@@ -50,6 +51,7 @@ public final class EntityFactory {
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
         entity.addComponent(new Vie(6));
+        entity.addComponent(new Argent(0));
 
         return entity;
     }
@@ -126,6 +128,17 @@ public final class EntityFactory {
                 new StaticSprite(Resource.HALF_HEART),
                 new StaticSprite(Resource.EMPTY_HEART)};
         entity.addComponent(new HudLife(sprites, width, height));
+
+        return entity;
+    }
+
+    public static Entity createHudArgent(String name, Vector2 pos, float width, float height) {
+        Entity entity = new Entity(name);
+
+        entity.addComponent(new Dimension(height, width));
+        entity.addComponent(new Position(pos.x, pos.y));
+        entity.addComponent(new Font(Resource.FONT_HUD, 16, 0.8f, Color.YELLOW, 1/30f));
+        entity.addComponent(new StaticSprite(Resource.IMAGE_COIN_HUD));
 
         return entity;
     }
