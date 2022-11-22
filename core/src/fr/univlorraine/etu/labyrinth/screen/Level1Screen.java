@@ -427,10 +427,12 @@ public final class Level1Screen implements Screen {
             hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
 
             //TODO à refaire collision cercle-enemy
-            if (true) {
+            if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
 
-                direction.getValue().x -= hitBox.getX() - heroHitBox.getY();
-                direction.getValue().y -= hitBox.getY() - heroHitBox.getY();
+                Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
+                Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
+
+                direction.getValue().set(posHero.sub(posMaskull));
 
             } else {
                 direction.getValue().x = 0;
