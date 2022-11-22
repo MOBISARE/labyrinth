@@ -1,0 +1,337 @@
+@startuml
+enum com.mygdx.labyrinth.input.GamePadAction {
++  UP
++  DOWN
++  LEFT
++  RIGHT
++  ATTACK
++  PAUSE
++  EXIT
+}
+class com.mygdx.labyrinth.entity.component.Direction {
+- Vector2 value
++ Vector2 getValue()
+}
+class com.mygdx.labyrinth.entity.component.SoundPlayer {
+- Sound sound
+- int cooldown
+- int deltaSound
++ Sound getSound()
++ void cooldown()
++ void restartCooldown()
++ boolean operational()
+}
+interface com.mygdx.labyrinth.entity.CollisionHandler {
+~ void handleCollision(Entity,Entity)
+}
+class com.mygdx.labyrinth.entity.component.AnimatedSprite {
+- Texture texture
+- Animation<TextureRegion> animation
+- float stateTime
++ void update(float)
++ TextureRegion getFrame(boolean)
+}
+class com.mygdx.labyrinth.input.Cursor {
+- boolean isPressed
+- Vector2 position
++ void setPressed(boolean)
++ boolean isPressed()
++ Vector2 getPosition()
++ void setPosition(int,int)
+}
+class com.mygdx.labyrinth.entity.component.Vie {
+- int vie
++ int getVie()
++ void setVie(int)
+}
+class com.mygdx.labyrinth.screen.Level1Screen {
+- Engine engine
+- TiledMap map
+- OrthogonalTiledMapRenderer tileMap
+- ShapeRenderer debbug
+- long timerTire
++ void show()
++ void render(float)
++ void resize(int,int)
++ void pause()
++ void resume()
++ void hide()
++ void dispose()
+- void drawHitBox(OrthographicCamera)
+- void updateCoins(float)
+- void renderCoin()
+- void updateHero(float)
+- void renderHero()
+- void updateBow(float)
+- void renderBow()
+- void updateArrow(float)
+- void renderArrow()
+- void updateMaskull(float)
+- void renderMaskull()
+- void updateCamera()
+- void checkCollision()
+- void updateHudLife(float)
+- void renderHudLife()
+- void updateHudArgent()
+- void renderHudArgent()
+}
+interface com.mygdx.labyrinth.input.Bindable {
+}
+class com.mygdx.labyrinth.entity.component.Vision {
+- Circle value
++ Circle getValue()
+}
+class com.mygdx.labyrinth.entity.component.MusicLevel {
+- Music music
++ void init()
++ Music getSound()
+}
+enum com.mygdx.labyrinth.entity.component.CollisionStatus {
++  MARK_AS_REMOVE
++  SPOTTED
++  NONE
+}
+class com.mygdx.labyrinth.entity.component.HitBox {
+- Polygon box
+- boolean isActive
+- boolean isDynamic
+- Vector2 oldPosition
+- float width
+- float height
++ float getX()
++ float getY()
++ void setX(float)
++ void setY(float)
++ void setPosition(float,float)
++ Polygon getBox()
++ boolean isActive()
++ void setActity(boolean)
++ boolean isDynamic()
++ Vector2 getOldPosition()
++ float getHeight()
++ float getWidth()
+}
+class com.mygdx.labyrinth.entity.component.HudLife {
+- StaticSprite[] hearts
+- float height
+- float width
++ StaticSprite getFullHeart()
++ StaticSprite getHalfHeart()
++ StaticSprite getEmptyHeart()
++ float getWidth()
++ float getHeight()
+}
+class com.mygdx.labyrinth.entity.component.Trajectory {
+- Vector2 direction
+- float distance
++ float getStartX()
++ float getStartY()
++ float getAngle()
++ float getDistance()
++ Vector2 getVector()
+}
+interface com.mygdx.labyrinth.entity.component.Component {
+}
+class com.mygdx.labyrinth.entity.component.StaticSprite {
+- TextureRegion textureRegion
++ boolean isFlipX()
++ void flip(boolean,boolean)
++ boolean isFlipY()
++ Texture getTexture()
++ TextureRegion getTextureRegion()
+}
+class com.mygdx.labyrinth.input.KeyBind {
+- int keyCode
+- Bindable action
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ int getKeyCode()
++ Bindable getAction()
+}
+class com.mygdx.labyrinth.entity.component.Font {
+- BitmapFont policeHud
++ BitmapFont getFont()
+}
+class com.mygdx.labyrinth.entity.Entity {
+- String name
+- String groupName
+- Map<Class<?>,Component> components
+- CollisionHandler collisionHandler
++ String toString()
++ void addComponent(C)
++ boolean hasComponent(Class<C>)
++ C removeComponent(Class<C>)
++ C getComponent(Class<C>)
++ String getName()
++ String getGroupName()
++ void handleCollision(Entity)
++ void setCollisionHandler(CollisionHandler)
+}
+class com.mygdx.labyrinth.entity.component.AnimatedSpriteList {
+- Texture texture
+- Map<String,Animation<TextureRegion>> animations
+- String currentAnimationName
+- float stateTime
+- boolean flipX
+- boolean flipY
++ void update(float)
++ TextureRegion getFrame(boolean)
++ String getCurrentAnimationName()
++ void setCurrentAnimationName(String)
++ boolean isFlipX()
++ void setFlipX(boolean)
++ boolean isFlipY()
++ void setFlipY(boolean)
+}
+class com.mygdx.labyrinth.entity.component.AnimatedSpriteList.AnimationData {
+- float frameDuration
+- int firstFrameIndex
+- int lastFrameIndex
+}
+class com.mygdx.labyrinth.entity.component.Velocity {
+- float value
++ float getValue()
+}
+class com.mygdx.labyrinth.entity.component.FollowingCamera {
+- OrthographicCamera camera
+- Viewport viewport
++ void init()
++ void follow(float,float,float,float)
++ void resize(int,int)
++ OrthographicCamera getCamera()
++ Viewport getViewport()
+}
+class com.mygdx.labyrinth.input.InputManager {
+- Map<KeyBind,Boolean> keys
+- Cursor cursor
++ boolean isPressed(GamePadAction)
++ void assignKey(int,GamePadAction)
++ boolean keyDown(int)
++ boolean keyUp(int)
+- boolean processKey(int,boolean)
++ boolean keyTyped(char)
+- boolean processCursor(int,boolean)
++ boolean touchDown(int,int,int,int)
++ boolean touchUp(int,int,int,int)
++ boolean touchDragged(int,int,int)
++ boolean mouseMoved(int,int)
++ boolean scrolled(float,float)
++ Cursor getCursor()
+}
+class com.mygdx.labyrinth.entity.component.Position {
+- Vector2 value
++ Vector2 getValue()
+}
+class com.mygdx.labyrinth.entity.component.DynamicBody {
+- boolean value
++ boolean isDynamic()
+}
+class com.mygdx.labyrinth.entity.component.Dimension {
+- float height
+- float width
++ float getWidth()
++ float getHeight()
++ void setHeight(float)
++ void setWidth(float)
+}
+class com.mygdx.labyrinth.engine.Engine {
++ {static} float WIDTH
++ {static} float HEIGHT
++ {static} float SCALE
++ {static} int TILE_SIZE
+- EntityManager entityManager
+- InputManager inputManager
+- SpriteBatch batch
++ void create()
++ SpriteBatch getBatch()
++ EntityManager getEntityManager()
++ InputManager getInputManager()
++ OrthographicCamera getCamera()
++ Entity getEntityByName(String)
+}
+class com.mygdx.labyrinth.entity.EntityFactory {
++ {static} float COIN_SIZE
++ {static} float HERO_WIDTH
++ {static} float HERO_HEIGHT
++ {static} float MASKULL_WIDTH
++ {static} float MASKULL_HEIGHT
++ {static} float ARROW_DISTANCE
++ {static} Entity createCoin(String,float,float)
++ {static} Entity createHero(float,float)
++ {static} Entity createCamera()
++ {static} Entity createMaskull(String,float,float)
++ {static} Entity createWall(String,float,float,float,float)
++ {static} Entity createBow(String,float,float,float,float)
++ {static} Entity createArrow(String,String,float,float,float,float,Vector2)
++ {static} Entity createLifeHud(String,Vector2,float,float)
++ {static} Entity createHudArgent(String,Vector2,float,float)
+}
+class com.mygdx.labyrinth.entity.EntityManager {
+- List<Entity> entities
+- Set<Entity> dynamicBodies
+- Set<Entity> staticBodies
++ void add(Entity)
++ void sortBodies()
++ void clearBodies()
++ List<Entity> findByGroupName(String)
++ Entity findByName(String)
++ boolean has(String)
++ C findByNameAndComponent(String,Class<C>)
++ List<C> findOneByComponent(Class<C>)
++ Entity findOneByComponent(C)
++ List<Entity> findByComponent(C)
++ void removeByName(String)
++ void remove(Collection<Entity>)
++ List<Entity> getEntities()
++ Set<Entity> getDynamicBodies()
++ Set<Entity> getStaticBodies()
+}
+class com.mygdx.labyrinth.Resource {
++ {static} String MAP_LEVEL_1
++ {static} Texture COIN_TEXTURE
++ {static} Sound COIN_SOUND
++ {static} Texture HERO_TEXTURE
++ {static} Texture BOW_TEXTURE
++ {static} String ARROW_TEXTURE
++ {static} Sound HERO_WALK_SOUND
++ {static} int HERO_WALK_DELTASOUND
++ {static} Music MUSIC_LEVEL
++ {static} String FULL_HEART
++ {static} String HALF_HEART
++ {static} String EMPTY_HEART
++ {static} String FONT_HUD
++ {static} String IMAGE_COIN_HUD
++ {static} Texture MASKULL_TEXTURE
++ {static} void dispose()
+}
+class com.mygdx.labyrinth.entity.component.Argent {
+- int argent
++ int getArgent()
++ void setArgent(int)
+}
+
+
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Direction
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.SoundPlayer
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.AnimatedSprite
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Vie
+com.badlogic.gdx.Screen <|.. com.mygdx.labyrinth.screen.Level1Screen
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Vision
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.MusicLevel
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.HitBox
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.HudLife
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Trajectory
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.StaticSprite
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Font
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.AnimatedSpriteList
+com.mygdx.labyrinth.entity.component.AnimatedSpriteList +.. com.mygdx.labyrinth.entity.component.AnimatedSpriteList.AnimationData
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Velocity
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.FollowingCamera
+com.badlogic.gdx.InputProcessor <|.. com.mygdx.labyrinth.input.InputManager
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Position
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.DynamicBody
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Dimension
+com.badlogic.gdx.Game <|-- com.mygdx.labyrinth.engine.Engine
+com.mygdx.labyrinth.entity.component.Component <|.. com.mygdx.labyrinth.entity.component.Argent
+@enduml
