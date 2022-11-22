@@ -112,7 +112,7 @@ public final class EntityFactory {
         entity.addComponent(vie);
 
         CollisionHandler collisionHandler = (e1, e2) -> {
-            if (e2.getGroupName().equals("arrows")) {
+            if (e2.getGroupName().equals("heroArrows")) {
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
                 vie.setVie(vie.getVie() - 1);
             } else if (e2.getGroupName().equals("walls")) {
@@ -164,10 +164,10 @@ public final class EntityFactory {
         hb.getBox().setRotation(tj.getAngle() - 90f);
 
         CollisionHandler collisionHandler = (e1, e2) -> {
-            if (e2.getName().equals("maskull")) {
+            if (e2.getGroupName().equals("enemies")) {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
-                Vie vie = e2.getComponent(Vie.class);
-                vie.setVie(vie.getVie() - 1);
+//                Vie vie = e2.getComponent(Vie.class);
+//                vie.setVie(vie.getVie() - 1);
             } else if (e2.getGroupName().equals("walls")) {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }

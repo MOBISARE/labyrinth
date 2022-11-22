@@ -69,8 +69,10 @@ public final class Level1Screen implements Screen {
 
         // MONSTERS
         // MASKULL
-        Entity maskull1 = EntityFactory.createMaskull("maskull", x + 3, y + 3);
-        this.engine.getEntityManager().add(maskull1);
+        for (int i = 0 ; i < 5 ; i++) {
+            Entity maskull = EntityFactory.createMaskull("maskull" + i, x + 3*i, y + 3*i);
+            this.engine.getEntityManager().add(maskull);
+        }
 
         // CAMERA
         Entity camera = EntityFactory.createCamera();
@@ -347,13 +349,13 @@ public final class Level1Screen implements Screen {
         long currentTime = System.currentTimeMillis();
         if (cursor.isPressed() && currentTime - timerTire > 500) {
 
-            // Attention renvoie l'origine est en haut à gauche !!!
+            // Attention renvoie l'origine en haut à gauche !!!
             HitBox bowHitBox = bow.getComponent(HitBox.class);
 
-            // Récupération des coordonnée du clic (en pixel: origine en haut à gauche)
+            // Récupération des coordonnées du clic (en pixel : origine en haut à gauche)
             Vector3 mouseTmp = new Vector3(cursor.getPosition().x, cursor.getPosition().y, 0f);
 
-            // Pour récupérer les coordonnées on fonction du monde
+            // Pour récupérer les coordonnées en fonction du monde
             this.engine.getCamera().unproject(mouseTmp);
             Vector2 mouse = new Vector2(mouseTmp.x, mouseTmp.y);
 
@@ -421,83 +423,93 @@ public final class Level1Screen implements Screen {
     }
 
     private void updateMaskull(float deltaTime) {
-        if (this.engine.getEntityManager().has("maskull")) {
-            Entity maskull = this.engine.getEntityByName("maskull");
-            Entity hero = this.engine.getEntityByName("hero");
-            AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
-            animatedSpriteList.update(deltaTime);
+        List<Entity> enemies = this.engine.getEntityManager().findByGroupName("enemies");
+        Entity hero = this.engine.getEntityByName("hero");
+        int cpt = 0;
+        for (Entity enemy : enemies) {
+            if (this.engine.getEntityManager().has("maskull" + cpt)) {
+                //enemy = this.engine.getEntityByName("maskull" + cpt);
+                AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+                animatedSpriteList.update(deltaTime);
 
-            Direction direction = maskull.getComponent(Direction.class);
-            HitBox hitBox = maskull.getComponent(HitBox.class);
-            HitBox heroHitBox = hero.getComponent(HitBox.class);
-            Velocity velocity = maskull.getComponent(Velocity.class);
-            Vision vision = maskull.getComponent(Vision.class);
-            Vie vie = maskull.getComponent(Vie.class);
+                Direction direction = enemy.getComponent(Direction.class);
+                HitBox hitBox = enemy.getComponent(HitBox.class);
+                HitBox heroHitBox = hero.getComponent(HitBox.class);
+                Velocity velocity = enemy.getComponent(Velocity.class);
+                Vision vision = enemy.getComponent(Vision.class);
+                Vie vie = enemy.getComponent(Vie.class);
 
-            if (vie.getVie() == 0) {
-                maskull.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                if (vie.getVie() == 0) {
+                    enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                }
+
+                hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
+
+                //TODO à refaire collision cercle-enemy
+                if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
+
+                    Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
+                    Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
+
+                    direction.getValue().set(posHero.sub(posMaskull));
+
+                } else {
+                    direction.getValue().x = 0;
+                    direction.getValue().y = 0;
+                }
+
+                if (direction.getValue().x != 0 && direction.getValue().y != 0) {
+                    direction.getValue().nor();
+                }
+
+                if (direction.getValue().x == 0 && direction.getValue().y == 0) {
+                    animatedSpriteList.setCurrentAnimationName("idle");
+                } else {
+                    animatedSpriteList.setCurrentAnimationName("run");
+                }
+
+                hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
+                vision.getValue().x += direction.getValue().x * velocity.getValue();
+                hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
+                vision.getValue().y += direction.getValue().y * velocity.getValue();
+
+                if (direction.getValue().x > 0) {
+                    animatedSpriteList.setFlipX(false);
+                }
+                if (direction.getValue().x < 0) {
+                    animatedSpriteList.setFlipX(true);
+                }
             }
-
-            hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
-
-            //TODO à refaire collision cercle-enemy
-            if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
-
-                Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
-                Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
-
-                direction.getValue().set(posHero.sub(posMaskull));
-
-            } else {
-                direction.getValue().x = 0;
-                direction.getValue().y = 0;
-            }
-
-            if (direction.getValue().x != 0 && direction.getValue().y != 0) {
-                direction.getValue().nor();
-            }
-
-            if (direction.getValue().x == 0 && direction.getValue().y == 0) {
-                animatedSpriteList.setCurrentAnimationName("idle");
-            } else {
-                animatedSpriteList.setCurrentAnimationName("run");
-            }
-
-            hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
-            vision.getValue().x += direction.getValue().x * velocity.getValue();
-            hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
-            vision.getValue().y += direction.getValue().y * velocity.getValue();
-
-            if (direction.getValue().x > 0) {
-                animatedSpriteList.setFlipX(false);
-            }
-            if (direction.getValue().x < 0) {
-                animatedSpriteList.setFlipX(true);
-            }
+            cpt++;
         }
     }
 
     private void renderMaskull() {
-        if (this.engine.getEntityManager().has("maskull")) {
-            Entity maskull = this.engine.getEntityManager().findByName("maskull");
-            AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
-            TextureRegion sprite = animatedSpriteList.getFrame(true);
-            if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
-                sprite.flip(true, false);
-            }
+        List<Entity> enemies = this.engine.getEntityManager().findByGroupName("enemies");
+        int cpt = 0;
+        for (Entity enemy : enemies) {
+            if (this.engine.getEntityManager().has("maskull" + cpt)) {
+                //enemy = this.engine.getEntityManager().findByName("maskull" + cpt);
+                AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+                TextureRegion sprite = animatedSpriteList.getFrame(true);
+                if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
+                    sprite.flip(true, false);
+                }
 
-            if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
-                sprite.flip(true, false);
-            }
+                if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
+                    sprite.flip(true, false);
+                }
 
-            HitBox hitBox = maskull.getComponent(HitBox.class);
-            this.engine.getBatch().draw(
-                    sprite,
-                    hitBox.getX(),
-                    hitBox.getY(),
-                    sprite.getRegionWidth() / 16f,
-                    sprite.getRegionHeight() / 16f
-            );
+                HitBox hitBox = enemy.getComponent(HitBox.class);
+                this.engine.getBatch().draw(
+                        sprite,
+                        hitBox.getX(),
+                        hitBox.getY(),
+                        sprite.getRegionWidth() / 16f,
+                        sprite.getRegionHeight() / 16f
+                );
+            }
+            cpt++;
         }
     }
 
