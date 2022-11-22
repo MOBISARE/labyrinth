@@ -13,6 +13,8 @@ public final class Entity {
 
     private final Map<Class<?>, Component> components;
 
+    private CollisionHandler collisionHandler;
+
     public Entity(String name, String groupName) {
         this.name = name;
         this.groupName = groupName;
@@ -21,6 +23,16 @@ public final class Entity {
 
     public Entity(String name) {
         this(name, "<unknown>");
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Entity{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", groupName='").append(groupName).append('\'');
+        sb.append(", componentsSize=").append(components.size());
+        sb.append('}');
+        return sb.toString();
     }
 
     public <C extends Component> void addComponent(C component) {
@@ -45,5 +57,15 @@ public final class Entity {
 
     public String getGroupName() {
         return groupName;
+    }
+
+    public void handleCollision(Entity e) {
+        if (this.collisionHandler != null) {
+            this.collisionHandler.handleCollision(this, e);
+        }
+    }
+
+    public void setCollisionHandler(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
     }
 }

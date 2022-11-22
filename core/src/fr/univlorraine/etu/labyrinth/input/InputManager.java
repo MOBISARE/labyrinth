@@ -10,9 +10,11 @@ import java.util.Optional;
 public final class InputManager implements InputProcessor {
 
     private final Map<KeyBind, Boolean> keys;
+    private final Cursor cursor;
 
     public InputManager() {
         this.keys = new HashMap<>();
+        this.cursor = new Cursor();
     }
 
     public boolean isPressed(GamePadAction action) {
@@ -35,7 +37,7 @@ public final class InputManager implements InputProcessor {
                 .orElse(Boolean.FALSE);
     }
 
-    public void assign(int keycode, GamePadAction action) {
+    public void assignKey(int keycode, GamePadAction action) {
         this.keys.put(new KeyBind(keycode, action), false);
     }
 
@@ -59,26 +61,35 @@ public final class InputManager implements InputProcessor {
         boolean pushed;
         if (option.isPresent()) {
             this.keys.put(option.get(), pressed);
+
             pushed = true;
         } else {
             pushed = false;
         }
         return pushed;
     }
-
     @Override
     public boolean keyTyped(char character) {
         return false;
     }
 
+    private boolean processCursor(int button, boolean pressed) {
+        if (button == 0) {
+            this.cursor.setPressed(pressed);
+        }
+        return true;
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
+        processCursor(button, true);
+        return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+        processCursor(button, false);
+        return true;
     }
 
     @Override
@@ -87,7 +98,8 @@ public final class InputManager implements InputProcessor {
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
+    public boolean mouseMoved(int i, int i1) {
+        this.cursor.setPosition(i, i1);
         return false;
     }
 
@@ -95,4 +107,9 @@ public final class InputManager implements InputProcessor {
     public boolean scrolled(float amountX, float amountY) {
         return false;
     }
+
+    public Cursor getCursor() {
+        return cursor;
+    }
 }
+

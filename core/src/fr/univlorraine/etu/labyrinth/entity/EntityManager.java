@@ -2,6 +2,7 @@ package fr.univlorraine.etu.labyrinth.entity;
 
 import fr.univlorraine.etu.labyrinth.entity.component.Component;
 import fr.univlorraine.etu.labyrinth.entity.component.DynamicBody;
+import fr.univlorraine.etu.labyrinth.entity.component.HitBox;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,12 +26,17 @@ public final class EntityManager {
 
     public void sortBodies() {
         for (Entity e : this.entities) {
-            if (e.hasComponent(DynamicBody.class)) {
+            if (e.getComponent(HitBox.class) != null && e.getComponent(HitBox.class).isDynamic()) {
                 this.dynamicBodies.add(e);
             } else {
                 this.staticBodies.add(e);
             }
         }
+    }
+
+    public void clearBodies() {
+        this.dynamicBodies.clear();
+        this.staticBodies.clear();
     }
 
     public List<Entity> findByGroupName(String groupName) {
@@ -48,11 +54,17 @@ public final class EntityManager {
                 .orElseThrow(() -> new IllegalArgumentException("Entité non trouvée pour le nom : " + name));
     }
 
+    public boolean has(String name) {
+        return this.entities
+                .stream()
+                .anyMatch(e -> Objects.equals(name, e.getName()));
+    }
+
     public <C extends Component> C findByNameAndComponent(String name, Class<C> componentType) {
         return this.findByName(name).getComponent(componentType);
     }
 
-    public <C extends Component> List<C> findByComponent(Class<C> componentType) {
+    public <C extends Component> List<C> findOneByComponent(Class<C> componentType) {
 
 //        List<C> components = new ArrayList<>();
 //        for(Entity e: this.entities){
@@ -70,7 +82,7 @@ public final class EntityManager {
                 .collect(Collectors.toList());
     }
 
-    public <C extends Component> Entity findByComponent(C component) {
+    public <C extends Component> Entity findOneByComponent(C component) {
         Class<C> componentType = (Class<C>) component.getClass();
         return this.entities
                 .stream()
@@ -80,15 +92,23 @@ public final class EntityManager {
                 .orElseThrow(() -> new IllegalArgumentException("Entité non trouvée pour le composant : " + componentType + " " + component));
     }
 
-    public void removeByName(String name) {
-        Entity entity = this.entities
+    public <C extends Component> List<Entity> findByComponent(C component) {
+        Class<C> componentType = (Class<C>) component.getClass();
+        return this.entities
                 .stream()
-                .filter(e -> Objects.equals(e.getName(), name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Entité non trouvée pour le nom : " + name));
-        this.entities.remove(entity);
-        this.staticBodies.remove(entity);
-        this.dynamicBodies.remove(entity);
+                .filter(e -> e.hasComponent(componentType))
+                .filter(e -> Objects.equals(e.getComponent(componentType), component))
+                .collect(Collectors.toList());
+    }
+
+    public void removeByName(String name) {
+        this.entities.removeIf( e -> e.getName().equals(name));
+        this.staticBodies.removeIf(e -> e.getName().equals(name));
+        this.dynamicBodies.removeIf(e -> e.getName().equals(name));
+    }
+
+    public void remove(Collection <Entity> entities) {
+        this.entities.removeAll(entities);
     }
 
     public List<Entity> getEntities() {

@@ -1,6 +1,6 @@
 package fr.univlorraine.etu.labyrinth.input;
 
-public enum GamePadAction {
+public enum GamePadAction implements Bindable {
 
     UP,
     DOWN,
