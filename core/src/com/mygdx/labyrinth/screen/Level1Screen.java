@@ -69,8 +69,8 @@ public final class Level1Screen implements Screen {
 
         // MONSTERS
         // MASKULL
-        Entity maskull = EntityFactory.createMaskull("maskull", x + 3, y + 3);
-        this.engine.getEntityManager().add(maskull);
+        Entity maskull1 = EntityFactory.createMaskull("maskull", x + 3, y + 3);
+        this.engine.getEntityManager().add(maskull1);
 
         // CAMERA
         Entity camera = EntityFactory.createCamera();
@@ -535,7 +535,7 @@ public final class Level1Screen implements Screen {
         ArrayList<Entity> staticBodies = new ArrayList<>(this.engine.getEntityManager().getStaticBodies());
 
         for (int i = 0; i < dynamicBodies.size(); i++) {
-            for (int j = i + 1; j < dynamicBodies.size(); j++) {
+            for (int j = 0; j < dynamicBodies.size(); j++) {
                 HitBox hb1 = dynamicBodies.get(i).getComponent(HitBox.class);
                 HitBox hb2 = dynamicBodies.get(j).getComponent(HitBox.class);
 
@@ -548,6 +548,7 @@ public final class Level1Screen implements Screen {
        }
 
         // Check collisions entre des entités dynamiques
+        System.out.println(dynamicBodies.size());
         for (Entity dynamicBody : dynamicBodies) {
             for (Entity staticBody : staticBodies) {
                 HitBox hb1 = dynamicBody.getComponent(HitBox.class);

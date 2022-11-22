@@ -98,7 +98,8 @@ public final class EntityFactory {
                 "run", new AnimatedSpriteList.AnimationData(0.105f, 4, 8)
         );
         entity.addComponent(new AnimatedSpriteList(Resource.MASKULL_TEXTURE, 8, 1, animations));
-        entity.addComponent(new HitBox(startXPosition, startYPosition, 0.9f, 1f, true, true));
+        HitBox hitBox = new HitBox(startXPosition, startYPosition, 0.9f, 1f, true, true);
+        entity.addComponent(hitBox);
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.05f));
         entity.addComponent(new Vision(
@@ -109,6 +110,17 @@ public final class EntityFactory {
         entity.addComponent(CollisionStatus.NONE);
         Vie vie = new Vie(3);
         entity.addComponent(vie);
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            if (e2.getGroupName().equals("arrows")) {
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                vie.setVie(vie.getVie() - 1);
+            } else if (e2.getGroupName().equals("walls")) {
+                hitBox.getBox().setPosition(hitBox.getX(), hitBox.getY());
+            }
+        };
+
+        entity.setCollisionHandler(collisionHandler);
 
         return entity;
     }
@@ -156,7 +168,8 @@ public final class EntityFactory {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
                 Vie vie = e2.getComponent(Vie.class);
                 vie.setVie(vie.getVie() - 1);
-                System.out.println("touché");
+            } else if (e2.getGroupName().equals("walls")) {
+                entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
         };
 
