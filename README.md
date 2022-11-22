@@ -127,6 +127,40 @@ Elle nous bloque sur certains points ce qui nous prendra plus de temps.
 - Ajout d'une arme à distance. 
 - Gestion des projectiles.
 
+## Sprint Review
+
+Faits :
+ - Attaque du personnage.                 - 5  
+ - Ajout d'une arme à distance.           - 4  
+ - Gestion des projectiles.               - 6   
+ 
+Non faits : 
+ - Ajout d'une arme de corps à corps.     - 4  
+ - Affichage d'un menu de début.          - 3   
+ - Affichage d'un menu de fin.            - 3   
+ - Création du premier niveau.            - 8  
+ - Ajout de potions de soin.              - 3  
+ 
+Bugs à fixer :
+ Collision Montre - Flèches ne réussi pas à tous les coups.
+  
+## Retrospective
+
+Membres de l'équipe toujours présents Florent, Sacha et Marie-Luc qui sont présents pour travailler.
+Les deux autres membres du groupe ne se sont toujours pas manifestés.
+
+Nouvelle architecture complexe à prendre en main, ce qui à énormément ralenti notre sprint (conception + prise en main).
+
+# Sprint final
+## Primaire   
+- Ajout d'une arme de corps à corps.    
+- Affichage d'un menu de début.    
+- Affichage d'un menu de fin.  
+- Création du premier niveau.  
+
+## Secondaire
+- Ajout de potions de soin.  
+
 ### Outils utilisés :
 
 Langage : JAVA 11.  
