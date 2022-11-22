@@ -407,73 +407,82 @@ public final class Level1Screen implements Screen {
     }
 
     private void updateMaskull(float deltaTime) {
-        Entity maskull = this.engine.getEntityByName("maskull");
-        Entity hero = this.engine.getEntityByName("hero");
-        AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
-        animatedSpriteList.update(deltaTime);
+        if (this.engine.getEntityManager().has("maskull")) {
+            Entity maskull = this.engine.getEntityByName("maskull");
+            Entity hero = this.engine.getEntityByName("hero");
+            AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
+            animatedSpriteList.update(deltaTime);
 
-        Direction direction = maskull.getComponent(Direction.class);
-        HitBox hitBox = maskull.getComponent(HitBox.class);
-        HitBox heroHitBox = hero.getComponent(HitBox.class);
-        Velocity velocity = maskull.getComponent(Velocity.class);
-        Vision vision = maskull.getComponent(Vision.class);
+            Direction direction = maskull.getComponent(Direction.class);
+            HitBox hitBox = maskull.getComponent(HitBox.class);
+            HitBox heroHitBox = hero.getComponent(HitBox.class);
+            Velocity velocity = maskull.getComponent(Velocity.class);
+            Vision vision = maskull.getComponent(Vision.class);
+            Vie vie = maskull.getComponent(Vie.class);
 
-        hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
+            if (vie.getVie() == 0) {
+                maskull.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            }
 
-        //TODO à refaire collision cercle-enemy
-        if (true) {
+            hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
 
-            direction.getValue().x -= hitBox.getX() - heroHitBox.getY();
-            direction.getValue().y -= hitBox.getY()- heroHitBox.getY();
+            //TODO à refaire collision cercle-enemy
+            if (true) {
 
-        } else {
-            direction.getValue().x = 0;
-            direction.getValue().y = 0;
-        }
+                direction.getValue().x -= hitBox.getX() - heroHitBox.getY();
+                direction.getValue().y -= hitBox.getY() - heroHitBox.getY();
 
-        if (direction.getValue().x != 0 && direction.getValue().y != 0) {
-            direction.getValue().nor();
-        }
+            } else {
+                direction.getValue().x = 0;
+                direction.getValue().y = 0;
+            }
 
-        if (direction.getValue().x == 0 && direction.getValue().y == 0) {
-            animatedSpriteList.setCurrentAnimationName("idle");
-        } else {
-            animatedSpriteList.setCurrentAnimationName("run");
-        }
+            if (direction.getValue().x != 0 && direction.getValue().y != 0) {
+                direction.getValue().nor();
+            }
 
-        hitBox.setX(hitBox.getX()+ direction.getValue().x * velocity.getValue());
-        vision.getValue().x += direction.getValue().x * velocity.getValue();
-        hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
-        vision.getValue().y += direction.getValue().y * velocity.getValue();
+            if (direction.getValue().x == 0 && direction.getValue().y == 0) {
+                animatedSpriteList.setCurrentAnimationName("idle");
+            } else {
+                animatedSpriteList.setCurrentAnimationName("run");
+            }
 
-        if (direction.getValue().x > 0) {
-            animatedSpriteList.setFlipX(false);
-        }
-        if (direction.getValue().x < 0) {
-            animatedSpriteList.setFlipX(true);
+            hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
+            vision.getValue().x += direction.getValue().x * velocity.getValue();
+            hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
+            vision.getValue().y += direction.getValue().y * velocity.getValue();
+
+            if (direction.getValue().x > 0) {
+                animatedSpriteList.setFlipX(false);
+            }
+            if (direction.getValue().x < 0) {
+                animatedSpriteList.setFlipX(true);
+            }
         }
     }
 
     private void renderMaskull() {
-        Entity maskull = this.engine.getEntityManager().findByName("maskull");
-        AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
-        TextureRegion sprite = animatedSpriteList.getFrame(true);
-        if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
-            sprite.flip(true, false);
-        }
+        if (this.engine.getEntityManager().has("maskull")) {
+            Entity maskull = this.engine.getEntityManager().findByName("maskull");
+            AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
+            TextureRegion sprite = animatedSpriteList.getFrame(true);
+            if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
+                sprite.flip(true, false);
+            }
 
-        if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
-            sprite.flip(true, false);
-        }
+            if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
+                sprite.flip(true, false);
+            }
 
-        HitBox hitBox = maskull.getComponent(HitBox.class);
-        this.engine.getBatch().draw(
-                sprite,
-                hitBox.getX(),
-                hitBox.getY(),
-                sprite.getRegionWidth() / 16f,
-                sprite.getRegionHeight() / 16f
-        );
+            HitBox hitBox = maskull.getComponent(HitBox.class);
+            this.engine.getBatch().draw(
+                    sprite,
+                    hitBox.getX(),
+                    hitBox.getY(),
+                    sprite.getRegionWidth() / 16f,
+                    sprite.getRegionHeight() / 16f
+            );
+        }
     }
 
 

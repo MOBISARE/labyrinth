@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import fr.univlorraine.etu.labyrinth.entity.Entity;
 import fr.univlorraine.etu.labyrinth.entity.component.FollowingCamera;
-import fr.univlorraine.etu.labyrinth.input.Cursor;
 import fr.univlorraine.etu.labyrinth.input.GamePadAction;
 import fr.univlorraine.etu.labyrinth.input.InputManager;
 import fr.univlorraine.etu.labyrinth.entity.EntityManager;

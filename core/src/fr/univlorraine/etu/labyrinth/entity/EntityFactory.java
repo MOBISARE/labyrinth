@@ -106,6 +106,8 @@ public final class EntityFactory {
                 10f));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
+        Vie vie = new Vie(3);
+        entity.addComponent(vie);
 
         return entity;
     }
@@ -151,6 +153,8 @@ public final class EntityFactory {
         CollisionHandler collisionHandler = (e1, e2) -> {
             if (e2.getName().equals("maskull")) {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                Vie vie = e2.getComponent(Vie.class);
+                vie.setVie(vie.getVie() - 1);
                 System.out.println("touché");
             }
         };

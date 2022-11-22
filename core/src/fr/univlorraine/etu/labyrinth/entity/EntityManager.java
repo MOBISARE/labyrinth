@@ -54,6 +54,12 @@ public final class EntityManager {
                 .orElseThrow(() -> new IllegalArgumentException("Entité non trouvée pour le nom : " + name));
     }
 
+    public boolean has(String name) {
+        return this.entities
+                .stream()
+                .anyMatch(e -> Objects.equals(name, e.getName()));
+    }
+
     public <C extends Component> C findByNameAndComponent(String name, Class<C> componentType) {
         return this.findByName(name).getComponent(componentType);
     }
