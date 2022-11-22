@@ -1,6 +1,7 @@
 package fr.univlorraine.etu.labyrinth.screen;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,6 +24,7 @@ import fr.univlorraine.etu.labyrinth.entity.EntityFactory;
 import fr.univlorraine.etu.labyrinth.entity.component.*;
 import fr.univlorraine.etu.labyrinth.input.GamePadAction;
 
+import java.time.format.ResolverStyle;
 import java.util.*;
 
 public final class Level1Screen implements Screen {
@@ -69,6 +71,8 @@ public final class Level1Screen implements Screen {
 
         // CAMERA
         Entity camera = EntityFactory.createCamera();
+        MusicLevel musicLevel = camera.getComponent(MusicLevel.class);
+        musicLevel.init();
         FollowingCamera followingCamera = camera.getComponent(FollowingCamera.class);
         followingCamera.init();
         this.engine.getEntityManager().add(camera);
@@ -118,7 +122,6 @@ public final class Level1Screen implements Screen {
                 .findByNameAndComponent("camera", FollowingCamera.class)
                 .getViewport()
                 .update(width, height);
-
     }
 
     @Override
@@ -139,6 +142,7 @@ public final class Level1Screen implements Screen {
     @Override
     public void dispose() {
         this.tileMap.dispose();
+        Resource.dispose();
     }
 
     private void drawHitBox(OrthographicCamera camera) {
@@ -196,6 +200,18 @@ public final class Level1Screen implements Screen {
         Direction direction = hero.getComponent(Direction.class);
         HitBox hitBox = hero.getComponent(HitBox.class);
         Velocity velocity = hero.getComponent(Velocity.class);
+        SoundPlayer walkSound = hero.getComponent(SoundPlayer.class);
+
+        walkSound.cooldown();
+        if(walkSound.operational() && (this.engine.getInputManager().isPressed(GamePadAction.RIGHT) ||
+                this.engine.getInputManager().isPressed(GamePadAction.LEFT) ||
+                this.engine.getInputManager().isPressed(GamePadAction.UP)   ||
+                this.engine.getInputManager().isPressed(GamePadAction.DOWN))) {
+            walkSound.restartCooldown();
+            long id = walkSound.getSound().play(0.3f);
+            walkSound.getSound().setPitch(id, 2);
+            walkSound.getSound().setLooping(id, false);
+        }
 
         if (this.engine.getInputManager().isPressed(GamePadAction.UP)) {
             direction.getValue().y = 1;
@@ -408,6 +424,7 @@ public final class Level1Screen implements Screen {
         Entity targetEntity = this.engine.getEntityManager().findByComponent(target);
         if (Objects.equals(sourceEntity.getName(), "hero")
                 && Objects.equals(targetEntity.getGroupName(), "coins")) {
+            targetEntity.getComponent(SoundPlayer.class).getSound().play(0.2f);
             this.engine.getEntityManager().removeByName(targetEntity.getName());
         }
     }

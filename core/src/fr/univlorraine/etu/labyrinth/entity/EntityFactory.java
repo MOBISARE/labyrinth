@@ -1,5 +1,6 @@
 package fr.univlorraine.etu.labyrinth.entity;
 
+import com.badlogic.gdx.audio.Music;
 import fr.univlorraine.etu.labyrinth.Resource;
 import fr.univlorraine.etu.labyrinth.engine.Engine;
 import fr.univlorraine.etu.labyrinth.entity.component.*;
@@ -44,7 +45,7 @@ public final class EntityFactory {
         entity.addComponent(new HitBox(startXPosition, startYPosition, 1, 1.25f));
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.1f));
-        entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND));
+        entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND, Resource.HERO_WALK_DELTASOUND));
         entity.addComponent(new DynamicBody());
 
         return entity;
@@ -53,6 +54,7 @@ public final class EntityFactory {
     public static Entity createCamera() {
         Entity entity = new Entity("camera");
         entity.addComponent(new FollowingCamera());
+        entity.addComponent(new MusicLevel(Resource.MUSIC_LEVEL));
         return entity;
     }
 

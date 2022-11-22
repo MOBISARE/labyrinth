@@ -1,6 +1,5 @@
 package fr.univlorraine.etu.labyrinth.entity.component;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,12 +23,12 @@ public final class AnimatedSpriteList implements Component {
     private boolean flipY;
 
     public AnimatedSpriteList(
-            String texturePath,
+            Texture texture,
             int columns,
             int rows,
             Map<String, AnimationData> data) {
 
-        this.texture = new Texture(Gdx.files.internal(texturePath));
+        this.texture = texture;
         this.animations = new HashMap<>();
         this.stateTime = 0f;
         this.flipX = false;

@@ -1,6 +1,5 @@
 package fr.univlorraine.etu.labyrinth.entity.component;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,12 +13,12 @@ public final class AnimatedSprite implements Component {
     private float stateTime;
 
     public AnimatedSprite(
-            String texturePath,
+            Texture texture,
             int columns,
             int rows,
             float frameDuration) {
 
-        this.texture = new Texture(Gdx.files.internal(texturePath));
+        this.texture = texture;
         TextureRegion[][] regions = TextureRegion.split(
                 this.texture,
                 this.texture.getWidth() / columns,

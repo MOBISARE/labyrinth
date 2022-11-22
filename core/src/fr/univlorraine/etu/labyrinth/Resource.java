@@ -1,23 +1,39 @@
 package fr.univlorraine.etu.labyrinth;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+
 public final class Resource {
 
     public static final String MAP_LEVEL_1 = "levels/map_test2.tmx";
 
-    public static final String COIN_TEXTURE = "textures/animation_coin.png";
+    public static final Texture COIN_TEXTURE = new Texture(Gdx.files.internal("textures/animation_coin.png"));
 
-    public static final String COIN_SOUND = "sound/coin.wav";
+    public static final Sound COIN_SOUND = Gdx.audio.newSound(Gdx.files.internal("sound/coin.wav"));
 
-    public static final String HERO_TEXTURE = "textures/animation_hero_knight.png";
+    public static final Texture HERO_TEXTURE = new Texture(Gdx.files.internal("textures/animation_hero_knight.png"));
 
-    public static final String HERO_WALK_SOUND = "sound/sfx_step_grass_l.mp3";
+    public static final Sound HERO_WALK_SOUND = Gdx.audio.newSound(Gdx.files.internal("sound/sfx_step_grass_l.mp3"));
+    public static final int HERO_WALK_DELTASOUND = 25;
 
-    public static final String MASKULL_TEXTURE = "textures/animation_maskull.png";
+    public static final Music MUSIC_LEVEL = Gdx.audio.newMusic(Gdx.files.internal("sound/backgroundMusic.mp3"));
 
-
+    public static final Texture MASKULL_TEXTURE = new Texture(Gdx.files.internal("textures/animation_maskull.png"));
 
     private Resource() {
 
+    }
+
+    public static void dispose() {
+        MUSIC_LEVEL.dispose();
+        COIN_SOUND.dispose();
+        HERO_WALK_SOUND.dispose();
+
+        HERO_TEXTURE.dispose();
+        COIN_TEXTURE.dispose();
+        MASKULL_TEXTURE.dispose();
     }
 
 
