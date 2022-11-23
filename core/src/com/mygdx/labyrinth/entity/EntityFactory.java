@@ -2,6 +2,7 @@ package com.mygdx.labyrinth.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.labyrinth.Constante;
 import com.mygdx.labyrinth.Resource;
 import com.mygdx.labyrinth.entity.component.*;
 
@@ -48,7 +49,7 @@ public final class EntityFactory {
         entity.addComponent(hb);
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.1f));
-        entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND, Resource.HERO_WALK_DELTASOUND));
+        entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND, Constante.HERO_WALK_DELTASOUND));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
         entity.addComponent(new Vie(6));
@@ -156,7 +157,7 @@ public final class EntityFactory {
         HitBox hb = new HitBox(positionX, positionY, width, height, true, true);
         entity.addComponent(hb);
         entity.addComponent(new StaticSprite(Resource.ARROW_TEXTURE));
-        entity.addComponent(new Velocity(0.3f));
+        entity.addComponent(new Velocity(3f));
         entity.addComponent(new DynamicBody());
         Trajectory tj = new Trajectory(direction , ARROW_DISTANCE);
         entity.addComponent(tj);
