@@ -153,7 +153,8 @@ Nouvelle architecture complexe à prendre en main, ce qui à énormément ralent
 
 # Sprint final
 ## Primaire     
-- Affichage d'un menu de début.    
+- Affichage d'un menu de début.
+- Ajout de plusieurs monstres.   
 - Affichage d'un menu de fin.  
 - Création du premier niveau.  
 
