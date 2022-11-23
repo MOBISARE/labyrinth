@@ -159,7 +159,8 @@ Nouvelle architecture complexe à prendre en main, ce qui à énormément ralent
 - Création du premier niveau.  
 
 ## Secondaire
-- Ajout de potions de soin.  
+- Ajout de potions de soin.
+- Les monstres donnent des récompenses au sol quand ils meurent.
 
 ### Outils utilisés :
 
