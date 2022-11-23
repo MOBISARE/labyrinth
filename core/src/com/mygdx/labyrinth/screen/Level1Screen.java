@@ -234,7 +234,11 @@ public final class Level1Screen implements Screen {
         if(walkSound.operational() && (this.engine.getInputManager().isPressed(GamePadAction.RIGHT) ||
                 this.engine.getInputManager().isPressed(GamePadAction.LEFT) ||
                 this.engine.getInputManager().isPressed(GamePadAction.UP)   ||
-                this.engine.getInputManager().isPressed(GamePadAction.DOWN))) {
+                this.engine.getInputManager().isPressed(GamePadAction.DOWN) ||
+                this.engine.getInputManager().isPressed(GamePadAction.W) ||
+                this.engine.getInputManager().isPressed(GamePadAction.A) ||
+                this.engine.getInputManager().isPressed(GamePadAction.S)   ||
+                this.engine.getInputManager().isPressed(GamePadAction.D))) {
             walkSound.restartCooldown();
             long id = walkSound.getSound().play(0.3f);
             walkSound.getSound().setPitch(id, 2);
@@ -243,17 +247,21 @@ public final class Level1Screen implements Screen {
 
         hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
 
-        if (this.engine.getInputManager().isPressed(GamePadAction.UP)) {
+        if (this.engine.getInputManager().isPressed(GamePadAction.UP)
+                || this.engine.getInputManager().isPressed(GamePadAction.W)) {
             direction.getValue().y = 1;
-        } else if (this.engine.getInputManager().isPressed(GamePadAction.DOWN)) {
+        } else if (this.engine.getInputManager().isPressed(GamePadAction.DOWN)
+                || this.engine.getInputManager().isPressed(GamePadAction.S)) {
             direction.getValue().y = -1;
         } else {
             direction.getValue().y = 0;
         }
 
-        if (this.engine.getInputManager().isPressed(GamePadAction.RIGHT)) {
+        if (this.engine.getInputManager().isPressed(GamePadAction.RIGHT)
+                || this.engine.getInputManager().isPressed(GamePadAction.D)) {
             direction.getValue().x = 1;
-        } else if (this.engine.getInputManager().isPressed(GamePadAction.LEFT)) {
+        } else if (this.engine.getInputManager().isPressed(GamePadAction.LEFT)
+                || this.engine.getInputManager().isPressed(GamePadAction.A)) {
             direction.getValue().x = -1;
         } else {
             direction.getValue().x = 0;
@@ -569,7 +577,6 @@ public final class Level1Screen implements Screen {
        }
 
         // Check collisions entre des entités dynamiques
-        System.out.println(dynamicBodies.size());
         for (Entity dynamicBody : dynamicBodies) {
             for (Entity staticBody : staticBodies) {
                 HitBox hb1 = dynamicBody.getComponent(HitBox.class);
