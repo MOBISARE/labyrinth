@@ -440,93 +440,99 @@ public final class Level1Screen implements Screen {
     }
 
     private void updateMaskull(float deltaTime) {
-        List<Entity> enemies = this.engine.getEntityManager().findByGroupName("enemies");
-        Entity hero = this.engine.getEntityByName("hero");
-        int cpt = 0;
-        for (Entity enemy : enemies) {
-            if (this.engine.getEntityManager().has("maskull" + cpt)) {
-                //enemy = this.engine.getEntityByName("maskull" + cpt);
-                AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
-                animatedSpriteList.update(deltaTime);
-
-                Direction direction = enemy.getComponent(Direction.class);
-                HitBox hitBox = enemy.getComponent(HitBox.class);
-                HitBox heroHitBox = hero.getComponent(HitBox.class);
-                Velocity velocity = enemy.getComponent(Velocity.class);
-                Vision vision = enemy.getComponent(Vision.class);
-                Vie vie = enemy.getComponent(Vie.class);
-
-                if (vie.getVie() == 0) {
-                    enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
-                }
-
-                hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
-
-                //TODO à refaire collision cercle-enemy
-                if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
-
-                    Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
-                    Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
-
-                    direction.getValue().set(posHero.sub(posMaskull));
-
-                } else {
-                    direction.getValue().x = 0;
-                    direction.getValue().y = 0;
-                }
-
-                if (direction.getValue().x != 0 && direction.getValue().y != 0) {
-                    direction.getValue().nor();
-                }
-
-                if (direction.getValue().x == 0 && direction.getValue().y == 0) {
-                    animatedSpriteList.setCurrentAnimationName("idle");
-                } else {
-                    animatedSpriteList.setCurrentAnimationName("run");
-                }
-
-                hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
-                vision.getValue().x += direction.getValue().x * velocity.getValue();
-                hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
-                vision.getValue().y += direction.getValue().y * velocity.getValue();
-
-                if (direction.getValue().x > 0) {
-                    animatedSpriteList.setFlipX(false);
-                }
-                if (direction.getValue().x < 0) {
-                    animatedSpriteList.setFlipX(true);
-                }
+        List<Entity> enemies = new ArrayList<>();
+        for (Entity e : this.engine.getEntityManager().getEntities()) {
+            if (e.getName().contains("maskull")) {
+                enemies.add(e);
             }
-            cpt++;
+        }
+
+        Entity hero = this.engine.getEntityByName("hero");
+        for (Entity enemy : enemies) {
+            //enemy = this.engine.getEntityByName("maskull" + cpt);
+            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+            animatedSpriteList.update(deltaTime);
+
+            Direction direction = enemy.getComponent(Direction.class);
+            HitBox hitBox = enemy.getComponent(HitBox.class);
+            HitBox heroHitBox = hero.getComponent(HitBox.class);
+            Velocity velocity = enemy.getComponent(Velocity.class);
+            Vision vision = enemy.getComponent(Vision.class);
+            Vie vie = enemy.getComponent(Vie.class);
+
+            if (vie.getVie() == 0) {
+                enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            }
+
+            hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
+
+            //TODO à refaire collision cercle-enemy
+            if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
+
+                Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
+                Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
+
+                direction.getValue().set(posHero.sub(posMaskull));
+
+            } else {
+                direction.getValue().x = 0;
+                direction.getValue().y = 0;
+            }
+
+            if (direction.getValue().x != 0 && direction.getValue().y != 0) {
+                direction.getValue().nor();
+            }
+
+            if (direction.getValue().x == 0 && direction.getValue().y == 0) {
+                animatedSpriteList.setCurrentAnimationName("idle");
+            } else {
+                animatedSpriteList.setCurrentAnimationName("run");
+            }
+
+            hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
+            vision.getValue().x += direction.getValue().x * velocity.getValue();
+            hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
+            vision.getValue().y += direction.getValue().y * velocity.getValue();
+
+            if (direction.getValue().x > 0) {
+                animatedSpriteList.setFlipX(false);
+            }
+            if (direction.getValue().x < 0) {
+                animatedSpriteList.setFlipX(true);
+            }
+
         }
     }
 
     private void renderMaskull() {
-        List<Entity> enemies = this.engine.getEntityManager().findByGroupName("enemies");
-        int cpt = 0;
-        for (Entity enemy : enemies) {
-            if (this.engine.getEntityManager().has("maskull" + cpt)) {
-                //enemy = this.engine.getEntityManager().findByName("maskull" + cpt);
-                AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
-                TextureRegion sprite = animatedSpriteList.getFrame(true);
-                if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
-                    sprite.flip(true, false);
-                }
-
-                if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
-                    sprite.flip(true, false);
-                }
-
-                HitBox hitBox = enemy.getComponent(HitBox.class);
-                this.engine.getBatch().draw(
-                        sprite,
-                        hitBox.getX(),
-                        hitBox.getY(),
-                        sprite.getRegionWidth() / 16f,
-                        sprite.getRegionHeight() / 16f
-                );
+        List<Entity> enemies = new ArrayList<>();
+        for (Entity e : this.engine.getEntityManager().getEntities()) {
+            if (e.getName().contains("maskull")) {
+                enemies.add(e);
             }
-            cpt++;
+        }
+        for (Entity enemy : enemies) {
+
+            //enemy = this.engine.getEntityManager().findByName("maskull" + cpt);
+            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+            TextureRegion sprite = animatedSpriteList.getFrame(true);
+            if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
+                sprite.flip(true, false);
+            }
+
+            if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
+                sprite.flip(true, false);
+            }
+
+            HitBox hitBox = enemy.getComponent(HitBox.class);
+            this.engine.getBatch().draw(
+                    sprite,
+                    hitBox.getX(),
+                    hitBox.getY(),
+                    sprite.getRegionWidth() / 16f,
+                    sprite.getRegionHeight() / 16f
+            );
+
         }
     }
 
@@ -569,12 +575,12 @@ public final class Level1Screen implements Screen {
                 HitBox hb2 = dynamicBodies.get(j).getComponent(HitBox.class);
 
                 if (hb1.isActive() && hb2.isActive()) {
-                    if (Intersector.overlapConvexPolygons(hb1.getBox(),hb2.getBox())) {
+                    if (Intersector.overlapConvexPolygons(hb1.getBox(), hb2.getBox())) {
                         dynamicBodies.get(i).handleCollision(dynamicBodies.get(j));
                     }
                 }
             }
-       }
+        }
 
         // Check collisions entre des entités dynamiques
         for (Entity dynamicBody : dynamicBodies) {
@@ -583,7 +589,7 @@ public final class Level1Screen implements Screen {
                 HitBox hb2 = staticBody.getComponent(HitBox.class);
                 if (hb1 != null && hb2 != null) {
                     if (hb1.isActive() && hb2.isActive()) {
-                        if (Intersector.overlapConvexPolygons(hb1.getBox(),hb2.getBox())) {
+                        if (Intersector.overlapConvexPolygons(hb1.getBox(), hb2.getBox())) {
                             dynamicBody.handleCollision(staticBody);
                         }
                     }
@@ -597,7 +603,7 @@ public final class Level1Screen implements Screen {
     private void updateHudLife(float delta) {
         Entity hudLife = this.engine.getEntityManager().findByName("hudLife");
         Position posHudLife = hudLife.getComponent(Position.class);
-        posHudLife.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f +0.3f,
+        posHudLife.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f + 0.3f,
                 this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 1.6f);
     }
 
@@ -609,7 +615,7 @@ public final class Level1Screen implements Screen {
 
         for (int i = 0; i < vieHero.getVie() / 2; i++) {
             this.engine.getBatch().draw(hud.getFullHeart().getTexture(),
-                    posHud.getValue().x + (float)i * 1.5f,
+                    posHud.getValue().x + (float) i * 1.5f,
                     posHud.getValue().y,
                     hud.getWidth(),
                     hud.getHeight());
@@ -619,7 +625,7 @@ public final class Level1Screen implements Screen {
     private void updateHudArgent() {
         Entity hudLife = this.engine.getEntityManager().findByName("hudArgent");
         Position posHudArgent = hudLife.getComponent(Position.class);
-        posHudArgent.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f +7f,
+        posHudArgent.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f + 7f,
                 this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 1.4f);
     }
 
@@ -639,7 +645,7 @@ public final class Level1Screen implements Screen {
                 dimensionHud.getHeight());
 
         fontHud.getFont().draw(this.engine.getBatch(),
-                argentHero.getArgent() +"",
+                argentHero.getArgent() + "",
                 posHud.getValue().x + 1.7f,
                 posHud.getValue().y + 1f);
     }
