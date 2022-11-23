@@ -60,6 +60,7 @@ public final class EntityFactory {
 
             if (e2.getGroupName().equals("coins")) {
                 arg.setArgent(arg.getArgent() + 1);
+                e2.getComponent(SoundPlayer.class).getSound().play(0.2f);
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
