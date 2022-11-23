@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.labyrinth.Constante;
 import com.mygdx.labyrinth.Resource;
 import com.mygdx.labyrinth.engine.Engine;
 import com.mygdx.labyrinth.entity.Entity;
@@ -27,6 +28,8 @@ public final class Level1Screen implements Screen {
 
     private final Engine engine;
 
+    private boolean drawHitboxes;
+
     private TiledMap map;
     private OrthogonalTiledMapRenderer tileMap;
 
@@ -36,6 +39,7 @@ public final class Level1Screen implements Screen {
 
     public Level1Screen(Engine engine) {
         this.engine = engine;
+        this.drawHitboxes = false;
         this.debbug = new ShapeRenderer();
         this.timerTire = System.currentTimeMillis();
     }
@@ -69,8 +73,10 @@ public final class Level1Screen implements Screen {
 
         // MONSTERS
         // MASKULL
-        Entity maskull1 = EntityFactory.createMaskull("maskull", x + 3, y + 3);
-        this.engine.getEntityManager().add(maskull1);
+        for (int i = 0 ; i < 5 ; i++) {
+            Entity maskull = EntityFactory.createMaskull("maskull" + i, x + 3*i, y + 3*i);
+            this.engine.getEntityManager().add(maskull);
+        }
 
         // CAMERA
         Entity camera = EntityFactory.createCamera();
@@ -133,7 +139,12 @@ public final class Level1Screen implements Screen {
         this.renderHudArgent();
 
         this.engine.getBatch().end();
-        this.drawHitBox(this.engine.getCamera());
+        if (this.engine.getInputManager().isPressed(GamePadAction.DRAW_HITBOX)) {
+            this.drawHitboxes = !this.drawHitboxes;
+        }
+        if (this.drawHitboxes) {
+            this.drawHitBox(this.engine.getCamera());
+        }
     }
 
     @Override
@@ -223,7 +234,11 @@ public final class Level1Screen implements Screen {
         if(walkSound.operational() && (this.engine.getInputManager().isPressed(GamePadAction.RIGHT) ||
                 this.engine.getInputManager().isPressed(GamePadAction.LEFT) ||
                 this.engine.getInputManager().isPressed(GamePadAction.UP)   ||
-                this.engine.getInputManager().isPressed(GamePadAction.DOWN))) {
+                this.engine.getInputManager().isPressed(GamePadAction.DOWN) ||
+                this.engine.getInputManager().isPressed(GamePadAction.W) ||
+                this.engine.getInputManager().isPressed(GamePadAction.A) ||
+                this.engine.getInputManager().isPressed(GamePadAction.S)   ||
+                this.engine.getInputManager().isPressed(GamePadAction.D))) {
             walkSound.restartCooldown();
             long id = walkSound.getSound().play(0.3f);
             walkSound.getSound().setPitch(id, 2);
@@ -232,17 +247,21 @@ public final class Level1Screen implements Screen {
 
         hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
 
-        if (this.engine.getInputManager().isPressed(GamePadAction.UP)) {
+        if (this.engine.getInputManager().isPressed(GamePadAction.UP)
+                || this.engine.getInputManager().isPressed(GamePadAction.W)) {
             direction.getValue().y = 1;
-        } else if (this.engine.getInputManager().isPressed(GamePadAction.DOWN)) {
+        } else if (this.engine.getInputManager().isPressed(GamePadAction.DOWN)
+                || this.engine.getInputManager().isPressed(GamePadAction.S)) {
             direction.getValue().y = -1;
         } else {
             direction.getValue().y = 0;
         }
 
-        if (this.engine.getInputManager().isPressed(GamePadAction.RIGHT)) {
+        if (this.engine.getInputManager().isPressed(GamePadAction.RIGHT)
+                || this.engine.getInputManager().isPressed(GamePadAction.D)) {
             direction.getValue().x = 1;
-        } else if (this.engine.getInputManager().isPressed(GamePadAction.LEFT)) {
+        } else if (this.engine.getInputManager().isPressed(GamePadAction.LEFT)
+                || this.engine.getInputManager().isPressed(GamePadAction.A)) {
             direction.getValue().x = -1;
         } else {
             direction.getValue().x = 0;
@@ -345,15 +364,15 @@ public final class Level1Screen implements Screen {
         Cursor cursor = this.engine.getInputManager().getCursor();
 
         long currentTime = System.currentTimeMillis();
-        if (cursor.isPressed() && currentTime - timerTire > 500) {
+        if (cursor.isPressed() && currentTime - timerTire > Constante.TEMPS_ENTRE_DEUX_TIRE) {
 
-            // Attention renvoie l'origine est en haut à gauche !!!
+            // Attention renvoie l'origine en haut à gauche !!!
             HitBox bowHitBox = bow.getComponent(HitBox.class);
 
-            // Récupération des coordonnée du clic (en pixel: origine en haut à gauche)
+            // Récupération des coordonnées du clic (en pixel : origine en haut à gauche)
             Vector3 mouseTmp = new Vector3(cursor.getPosition().x, cursor.getPosition().y, 0f);
 
-            // Pour récupérer les coordonnées on fonction du monde
+            // Pour récupérer les coordonnées en fonction du monde
             this.engine.getCamera().unproject(mouseTmp);
             Vector2 mouse = new Vector2(mouseTmp.x, mouseTmp.y);
 
@@ -371,7 +390,7 @@ public final class Level1Screen implements Screen {
                     bowHitBox.getY(),
                     0.5f,
                     1f,
-                    direction.nor().scl(0.2f)
+                    direction.nor().scl(Constante.VELOCITY_ARROW)
             );
             this.engine.getEntityManager().add(arrow);
             timerTire = currentTime;
@@ -421,21 +440,28 @@ public final class Level1Screen implements Screen {
     }
 
     private void updateMaskull(float deltaTime) {
-        if (this.engine.getEntityManager().has("maskull")) {
-            Entity maskull = this.engine.getEntityByName("maskull");
-            Entity hero = this.engine.getEntityByName("hero");
-            AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
+        List<Entity> enemies = new ArrayList<>();
+        for (Entity e : this.engine.getEntityManager().getEntities()) {
+            if (e.getName().contains("maskull")) {
+                enemies.add(e);
+            }
+        }
+
+        Entity hero = this.engine.getEntityByName("hero");
+        for (Entity enemy : enemies) {
+            //enemy = this.engine.getEntityByName("maskull" + cpt);
+            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
             animatedSpriteList.update(deltaTime);
 
-            Direction direction = maskull.getComponent(Direction.class);
-            HitBox hitBox = maskull.getComponent(HitBox.class);
+            Direction direction = enemy.getComponent(Direction.class);
+            HitBox hitBox = enemy.getComponent(HitBox.class);
             HitBox heroHitBox = hero.getComponent(HitBox.class);
-            Velocity velocity = maskull.getComponent(Velocity.class);
-            Vision vision = maskull.getComponent(Vision.class);
-            Vie vie = maskull.getComponent(Vie.class);
+            Velocity velocity = enemy.getComponent(Velocity.class);
+            Vision vision = enemy.getComponent(Vision.class);
+            Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
-                maskull.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
             hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
@@ -474,13 +500,21 @@ public final class Level1Screen implements Screen {
             if (direction.getValue().x < 0) {
                 animatedSpriteList.setFlipX(true);
             }
+
         }
     }
 
     private void renderMaskull() {
-        if (this.engine.getEntityManager().has("maskull")) {
-            Entity maskull = this.engine.getEntityManager().findByName("maskull");
-            AnimatedSpriteList animatedSpriteList = maskull.getComponent(AnimatedSpriteList.class);
+        List<Entity> enemies = new ArrayList<>();
+        for (Entity e : this.engine.getEntityManager().getEntities()) {
+            if (e.getName().contains("maskull")) {
+                enemies.add(e);
+            }
+        }
+        for (Entity enemy : enemies) {
+
+            //enemy = this.engine.getEntityManager().findByName("maskull" + cpt);
+            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
             TextureRegion sprite = animatedSpriteList.getFrame(true);
             if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
                 sprite.flip(true, false);
@@ -490,7 +524,7 @@ public final class Level1Screen implements Screen {
                 sprite.flip(true, false);
             }
 
-            HitBox hitBox = maskull.getComponent(HitBox.class);
+            HitBox hitBox = enemy.getComponent(HitBox.class);
             this.engine.getBatch().draw(
                     sprite,
                     hitBox.getX(),
@@ -498,6 +532,7 @@ public final class Level1Screen implements Screen {
                     sprite.getRegionWidth() / 16f,
                     sprite.getRegionHeight() / 16f
             );
+
         }
     }
 
@@ -540,22 +575,21 @@ public final class Level1Screen implements Screen {
                 HitBox hb2 = dynamicBodies.get(j).getComponent(HitBox.class);
 
                 if (hb1.isActive() && hb2.isActive()) {
-                    if (Intersector.overlapConvexPolygons(hb1.getBox(),hb2.getBox())) {
+                    if (Intersector.overlapConvexPolygons(hb1.getBox(), hb2.getBox())) {
                         dynamicBodies.get(i).handleCollision(dynamicBodies.get(j));
                     }
                 }
             }
-       }
+        }
 
         // Check collisions entre des entités dynamiques
-        System.out.println(dynamicBodies.size());
         for (Entity dynamicBody : dynamicBodies) {
             for (Entity staticBody : staticBodies) {
                 HitBox hb1 = dynamicBody.getComponent(HitBox.class);
                 HitBox hb2 = staticBody.getComponent(HitBox.class);
                 if (hb1 != null && hb2 != null) {
                     if (hb1.isActive() && hb2.isActive()) {
-                        if (Intersector.overlapConvexPolygons(hb1.getBox(),hb2.getBox())) {
+                        if (Intersector.overlapConvexPolygons(hb1.getBox(), hb2.getBox())) {
                             dynamicBody.handleCollision(staticBody);
                         }
                     }
@@ -569,7 +603,7 @@ public final class Level1Screen implements Screen {
     private void updateHudLife(float delta) {
         Entity hudLife = this.engine.getEntityManager().findByName("hudLife");
         Position posHudLife = hudLife.getComponent(Position.class);
-        posHudLife.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f +0.3f,
+        posHudLife.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f + 0.3f,
                 this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 1.6f);
     }
 
@@ -581,7 +615,7 @@ public final class Level1Screen implements Screen {
 
         for (int i = 0; i < vieHero.getVie() / 2; i++) {
             this.engine.getBatch().draw(hud.getFullHeart().getTexture(),
-                    posHud.getValue().x + (float)i * 1.5f,
+                    posHud.getValue().x + (float) i * 1.5f,
                     posHud.getValue().y,
                     hud.getWidth(),
                     hud.getHeight());
@@ -591,7 +625,7 @@ public final class Level1Screen implements Screen {
     private void updateHudArgent() {
         Entity hudLife = this.engine.getEntityManager().findByName("hudArgent");
         Position posHudArgent = hudLife.getComponent(Position.class);
-        posHudArgent.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f +7f,
+        posHudArgent.getValue().set(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f + 7f,
                 this.engine.getCamera().position.y + this.engine.getCamera().viewportHeight / 2f - 1.4f);
     }
 
@@ -611,7 +645,7 @@ public final class Level1Screen implements Screen {
                 dimensionHud.getHeight());
 
         fontHud.getFont().draw(this.engine.getBatch(),
-                argentHero.getArgent() +"",
+                argentHero.getArgent() + "",
                 posHud.getValue().x + 1.7f,
                 posHud.getValue().y + 1f);
     }

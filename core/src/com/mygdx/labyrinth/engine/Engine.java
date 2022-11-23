@@ -38,12 +38,17 @@ public final class Engine extends Game {
         // init screen par défaut.
         this.batch = new SpriteBatch();
         this.inputManager.assignKey(Input.Keys.UP, GamePadAction.UP);
+        this.inputManager.assignKey(Input.Keys.W, GamePadAction.W);
         this.inputManager.assignKey(Input.Keys.DOWN, GamePadAction.DOWN);
+        this.inputManager.assignKey(Input.Keys.S, GamePadAction.S);
         this.inputManager.assignKey(Input.Keys.LEFT, GamePadAction.LEFT);
+        this.inputManager.assignKey(Input.Keys.A, GamePadAction.A);
         this.inputManager.assignKey(Input.Keys.RIGHT, GamePadAction.RIGHT);
+        this.inputManager.assignKey(Input.Keys.D, GamePadAction.D);
         this.inputManager.assignKey(Input.Keys.SPACE, GamePadAction.ATTACK);
         this.inputManager.assignKey(Input.Keys.P, GamePadAction.PAUSE);
         this.inputManager.assignKey(Input.Keys.ESCAPE, GamePadAction.EXIT);
+        this.inputManager.assignKey(Input.Keys.C, GamePadAction.DRAW_HITBOX);
 
         //this.inputManager.assignCursor(0, CursorAction.ATTACK);
         Gdx.input.setInputProcessor(this.inputManager);
