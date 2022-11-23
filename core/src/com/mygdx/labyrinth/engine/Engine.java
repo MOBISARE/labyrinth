@@ -38,8 +38,12 @@ public final class Engine extends Game {
         // init screen par défaut.
         this.batch = new SpriteBatch();
         this.inputManager.assignKey(Input.Keys.UP, GamePadAction.UP);
+        this.inputManager.assignKey(Input.Keys.Z, GamePadAction.UP);
         this.inputManager.assignKey(Input.Keys.DOWN, GamePadAction.DOWN);
+        this.inputManager.assignKey(Input.Keys.S, GamePadAction.DOWN);
         this.inputManager.assignKey(Input.Keys.LEFT, GamePadAction.LEFT);
+        this.inputManager.assignKey(Input.Keys.Q, GamePadAction.LEFT);
+        this.inputManager.assignKey(Input.Keys.RIGHT, GamePadAction.RIGHT);
         this.inputManager.assignKey(Input.Keys.RIGHT, GamePadAction.RIGHT);
         this.inputManager.assignKey(Input.Keys.SPACE, GamePadAction.ATTACK);
         this.inputManager.assignKey(Input.Keys.P, GamePadAction.PAUSE);
