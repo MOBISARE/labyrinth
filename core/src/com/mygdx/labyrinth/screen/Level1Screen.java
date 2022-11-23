@@ -28,6 +28,8 @@ public final class Level1Screen implements Screen {
 
     private final Engine engine;
 
+    private boolean drawHitboxes;
+
     private TiledMap map;
     private OrthogonalTiledMapRenderer tileMap;
 
@@ -37,6 +39,7 @@ public final class Level1Screen implements Screen {
 
     public Level1Screen(Engine engine) {
         this.engine = engine;
+        this.drawHitboxes = false;
         this.debbug = new ShapeRenderer();
         this.timerTire = System.currentTimeMillis();
     }
@@ -134,7 +137,12 @@ public final class Level1Screen implements Screen {
         this.renderHudArgent();
 
         this.engine.getBatch().end();
-        this.drawHitBox(this.engine.getCamera());
+        if (this.engine.getInputManager().isPressed(GamePadAction.DRAW_HITBOX)) {
+            this.drawHitboxes = !this.drawHitboxes;
+        }
+        if (this.drawHitboxes) {
+            this.drawHitBox(this.engine.getCamera());
+        }
     }
 
     @Override

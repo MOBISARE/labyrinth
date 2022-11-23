@@ -44,6 +44,7 @@ public final class Engine extends Game {
         this.inputManager.assignKey(Input.Keys.SPACE, GamePadAction.ATTACK);
         this.inputManager.assignKey(Input.Keys.P, GamePadAction.PAUSE);
         this.inputManager.assignKey(Input.Keys.ESCAPE, GamePadAction.EXIT);
+        this.inputManager.assignKey(Input.Keys.C, GamePadAction.DRAW_HITBOX);
 
         //this.inputManager.assignCursor(0, CursorAction.ATTACK);
         Gdx.input.setInputProcessor(this.inputManager);
