@@ -64,7 +64,7 @@ public final class Level1Screen implements Screen {
         MapObject spawnHero = this.tileMap.getMap().getLayers().get("SpawnHero").getObjects().get("spawn_hero");
         float x = spawnHero.getProperties().get("x", float.class) / 16;
         float y = spawnHero.getProperties().get("y", float.class) / 16;
-        Entity hero = EntityFactory.createHero(x, y);
+        Entity hero = EntityFactory.createHero(10, 10);
         this.engine.getEntityManager().add(hero);
 
         // WEAPON
@@ -464,43 +464,49 @@ public final class Level1Screen implements Screen {
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
-            hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
+            TimerManager timers = enemy.getComponent(TimerManager.class);
 
-            //TODO à refaire collision cercle-enemy
-            if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
-
-                Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
-                Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
-
-                direction.getValue().set(posHero.sub(posMaskull));
-
+            if (timers.isActif("wait")) {
+                long currenTime = System.currentTimeMillis();
+                if (currenTime - timers.getLastTimeOf("wait") > 1000) {
+                    timers.setActif("wait",false);
+                }
             } else {
-                direction.getValue().x = 0;
-                direction.getValue().y = 0;
-            }
+                hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
+                if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
 
-            if (direction.getValue().x != 0 && direction.getValue().y != 0) {
-                direction.getValue().nor();
-            }
+                    Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
+                    Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
 
-            if (direction.getValue().x == 0 && direction.getValue().y == 0) {
-                animatedSpriteList.setCurrentAnimationName("idle");
-            } else {
-                animatedSpriteList.setCurrentAnimationName("run");
-            }
+                    direction.getValue().set(posHero.sub(posMaskull));
 
-            hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
-            vision.getValue().x += direction.getValue().x * velocity.getValue();
-            hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
-            vision.getValue().y += direction.getValue().y * velocity.getValue();
+                } else {
+                    direction.getValue().x = 0;
+                    direction.getValue().y = 0;
+                }
 
-            if (direction.getValue().x > 0) {
-                animatedSpriteList.setFlipX(false);
-            }
-            if (direction.getValue().x < 0) {
-                animatedSpriteList.setFlipX(true);
-            }
+                if (direction.getValue().x != 0 && direction.getValue().y != 0) {
+                    direction.getValue().nor();
+                }
 
+                if (direction.getValue().x == 0 && direction.getValue().y == 0) {
+                    animatedSpriteList.setCurrentAnimationName("idle");
+                } else {
+                    animatedSpriteList.setCurrentAnimationName("run");
+                }
+
+                hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
+                vision.getValue().x += direction.getValue().x * velocity.getValue();
+                hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
+                vision.getValue().y += direction.getValue().y * velocity.getValue();
+
+                if (direction.getValue().x > 0) {
+                    animatedSpriteList.setFlipX(false);
+                }
+                if (direction.getValue().x < 0) {
+                    animatedSpriteList.setFlipX(true);
+                }
+            }
         }
     }
 
@@ -613,12 +619,36 @@ public final class Level1Screen implements Screen {
         Position posHud = hudLife.getComponent(Position.class);
         Vie vieHero = this.engine.getEntityManager().findByName("hero").getComponent(Vie.class);
 
-        for (int i = 0; i < vieHero.getVie() / 2; i++) {
+        int pos = 0;
+
+        // Dessin des coeurs plein
+        for (int i = 0; i < vieHero.getVie()  / 2; i++) {
             this.engine.getBatch().draw(hud.getFullHeart().getTexture(),
-                    posHud.getValue().x + (float) i * 1.5f,
+                    posHud.getValue().x + (float) pos * 1.5f,
                     posHud.getValue().y,
                     hud.getWidth(),
                     hud.getHeight());
+            pos++;
+        }
+
+        // Dessin des demi-coeur
+        if (vieHero.getVie()  % 2 > 0) {
+            this.engine.getBatch().draw(hud.getHalfHeart().getTexture(),
+                    posHud.getValue().x + (float) pos * 1.5f,
+                    posHud.getValue().y,
+                    hud.getWidth(),
+                    hud.getHeight());
+            pos++;
+        }
+
+        // Dessin des coeurs vide
+        for (int i = 0; i < (Constante.VIE_HERO_MAX - vieHero.getVie()) / 2; i++) {
+            this.engine.getBatch().draw(hud.getEmptyHeart().getTexture(),
+                    posHud.getValue().x + (float) pos * 1.5f,
+                    posHud.getValue().y,
+                    hud.getWidth(),
+                    hud.getHeight());
+            pos++;
         }
     }
 

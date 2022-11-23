@@ -112,13 +112,25 @@ public final class EntityFactory {
         entity.addComponent(CollisionStatus.NONE);
         Vie vie = new Vie(3);
         entity.addComponent(vie);
+        TimerManager timers = new TimerManager();
+        timers.createTimer("wait");
+        entity.addComponent(timers);
 
         CollisionHandler collisionHandler = (e1, e2) -> {
             if (e2.getGroupName().equals("heroArrows")) {
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
                 vie.setVie(vie.getVie() - 1);
-            } else if (e2.getGroupName().equals("walls")) {
+            }
+            if (e2.getGroupName().equals("walls")) {
                 hitBox.getBox().setPosition(hitBox.getX(), hitBox.getY());
+            }
+            if (e2.getName().equals("hero")) {
+                if (!timers.isActif("wait")) {
+                    Vie vieHero = e2.getComponent(Vie.class);
+                    vieHero.setVie(vieHero.getVie() - 1);
+                    timers.resetOf("wait");
+                    timers.setActif("wait", true);
+                }
             }
         };
 
@@ -170,7 +182,8 @@ public final class EntityFactory {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
 //                Vie vie = e2.getComponent(Vie.class);
 //                vie.setVie(vie.getVie() - 1);
-            } else if (e2.getGroupName().equals("walls")) {
+            }
+            if (e2.getGroupName().equals("walls")) {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
         };
