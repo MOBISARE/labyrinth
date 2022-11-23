@@ -152,8 +152,7 @@ Les deux autres membres du groupe ne se sont toujours pas manifestés.
 Nouvelle architecture complexe à prendre en main, ce qui à énormément ralenti notre sprint (conception + prise en main).
 
 # Sprint final
-## Primaire   
-- Ajout d'une arme de corps à corps.    
+## Primaire     
 - Affichage d'un menu de début.    
 - Affichage d'un menu de fin.  
 - Création du premier niveau.  
