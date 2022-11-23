@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.labyrinth.Constante;
 import com.mygdx.labyrinth.Resource;
 import com.mygdx.labyrinth.engine.Engine;
 import com.mygdx.labyrinth.entity.Entity;
@@ -27,6 +28,8 @@ public final class Level1Screen implements Screen {
 
     private final Engine engine;
 
+    private boolean drawHitboxes;
+
     private TiledMap map;
     private OrthogonalTiledMapRenderer tileMap;
 
@@ -36,6 +39,7 @@ public final class Level1Screen implements Screen {
 
     public Level1Screen(Engine engine) {
         this.engine = engine;
+        this.drawHitboxes = false;
         this.debbug = new ShapeRenderer();
         this.timerTire = System.currentTimeMillis();
     }
@@ -135,7 +139,12 @@ public final class Level1Screen implements Screen {
         this.renderHudArgent();
 
         this.engine.getBatch().end();
-        this.drawHitBox(this.engine.getCamera());
+        if (this.engine.getInputManager().isPressed(GamePadAction.DRAW_HITBOX)) {
+            this.drawHitboxes = !this.drawHitboxes;
+        }
+        if (this.drawHitboxes) {
+            this.drawHitBox(this.engine.getCamera());
+        }
     }
 
     @Override
@@ -347,7 +356,7 @@ public final class Level1Screen implements Screen {
         Cursor cursor = this.engine.getInputManager().getCursor();
 
         long currentTime = System.currentTimeMillis();
-        if (cursor.isPressed() && currentTime - timerTire > 500) {
+        if (cursor.isPressed() && currentTime - timerTire > Constante.TEMPS_ENTRE_DEUX_TIRE) {
 
             // Attention renvoie l'origine en haut à gauche !!!
             HitBox bowHitBox = bow.getComponent(HitBox.class);
@@ -373,7 +382,7 @@ public final class Level1Screen implements Screen {
                     bowHitBox.getY(),
                     0.5f,
                     1f,
-                    direction.nor().scl(0.2f)
+                    direction.nor().scl(Constante.VELOCITY_ARROW)
             );
             this.engine.getEntityManager().add(arrow);
             timerTire = currentTime;

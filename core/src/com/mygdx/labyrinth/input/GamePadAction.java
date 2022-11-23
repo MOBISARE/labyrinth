@@ -8,5 +8,7 @@ public enum GamePadAction implements Bindable {
     RIGHT,
     ATTACK,
     PAUSE,
+
+    DRAW_HITBOX,
     EXIT;
 }

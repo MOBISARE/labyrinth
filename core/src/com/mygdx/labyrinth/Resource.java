@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 
 public final class Resource {
 
+    private Resource instance = new Resource();
+
     public static final String MAP_LEVEL_1 = "levels/map_test2.tmx";
 
     public static final Texture COIN_TEXTURE = new Texture(Gdx.files.internal("textures/animation_coin.png"));
@@ -20,7 +22,6 @@ public final class Resource {
     public static final String ARROW_TEXTURE = "textures/arrow.png";
 
     public static final Sound HERO_WALK_SOUND = Gdx.audio.newSound(Gdx.files.internal("sound/sfx_step_grass_l.mp3"));
-    public static final int HERO_WALK_DELTASOUND = 25;
 
     public static final Music MUSIC_LEVEL = Gdx.audio.newMusic(Gdx.files.internal("sound/backgroundMusic.mp3"));
 
