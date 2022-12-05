@@ -8,8 +8,7 @@ public final class StaticSprite implements Component {
 
     private final TextureRegion textureRegion;
 
-    public StaticSprite(String texturePath) {
-        Texture texture = new Texture(Gdx.files.internal(texturePath));
+    public StaticSprite(Texture texture) {
         this.textureRegion = new TextureRegion(texture);
     }
 

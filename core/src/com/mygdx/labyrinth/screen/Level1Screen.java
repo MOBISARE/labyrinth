@@ -104,6 +104,10 @@ public final class Level1Screen implements Screen {
         this.engine.getEntityManager().add(hudLife);
         this.engine.getEntityManager().add(hudArgent);
 
+        //POPO
+        Vector2 posPopo = new Vector2(5f, 5f);
+        Entity popo = EntityFactory.createHealPotion("potion-1",posPopo, 0.6f, 0.7f);
+        this.engine.getEntityManager().add(popo);
 
         this.engine.getEntityManager().sortBodies();
     }
@@ -131,12 +135,13 @@ public final class Level1Screen implements Screen {
         this.engine.getBatch().begin();
 
         this.renderCoin();
-        this.renderHero();
-        this.renderMaskull();
         this.renderBow();
         this.renderArrow();
         this.renderHudLife();
         this.renderHudArgent();
+        this.renderPopo();
+        this.renderMaskull();
+        this.renderHero();
 
         this.engine.getBatch().end();
         if (this.engine.getInputManager().isPressed(GamePadAction.DRAW_HITBOX)) {
@@ -678,6 +683,20 @@ public final class Level1Screen implements Screen {
                 argentHero.getArgent() + "",
                 posHud.getValue().x + 1.7f,
                 posHud.getValue().y + 1f);
+    }
+
+    private void renderPopo() {
+        if (this.engine.getEntityManager().has("potion-1")) {
+            Entity popo = this.engine.getEntityByName("potion-1");
+            StaticSprite sprite = popo.getComponent(StaticSprite.class);
+            HitBox hitBox = popo.getComponent(HitBox.class);
+
+            this.engine.getBatch().draw(sprite.getTexture(),
+                    hitBox.getX(),
+                    hitBox.getY(),
+                    hitBox.getWidth(),
+                    hitBox.getHeight());
+        }
     }
 
 

@@ -52,7 +52,8 @@ public final class EntityFactory {
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND, Constante.HERO_WALK_DELTASOUND));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
-        entity.addComponent(new Vie(6));
+        Vie vie = new Vie(6);
+        entity.addComponent(vie);
         Argent arg = new Argent(0);
         entity.addComponent(arg);
 
@@ -61,6 +62,9 @@ public final class EntityFactory {
             if (e2.getGroupName().equals("coins")) {
                 arg.setArgent(arg.getArgent() + 1);
                 e2.getComponent(SoundPlayer.class).getSound().play(0.2f);
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            } else if (e2.getGroupName().equals("potions")) {
+                vie.setVie(6);
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
@@ -212,6 +216,15 @@ public final class EntityFactory {
         entity.addComponent(new Position(pos.x, pos.y));
         entity.addComponent(new Font(Resource.FONT_HUD, 17, 0.5f, Color.YELLOW, 1/16f));
         entity.addComponent(new StaticSprite(Resource.IMAGE_COIN_HUD));
+
+        return entity;
+    }
+
+    public static Entity createHealPotion(String name, Vector2 pos, float width, float height) {
+        Entity entity = new Entity(name, "potions");
+
+        entity.addComponent(new HitBox(pos.x, pos.y, width, height, true, false));
+        entity.addComponent(new StaticSprite(Resource.POPO_HEAL));
 
         return entity;
     }
