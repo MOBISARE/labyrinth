@@ -36,6 +36,8 @@ public final class Resource {
     public static final String IMAGE_COIN_HUD = "textures/coin_anim_f0.png";
     public static final Texture MASKULL_TEXTURE = new Texture(Gdx.files.internal("textures/animation_maskull.png"));
 
+    public static final Texture POPO_HEAL = new Texture(Gdx.files.internal("textures/popo_heal.png"));
+
     private Resource() {
 
     }
