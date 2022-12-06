@@ -162,7 +162,7 @@ Nouvelle architecture complexe à prendre en main, ce qui à énormément ralent
 - Ajout de potions de soin.
 - Les monstres donnent des récompenses au sol quand ils meurent.
 
-<img src="./diagramme/diagramme_final2.png">
+<img src="./diagramme/diagramme_final.png">
 
 
 ## Sprint Review
