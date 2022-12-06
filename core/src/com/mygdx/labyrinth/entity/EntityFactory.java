@@ -395,6 +395,7 @@ public final class EntityFactory {
 
         entity.addComponent(new HitBox(positionX, positionY, width, height, false, false));
         entity.addComponent(new AnimatedSpriteList(Resource.BOW_TEXTURE, 1, 1, animations));
+        entity.addComponent(new SoundPlayer(Resource.ARROW_SOUND));
         return entity;
     }
 
