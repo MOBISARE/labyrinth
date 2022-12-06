@@ -761,7 +761,7 @@ public final class Level1Screen implements Screen {
 
                     Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
                     Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
-
+                    vision.getValue().set(posMaskull, vision.getValue().radius);
                     direction.getValue().set(posHero.sub(posMaskull));
 
                 } else {
@@ -864,7 +864,7 @@ public final class Level1Screen implements Screen {
 
                     Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
                     Vector2 posLittle = new Vector2(hitBox.getX(), hitBox.getY());
-
+                    vision.getValue().set(posLittle, vision.getValue().radius);
                     direction.getValue().set(posHero.sub(posLittle));
 
                 } else {
@@ -964,9 +964,9 @@ public final class Level1Screen implements Screen {
                 if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
 
                     Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
-                    Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
-
-                    direction.getValue().set(posHero.sub(posMaskull));
+                    Vector2 posBigZombie = new Vector2(hitBox.getX(), hitBox.getY());
+                    vision.getValue().set(posBigZombie, vision.getValue().radius);
+                    direction.getValue().set(posHero.sub(posBigZombie));
 
                 } else {
                     direction.getValue().x = 0;
@@ -1065,9 +1065,9 @@ public final class Level1Screen implements Screen {
                 if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
 
                     Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
-                    Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
-
-                    direction.getValue().set(posHero.sub(posMaskull));
+                    Vector2 posBigDevil = new Vector2(hitBox.getX(), hitBox.getY());
+                    direction.getValue().set(posHero.sub(posBigDevil));
+                    vision.getValue().set(posBigDevil, vision.getValue().radius);
 
                 } else {
                     direction.getValue().x = 0;
