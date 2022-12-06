@@ -751,27 +751,12 @@ public final class Level1Screen implements Screen {
                 }
             } else {
                 hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
-                if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
 
-                    Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
-                    Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
-                    vision.getValue().set(posMaskull, vision.getValue().radius);
-                    direction.getValue().set(posHero.sub(posMaskull));
+                Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
+                Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
+                vision.getValue().set(posMaskull, vision.getValue().radius);
+                direction.getValue().set(posHero.sub(posMaskull));
 
-                } else {
-                    Random random = new Random();
-                    Position positon = enemy.getComponent(Position.class);
-
-                    long currentTime = System.currentTimeMillis();
-                    if ( currentTime - timers.getLastTimeOf("move") > 3000) {
-                        positon.getValue().x = -1 + random.nextFloat() * 2;
-                        positon.getValue().y = -1 + random.nextFloat() * 2;
-                        timers.setLastTimeOf("move", currentTime);
-                    }
-
-                    direction.getValue().x = positon.getValue().x;
-                    direction.getValue().y = positon.getValue().y;
-                }
 
                 if (direction.getValue().x != 0 && direction.getValue().y != 0) {
                     direction.getValue().nor();
@@ -784,9 +769,9 @@ public final class Level1Screen implements Screen {
                 }
 
                 hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
-                vision.getValue().x += direction.getValue().x * velocity.getValue();
+                vision.getValue().x = hitBox.getX();
                 hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
-                vision.getValue().y += direction.getValue().y * velocity.getValue();
+                vision.getValue().y = hitBox.getY();
 
                 if (direction.getValue().x > 0) {
                     animatedSpriteList.setFlipX(false);
