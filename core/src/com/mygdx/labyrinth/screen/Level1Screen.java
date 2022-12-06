@@ -269,6 +269,7 @@ public final class Level1Screen implements Screen {
     }
 
     public void gameOver() {
+        Resource.DEAD_SOUND.play();
         this.engine.getEntityManager().findByName("camera").getComponent(MusicLevel.class).stop();
         this.engine.clear();
         this.engine.setScreen(new EndScreen(this.engine));

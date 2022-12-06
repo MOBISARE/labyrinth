@@ -15,6 +15,8 @@ public final class Resource {
 
     public static final String MAP_LEVEL_1 = "levels/map_test2.tmx";
 
+    public static final Sound DEAD_SOUND = Gdx.audio.newSound(Gdx.files.internal("sound/dead.wav"));
+
     public static final Texture COIN_TEXTURE = new Texture(Gdx.files.internal("textures/animation_coin.png"));
 
     public static final Sound COIN_SOUND = Gdx.audio.newSound(Gdx.files.internal("sound/coin.wav"));
