@@ -88,16 +88,9 @@ public final class EntityFactory {
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
-            switch (e2.getGroupName()) {
-                case "walls":
-                    hitBox.setY(hitBox.getOldPosition().y);
-                    hitBox.setX(hitBox.getOldPosition().x);
-                    break;
-                case "enemies":
-                    e2.getComponent(HitBox.class).setPosition(e2.getComponent(HitBox.class).getOldPosition().x,
-                            e2.getComponent(HitBox.class).getOldPosition().y);
-                    e2.getComponent(Vision.class).getValue().setPosition(e2.getComponent(HitBox.class).getOldPosition());
-                    break;
+            if ("walls".equals(e2.getGroupName())) {
+                hitBox.setY(hitBox.getOldPosition().y);
+                hitBox.setX(hitBox.getOldPosition().x);
             }
         };
 
@@ -151,7 +144,7 @@ public final class EntityFactory {
                     timers.resetOf("wait");
                     timers.setActif("wait", true);
                 }
-            }
+               }
 
             if ("walls".equals(e2.getGroupName())) {
                 hitBox.setY(hitBox.getOldPosition().y);
