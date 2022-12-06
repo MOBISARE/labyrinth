@@ -1,8 +1,9 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.labyrinth.entity.component.Component;
 
 public final class StaticSprite implements Component {
 

@@ -6,7 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.labyrinth.entity.Entity;
-import com.mygdx.labyrinth.entity.component.FollowingCamera;
+import com.mygdx.labyrinth.entity.component.camera.FollowingCamera;
 import com.mygdx.labyrinth.input.GamePadAction;
 import com.mygdx.labyrinth.input.InputManager;
 import com.mygdx.labyrinth.entity.EntityManager;

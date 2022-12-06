@@ -1,6 +1,7 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.sound;
 
 import com.badlogic.gdx.audio.Sound;
+import com.mygdx.labyrinth.entity.component.Component;
 
 public final class SoundPlayer implements Component {
 

@@ -1,6 +1,7 @@
 package com.mygdx.labyrinth.entity;
 
 import com.mygdx.labyrinth.entity.component.Component;
+import com.mygdx.labyrinth.entity.component.collisions.CollisionHandler;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package com.mygdx.labyrinth.entity;
 
 import com.mygdx.labyrinth.entity.component.Component;
-import com.mygdx.labyrinth.entity.component.HitBox;
+import com.mygdx.labyrinth.entity.component.collisions.HitBox;
 
 import java.util.*;
 import java.util.stream.Collectors;

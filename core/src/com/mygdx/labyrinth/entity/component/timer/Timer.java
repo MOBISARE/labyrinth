@@ -1,4 +1,4 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.timer;
 
 public class Timer {
 

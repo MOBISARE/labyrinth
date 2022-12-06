@@ -18,7 +18,25 @@ import com.mygdx.labyrinth.Resource;
 import com.mygdx.labyrinth.engine.Engine;
 import com.mygdx.labyrinth.entity.Entity;
 import com.mygdx.labyrinth.entity.EntityFactory;
-import com.mygdx.labyrinth.entity.component.*;
+import com.mygdx.labyrinth.entity.component.camera.FollowingCamera;
+import com.mygdx.labyrinth.entity.component.collisions.CollisionStatus;
+import com.mygdx.labyrinth.entity.component.collisions.HitBox;
+import com.mygdx.labyrinth.entity.component.features.Argent;
+import com.mygdx.labyrinth.entity.component.features.Dimension;
+import com.mygdx.labyrinth.entity.component.features.Vie;
+import com.mygdx.labyrinth.entity.component.collisions.Vision;
+import com.mygdx.labyrinth.entity.component.fonts.Font;
+import com.mygdx.labyrinth.entity.component.hud.HudLife;
+import com.mygdx.labyrinth.entity.component.movement.Direction;
+import com.mygdx.labyrinth.entity.component.movement.Position;
+import com.mygdx.labyrinth.entity.component.movement.Trajectory;
+import com.mygdx.labyrinth.entity.component.movement.Velocity;
+import com.mygdx.labyrinth.entity.component.sound.MusicLevel;
+import com.mygdx.labyrinth.entity.component.sound.SoundPlayer;
+import com.mygdx.labyrinth.entity.component.sprite.AnimatedSprite;
+import com.mygdx.labyrinth.entity.component.sprite.AnimatedSpriteList;
+import com.mygdx.labyrinth.entity.component.sprite.StaticSprite;
+import com.mygdx.labyrinth.entity.component.timer.TimerManager;
 import com.mygdx.labyrinth.input.Cursor;
 import com.mygdx.labyrinth.input.GamePadAction;
 
@@ -52,13 +70,13 @@ public final class Level1Screen implements Screen {
         float mapHeight = (float) map.getProperties().get("height", int.class);
 
         // COIN
-        Random rng = new Random();
-        for (int i = 0; i < 100; i++) {
-            float rngX = rng.nextFloat() * (50 - 2) + 1;
-            float rngY = rng.nextFloat() * (50 - 3) + 1;
-            Entity coin = EntityFactory.createCoin("coin-" + i, rngX, rngY);
-            this.engine.getEntityManager().add(coin);
-        }
+//        Random rng = new Random();
+//        for (int i = 0; i < 100; i++) {
+//            float rngX = rng.nextFloat() * (50 - 2) + 1;
+//            float rngY = rng.nextFloat() * (50 - 3) + 1;
+//            Entity coin = EntityFactory.createCoin("coin-" + i, rngX, rngY);
+//            this.engine.getEntityManager().add(coin);
+//        }
 
         // HERO
         MapObject spawnHero = this.tileMap.getMap().getLayers().get("SpawnHero").getObjects().get("spawn_hero");
@@ -104,11 +122,6 @@ public final class Level1Screen implements Screen {
         this.engine.getEntityManager().add(hudLife);
         this.engine.getEntityManager().add(hudArgent);
 
-        //POPO
-        Vector2 posPopo = new Vector2(5f, 5f);
-        Entity popo = EntityFactory.createHealPotion("potion-1",posPopo, 0.6f, 0.7f);
-        this.engine.getEntityManager().add(popo);
-
         this.engine.getEntityManager().sortBodies();
     }
 
@@ -124,6 +137,7 @@ public final class Level1Screen implements Screen {
         this.updateArrow(delta);
         this.updateHudLife(delta);
         this.updateHudArgent();
+        this.updateChest(delta);
 
         this.checkCollision();
 
@@ -134,14 +148,15 @@ public final class Level1Screen implements Screen {
         this.tileMap.render();
         this.engine.getBatch().begin();
 
+        this.renderChest();
         this.renderCoin();
-        this.renderBow();
-        this.renderArrow();
-        this.renderHudLife();
-        this.renderHudArgent();
         this.renderPopo();
         this.renderMaskull();
+        this.renderArrow();
+        this.renderBow();
         this.renderHero();
+        this.renderHudLife();
+        this.renderHudArgent();
 
         this.engine.getBatch().end();
         if (this.engine.getInputManager().isPressed(GamePadAction.DRAW_HITBOX)) {
@@ -466,6 +481,18 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                Entity coin = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX(), hitBox.getY());
+                this.engine.getEntityManager().add(coin);
+
+                Random random = new Random();
+                float proba = random.nextFloat();
+
+                if ( proba <= 0.2) {
+                    Entity chest = EntityFactory.createChest("chest-" + UUID.randomUUID(),
+                            new Vector2(hitBox.getX(), hitBox.getY()), 1f, 1f);
+                    this.engine.getEntityManager().add(chest);
+                }
+
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
@@ -686,10 +713,11 @@ public final class Level1Screen implements Screen {
     }
 
     private void renderPopo() {
-        if (this.engine.getEntityManager().has("potion-1")) {
-            Entity popo = this.engine.getEntityByName("potion-1");
-            StaticSprite sprite = popo.getComponent(StaticSprite.class);
-            HitBox hitBox = popo.getComponent(HitBox.class);
+        List<Entity> potions = this.engine.getEntityManager().findByGroupName("potions");
+
+        for (Entity e: potions) {
+            StaticSprite sprite = e.getComponent(StaticSprite.class);
+            HitBox hitBox = e.getComponent(HitBox.class);
 
             this.engine.getBatch().draw(sprite.getTexture(),
                     hitBox.getX(),
@@ -699,5 +727,76 @@ public final class Level1Screen implements Screen {
         }
     }
 
+    private void renderChest() {
+        List<Entity> coffres = this.engine.getEntityManager().findByGroupName("coffres");
 
+        for (Entity e: coffres) {
+            AnimatedSpriteList animatedSpriteList = e.getComponent(AnimatedSpriteList.class);
+            HitBox hitBox = e.getComponent(HitBox.class);
+
+            TextureRegion sprite = animatedSpriteList.getFrame(false);
+
+            this.engine.getBatch().draw(sprite,
+                    hitBox.getX(),
+                    hitBox.getY(),
+                    hitBox.getWidth(),
+                    hitBox.getHeight());
+        }
+    }
+
+    private void updateChest(float deltaTime) {
+        List<Entity> coffres = this.engine.getEntityManager().findByGroupName("coffres");
+
+        for (Entity e: coffres) {
+            AnimatedSpriteList animatedSpriteList = e.getComponent(AnimatedSpriteList.class);
+            HitBox hitBox = e.getComponent(HitBox.class);
+            TimerManager timerManager = e.getComponent(TimerManager.class);
+            Vie vie = e.getComponent(Vie.class);
+
+            animatedSpriteList.update(deltaTime);
+
+            if (vie.getVie() == 0) {
+                animatedSpriteList.setCurrentAnimationName("opening");
+                if (hitBox.isActive()) {
+                    timerManager.resetOf("destruction");
+                    timerManager.setActif("destruction", true);
+                    hitBox.setActity(false);
+
+                    // Création du loot: entre 5 et 10 pièces et une potion avec une proba de 1/3
+                    Random random = new Random();
+
+                    for (int i = 0; i < random.nextInt(6) + 5; i++) {
+                        float posX = (hitBox.getX() - 1f) + random.nextFloat() * ((hitBox.getX() + 2f) - (hitBox.getX() - 1f));
+                        float posY = (hitBox.getY() - 1f) + random.nextFloat() * ((hitBox.getY() + 2f) - (hitBox.getY() - 1f));
+                        Entity coin = EntityFactory.createCoin("coin-" + UUID.randomUUID(),
+                                posX, posY);
+                        this.engine.getEntityManager().add(coin);
+                    }
+
+                    float proba = random.nextFloat();
+
+                    if (proba < 0.33333) {
+                        float posX = (hitBox.getX() - 1f) + random.nextFloat() * ((hitBox.getX() + 2f) - (hitBox.getX() - 1f));
+                        float posY = (hitBox.getY() - 1f) + random.nextFloat() * ((hitBox.getY() + 2f) - (hitBox.getY() - 1f));
+                        Vector2 posPopo = new Vector2(posX, posY);
+                        Entity popo = EntityFactory.createHealPotion("potion-" + UUID.randomUUID(), posPopo, 0.6f, 0.7f);
+                        this.engine.getEntityManager().add(popo);
+                    }
+                }
+
+
+                // Le coffre disparait après 3 secondes
+                if (!hitBox.isActive() && timerManager.isActif("destruction")) {
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - timerManager.getLastTimeOf("destruction") > 3000) {
+                        e.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                        timerManager.setActif("destruction", false);
+                    }
+                }
+            } else {
+                animatedSpriteList.setCurrentAnimationName("close");
+            }
+
+        }
+    }
 }

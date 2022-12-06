@@ -37,6 +37,7 @@ public final class Resource {
     public static final Texture MASKULL_TEXTURE = new Texture(Gdx.files.internal("textures/animation_maskull.png"));
 
     public static final Texture POPO_HEAL = new Texture(Gdx.files.internal("textures/popo_heal.png"));
+    public static final Texture ANIMATION_COFFRE = new Texture(Gdx.files.internal("textures/coffre_animation.png"));
 
     public static void dispose() {
         MUSIC_LEVEL.dispose();
@@ -52,6 +53,7 @@ public final class Resource {
         EMPTY_HEART.dispose();
         IMAGE_COIN_HUD.dispose();
         ARROW_TEXTURE.dispose();
+        ANIMATION_COFFRE.dispose();
     }
 
 
