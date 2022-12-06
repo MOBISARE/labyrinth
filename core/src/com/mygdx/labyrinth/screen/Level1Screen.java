@@ -371,9 +371,7 @@ public final class Level1Screen implements Screen {
             direction.getValue().x = 0;
         }
 
-        if (direction.getValue().x != 0 && direction.getValue().y != 0) {
-            direction.getValue().nor();
-        }
+        direction.getValue().nor();
 
         if (direction.getValue().x == 0 && direction.getValue().y == 0) {
             animatedSpriteList.setCurrentAnimationName("idle");
@@ -740,12 +738,6 @@ public final class Level1Screen implements Screen {
                 Random random = new Random();
                 float proba = random.nextFloat();
 
-                if ( proba <= 0.2) {
-                    Entity chest = EntityFactory.createChest("chest-" + UUID.randomUUID(),
-                            new Vector2(hitBox.getX(), hitBox.getY()), 1f, 1f);
-                    this.engine.getEntityManager().add(chest);
-                }
-
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
@@ -849,6 +841,17 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                Entity coin = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX(), hitBox.getY());
+                this.engine.getEntityManager().add(coin);
+
+                Random random = new Random();
+                float proba = random.nextFloat();
+
+                if ( proba <= 0.1) {
+                    Entity popo = EntityFactory.createHealPotion("chest-" + UUID.randomUUID(),
+                            new Vector2(hitBox.getX(), hitBox.getY()), 0.6f, 0.7f);
+                    this.engine.getEntityManager().add(popo);
+                }
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
@@ -950,6 +953,22 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                Entity coin1 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX(), hitBox.getY());
+                Entity coin2 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX() + 0.5f, hitBox.getY());
+                Entity coin3 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX() + 1f, hitBox.getY());
+                this.engine.getEntityManager().add(coin1);
+                this.engine.getEntityManager().add(coin2);
+                this.engine.getEntityManager().add(coin3);
+
+                Random random = new Random();
+                float proba = random.nextFloat();
+
+                if ( proba <= 0.1) {
+                    Entity chest = EntityFactory.createChest("chest-" + UUID.randomUUID(),
+                            new Vector2(hitBox.getX(), hitBox.getY()), 1f, 1f);
+                    this.engine.getEntityManager().add(chest);
+                }
+
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
@@ -974,20 +993,19 @@ public final class Level1Screen implements Screen {
                     direction.getValue().y = 0;
                 }
 
-                if (direction.getValue().x != 0 && direction.getValue().y != 0) {
-                    direction.getValue().nor();
-                }
-
                 if (direction.getValue().x == 0 && direction.getValue().y == 0) {
                     animatedSpriteList.setCurrentAnimationName("idle");
                 } else {
                     animatedSpriteList.setCurrentAnimationName("run");
                 }
 
-                hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
-                vision.getValue().x += direction.getValue().x * velocity.getValue();
-                hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
-                vision.getValue().y += direction.getValue().y * velocity.getValue();
+                direction.getValue().nor();
+                direction.getValue().setLength2(0.012f);
+
+                hitBox.setX(hitBox.getX() + direction.getValue().x);
+                vision.getValue().x += direction.getValue().x;
+                hitBox.setY(hitBox.getY() + direction.getValue().y);
+                vision.getValue().y += direction.getValue().y;
 
                 if (direction.getValue().x > 0) {
                     animatedSpriteList.setFlipX(false);
@@ -1051,6 +1069,9 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                Entity chest = EntityFactory.createChest("chest-" + UUID.randomUUID(),
+                        new Vector2(hitBox.getX(), hitBox.getY()), 1f, 1f);
+                this.engine.getEntityManager().add(chest);
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
