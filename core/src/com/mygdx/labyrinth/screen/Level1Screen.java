@@ -84,6 +84,12 @@ public final class Level1Screen implements Screen {
             this.engine.getEntityManager().add(bigZombie);
         }
 
+        // MAGE
+        for (int i = 0 ; i < 3 ; i++) {
+            Entity mage = EntityFactory.createMage("mage" + i, x + 3*i, y + 3*i);
+            this.engine.getEntityManager().add(mage);
+        }
+
         // CAMERA
         Entity camera = EntityFactory.createCamera();
         MusicLevel musicLevel = camera.getComponent(MusicLevel.class);
@@ -123,6 +129,7 @@ public final class Level1Screen implements Screen {
         this.updateHero(delta);
         this.updateMaskull(delta);
         this.updateBigZombie(delta);
+        this.updateMage(delta);
         this.updateBow(delta);
         this.updateArrow(delta);
         this.updateHudLife(delta);
@@ -141,6 +148,7 @@ public final class Level1Screen implements Screen {
         this.renderHero();
         this.renderMaskull();
         this.renderBigZombie();
+        this.renderMage();
         this.renderBow();
         this.renderArrow();
         this.renderHudLife();
@@ -756,10 +764,10 @@ public final class Level1Screen implements Screen {
                     animatedSpriteList.setCurrentAnimationName("run");
                 }
 
-                hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
-                vision.getValue().x += direction.getValue().x * velocity.getValue();
-                hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
-                vision.getValue().y += direction.getValue().y * velocity.getValue();
+                hitBox.setX(hitBox.getX() - direction.getValue().x * velocity.getValue());
+                vision.getValue().x -= direction.getValue().x * velocity.getValue();
+                hitBox.setY(hitBox.getY() - direction.getValue().y * velocity.getValue());
+                vision.getValue().y -= direction.getValue().y * velocity.getValue();
 
                 if (direction.getValue().x > 0) {
                     animatedSpriteList.setFlipX(false);

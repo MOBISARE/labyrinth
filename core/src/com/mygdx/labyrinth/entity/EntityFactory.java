@@ -45,8 +45,8 @@ public final class EntityFactory {
         );
 
         entity.addComponent(new AnimatedSpriteList(Resource.HERO_TEXTURE, 9, 1, animations));
-        HitBox hb = new HitBox(startXPosition, startYPosition, 0.9f, 1.2f, true, true);
-        entity.addComponent(hb);
+        HitBox hitBox = new HitBox(startXPosition, startYPosition, 0.9f, 1.2f, true, true);
+        entity.addComponent(hitBox);
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.1f));
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND, Constante.HERO_WALK_DELTASOUND));
@@ -64,16 +64,12 @@ public final class EntityFactory {
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
-            switch (e2.getName()) {
-                case "topWall":
-                case "botWall":
-                    hb.setY(hb.getOldPosition().y);
+            switch (e2.getGroupName()) {
+                case "walls":
+                    hitBox.setY(hitBox.getOldPosition().y);
+                    hitBox.setX(hitBox.getOldPosition().x);
                     break;
-                case "leftWall":
-                case "rightWall":
-                    hb.setX(hb.getOldPosition().x);
-                    break;
-                case "maskull":
+                case "enemies":
                     e2.getComponent(HitBox.class).setPosition(e2.getComponent(HitBox.class).getOldPosition().x,
                             e2.getComponent(HitBox.class).getOldPosition().y);
                     e2.getComponent(Vision.class).getValue().setPosition(e2.getComponent(HitBox.class).getOldPosition());
@@ -132,6 +128,11 @@ public final class EntityFactory {
                     timers.setActif("wait", true);
                 }
             }
+
+            if ("walls".equals(e2.getGroupName())) {
+                hitBox.setY(hitBox.getOldPosition().y);
+                hitBox.setX(hitBox.getOldPosition().x);
+            }
         };
 
         entity.setCollisionHandler(collisionHandler);
@@ -178,6 +179,11 @@ public final class EntityFactory {
                     timers.setActif("wait", true);
                 }
             }
+
+            if ("walls".equals(e2.getGroupName())) {
+                hitBox.setY(hitBox.getOldPosition().y);
+                hitBox.setX(hitBox.getOldPosition().x);
+            }
         };
 
         entity.setCollisionHandler(collisionHandler);
@@ -199,7 +205,7 @@ public final class EntityFactory {
         entity.addComponent(new Vision(
                 startXPosition,
                 startYPosition,
-                20f));
+                5f));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
         Vie vie = new Vie(2);
@@ -224,12 +230,18 @@ public final class EntityFactory {
                     timers.setActif("wait", true);
                 }
             }
+
+            if ("walls".equals(e2.getGroupName())) {
+                hitBox.setY(hitBox.getOldPosition().y);
+                hitBox.setX(hitBox.getOldPosition().x);
+            }
         };
 
         entity.setCollisionHandler(collisionHandler);
 
         return entity;
     }
+
 
     public static Entity createWall(String name, float positionX, float positionY, float width, float height) {
         Entity entity = new Entity(name, "walls");
