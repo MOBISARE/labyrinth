@@ -127,7 +127,10 @@ public final class EntityFactory {
         entity.addComponent(vie);
         TimerManager timers = new TimerManager();
         timers.createTimer("wait");
+        timers.createTimer("move");
+        timers.setActif("move", true);
         entity.addComponent(timers);
+        entity.addComponent(new Position(0,0));
 
         CollisionHandler collisionHandler = (e1, e2) -> {
             if (e2.getGroupName().equals("heroArrows")) {
@@ -175,14 +178,17 @@ public final class EntityFactory {
         entity.addComponent(new Vision(
                 startXPosition ,
                 startYPosition,
-                5f));
+                8f));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
         Vie vie = new Vie(1);
         entity.addComponent(vie);
         TimerManager timers = new TimerManager();
         timers.createTimer("wait");
+        timers.createTimer("move");
+        timers.setActif("move", true);
         entity.addComponent(timers);
+        entity.addComponent(new Position(0,0));
 
         CollisionHandler collisionHandler = (e1, e2) -> {
             if (e2.getGroupName().equals("heroArrows")) {

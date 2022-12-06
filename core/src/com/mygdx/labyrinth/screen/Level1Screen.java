@@ -758,8 +758,18 @@ public final class Level1Screen implements Screen {
                     direction.getValue().set(posHero.sub(posMaskull));
 
                 } else {
-                    direction.getValue().x = 0;
-                    direction.getValue().y = 0;
+                    Random random = new Random();
+                    Position positon = enemy.getComponent(Position.class);
+
+                    long currentTime = System.currentTimeMillis();
+                    if ( currentTime - timers.getLastTimeOf("move") > 3000) {
+                        positon.getValue().x = -1 + random.nextFloat() * 2;
+                        positon.getValue().y = -1 + random.nextFloat() * 2;
+                        timers.setLastTimeOf("move", currentTime);
+                    }
+
+                    direction.getValue().x = positon.getValue().x;
+                    direction.getValue().y = positon.getValue().y;
                 }
 
                 if (direction.getValue().x != 0 && direction.getValue().y != 0) {
@@ -871,14 +881,28 @@ public final class Level1Screen implements Screen {
                     vision.getValue().set(posLittle, vision.getValue().radius);
                     direction.getValue().set(posHero.sub(posLittle));
 
+                    direction.getValue().nor();
+                    direction.getValue().rotateDeg(180);
+                    direction.getValue().setLength2(0.01f);
+
                 } else {
-                    direction.getValue().x = 0;
-                    direction.getValue().y = 0;
+                    Random random = new Random();
+                    Position positon = enemy.getComponent(Position.class);
+
+                    long currentTime = System.currentTimeMillis();
+                    if ( currentTime - timers.getLastTimeOf("move") > 3000) {
+                        positon.getValue().x = -1 + random.nextFloat() * 2;
+                        positon.getValue().y = -1 + random.nextFloat() * 2;
+                        timers.setLastTimeOf("move", currentTime);
+                    }
+
+                    direction.getValue().x = positon.getValue().x;
+                    direction.getValue().y = positon.getValue().y;
+
+                    direction.getValue().nor();
+                    direction.getValue().setLength2(0.007f);
                 }
 
-                if (direction.getValue().x != 0 && direction.getValue().y != 0) {
-                    direction.getValue().nor();
-                }
 
                 if (direction.getValue().x == 0 && direction.getValue().y == 0) {
                     animatedSpriteList.setCurrentAnimationName("idle");
@@ -886,10 +910,10 @@ public final class Level1Screen implements Screen {
                     animatedSpriteList.setCurrentAnimationName("run");
                 }
 
-                hitBox.setX(hitBox.getX() - direction.getValue().x * velocity.getValue());
-                vision.getValue().x -= direction.getValue().x * velocity.getValue();
-                hitBox.setY(hitBox.getY() - direction.getValue().y * velocity.getValue());
-                vision.getValue().y -= direction.getValue().y * velocity.getValue();
+                hitBox.setX(hitBox.getX() + direction.getValue().x);
+                vision.getValue().x = hitBox.getX();
+                hitBox.setY(hitBox.getY() + direction.getValue().y);
+                vision.getValue().y = hitBox.getY();
 
                 if (direction.getValue().x > 0) {
                     animatedSpriteList.setFlipX(true);
