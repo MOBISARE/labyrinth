@@ -1,5 +1,6 @@
 package com.mygdx.labyrinth.entity;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.labyrinth.Constante;
@@ -123,6 +124,7 @@ public final class EntityFactory {
                 10f));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
+        entity.addComponent(new SoundPlayer(Resource.MONSTER));
         Vie vie = new Vie(3);
         entity.addComponent(vie);
         TimerManager timers = new TimerManager();
@@ -181,6 +183,7 @@ public final class EntityFactory {
                 8f));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
+        entity.addComponent(new SoundPlayer(Resource.MONSTER));
         Vie vie = new Vie(1);
         entity.addComponent(vie);
         TimerManager timers = new TimerManager();
@@ -236,6 +239,7 @@ public final class EntityFactory {
                 20f));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
+        entity.addComponent(new SoundPlayer(Resource.BIG_MONSTER));
         Vie vie = new Vie(5);
         entity.addComponent(vie);
         TimerManager timers = new TimerManager();
@@ -289,6 +293,7 @@ public final class EntityFactory {
         entity.addComponent(CollisionStatus.NONE);
         Vie vie = new Vie(20);
         entity.addComponent(vie);
+        entity.addComponent(new SoundPlayer(Resource.BIG_MONSTER));
         TimerManager timers = new TimerManager();
         timers.createTimer("wait");
         entity.addComponent(timers);
@@ -434,6 +439,7 @@ public final class EntityFactory {
             }
 
             if (e2.getGroupName().equals("coffres")) {
+                e2.getComponent(SoundPlayer.class).getSound().play();
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
                 Vie vieCoffre = e2.getComponent(Vie.class);
                 vieCoffre.setVie(0);
@@ -524,6 +530,7 @@ public final class EntityFactory {
         animatedSpriteList.setCurrentAnimationName("close");
         entity.addComponent(animatedSpriteList);
         entity.addComponent(new Vie(1));
+        entity.addComponent(new SoundPlayer(Resource.CHEST));
         TimerManager timerManager =new TimerManager();
         timerManager.createTimer("destruction");
         entity.addComponent(timerManager);
