@@ -45,7 +45,7 @@ public final class EntityFactory {
         );
 
         entity.addComponent(new AnimatedSpriteList(Resource.HERO_TEXTURE, 9, 1, animations));
-        HitBox hb = new HitBox(startXPosition, startYPosition, 0.7f, 1.2f, true, true);
+        HitBox hb = new HitBox(startXPosition, startYPosition, 0.9f, 1.2f, true, true);
         entity.addComponent(hb);
         entity.addComponent(new Direction(0, 0));
         entity.addComponent(new Velocity(0.1f));
@@ -128,6 +128,98 @@ public final class EntityFactory {
                 if (!timers.isActif("wait")) {
                     Vie vieHero = e2.getComponent(Vie.class);
                     vieHero.setVie(vieHero.getVie() - 1);
+                    timers.resetOf("wait");
+                    timers.setActif("wait", true);
+                }
+            }
+        };
+
+        entity.setCollisionHandler(collisionHandler);
+
+        return entity;
+    }
+
+    public static Entity createBigZombie(String name, float startXPosition, float startYPosition) {
+        Entity entity = new Entity(name, "enemies");
+        Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
+                "idle", new AnimatedSpriteList.AnimationData(0.15f, 0, 4),
+                "run", new AnimatedSpriteList.AnimationData(0.105f, 4, 8)
+        );
+        entity.addComponent(new AnimatedSpriteList(Resource.BIGZOMBIE_TEXTURE, 8, 1, animations));
+        HitBox hitBox = new HitBox(startXPosition, startYPosition, 1.3f, 1.5f, true, true);
+        entity.addComponent(hitBox);
+        entity.addComponent(new Direction(0, 0));
+        entity.addComponent(new Velocity(0.101f));
+        entity.addComponent(new Vision(
+                startXPosition,
+                startYPosition,
+                20f));
+        entity.addComponent(new DynamicBody());
+        entity.addComponent(CollisionStatus.NONE);
+        Vie vie = new Vie(5);
+        entity.addComponent(vie);
+        TimerManager timers = new TimerManager();
+        timers.createTimer("wait");
+        entity.addComponent(timers);
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            if (e2.getGroupName().equals("heroArrows")) {
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                vie.setVie(vie.getVie() - 1);
+            }
+            if (e2.getGroupName().equals("walls")) {
+                hitBox.getBox().setPosition(hitBox.getX(), hitBox.getY());
+            }
+            if (e2.getName().equals("hero")) {
+                if (!timers.isActif("wait")) {
+                    Vie vieHero = e2.getComponent(Vie.class);
+                    vieHero.setVie(vieHero.getVie() - 2);
+                    timers.resetOf("wait");
+                    timers.setActif("wait", true);
+                }
+            }
+        };
+
+        entity.setCollisionHandler(collisionHandler);
+
+        return entity;
+    }
+
+    public static Entity createMage(String name, float startXPosition, float startYPosition) {
+        Entity entity = new Entity(name, "enemies");
+        Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
+                "idle", new AnimatedSpriteList.AnimationData(0.15f, 1, 3),
+                "run", new AnimatedSpriteList.AnimationData(0.105f, 0, 4)
+        );
+        entity.addComponent(new AnimatedSpriteList(Resource.MAGE_TEXTURE, 4, 1, animations));
+        HitBox hitBox = new HitBox(startXPosition, startYPosition, 1.3f, 1.5f, true, true);
+        entity.addComponent(hitBox);
+        entity.addComponent(new Direction(0, 0));
+        entity.addComponent(new Velocity(0.1f));
+        entity.addComponent(new Vision(
+                startXPosition,
+                startYPosition,
+                20f));
+        entity.addComponent(new DynamicBody());
+        entity.addComponent(CollisionStatus.NONE);
+        Vie vie = new Vie(2);
+        entity.addComponent(vie);
+        TimerManager timers = new TimerManager();
+        timers.createTimer("wait");
+        entity.addComponent(timers);
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            if (e2.getGroupName().equals("heroArrows")) {
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                vie.setVie(vie.getVie() - 1);
+            }
+            if (e2.getGroupName().equals("walls")) {
+                hitBox.getBox().setPosition(hitBox.getX(), hitBox.getY());
+            }
+            if (e2.getName().equals("hero")) {
+                if (!timers.isActif("wait")) {
+                    Vie vieHero = e2.getComponent(Vie.class);
+                    vieHero.setVie(vieHero.getVie() - 2);
                     timers.resetOf("wait");
                     timers.setActif("wait", true);
                 }

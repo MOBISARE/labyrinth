@@ -36,6 +36,10 @@ public final class Resource {
     public static final String IMAGE_COIN_HUD = "textures/coin_anim_f0.png";
     public static final Texture MASKULL_TEXTURE = new Texture(Gdx.files.internal("textures/animation_maskull.png"));
 
+    public static final Texture BIGZOMBIE_TEXTURE = new Texture(Gdx.files.internal("textures/animation_big_zombie.png"));
+
+    public static final Texture MAGE_TEXTURE = new Texture(Gdx.files.internal("textures/animation_mage.png"));
+
     private Resource() {
 
     }
@@ -48,6 +52,8 @@ public final class Resource {
         HERO_TEXTURE.dispose();
         COIN_TEXTURE.dispose();
         MASKULL_TEXTURE.dispose();
+        BIGZOMBIE_TEXTURE.dispose();
+        MAGE_TEXTURE.dispose();
     }
 
 
