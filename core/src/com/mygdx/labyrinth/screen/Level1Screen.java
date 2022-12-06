@@ -732,6 +732,7 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                enemy.getComponent(SoundPlayer.class).getSound().play();
                 Entity coin = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX(), hitBox.getY());
                 this.engine.getEntityManager().add(coin);
 
@@ -841,6 +842,7 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                enemy.getComponent(SoundPlayer.class).getSound().play();
                 Entity coin = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX(), hitBox.getY());
                 this.engine.getEntityManager().add(coin);
 
@@ -953,6 +955,7 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                enemy.getComponent(SoundPlayer.class).getSound().play();
                 Entity coin1 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX(), hitBox.getY());
                 Entity coin2 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX() + 0.5f, hitBox.getY());
                 Entity coin3 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX() + 1f, hitBox.getY());
@@ -1069,6 +1072,7 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
+                enemy.getComponent(SoundPlayer.class).getSound().play();
                 Entity chest = EntityFactory.createChest("chest-" + UUID.randomUUID(),
                         new Vector2(hitBox.getX(), hitBox.getY()), 1f, 1f);
                 this.engine.getEntityManager().add(chest);
