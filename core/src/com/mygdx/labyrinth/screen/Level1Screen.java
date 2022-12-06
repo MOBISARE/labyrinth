@@ -138,21 +138,21 @@ public final class Level1Screen implements Screen {
         this.engine.getEntityManager().add(camera);
 
         // WALLS
-        Entity upWall = EntityFactory.createWall("topWall", 0, mapHeight - 1f, mapWidth, 1f);
-        Entity downWall = EntityFactory.createWall("botWall", 0, 0, mapWidth, 1.25f);
+        Entity upWall = EntityFactory.createWall("topWall", 0, mapHeight - 1f, mapWidth, 0.25f);
+        Entity downWall = EntityFactory.createWall("botWall", 0, 0, mapWidth, 1f);
         Entity leftWall = EntityFactory.createWall("leftWall", 0, 0, 0.25f, mapHeight);
         Entity rightWall = EntityFactory.createWall("rightWall", mapWidth - 0.25f, 0, 1f, mapHeight);
         //Room1
-        Entity room1downWall = EntityFactory.createWall("room1downWall", 4f, 13f, 9f, 1f);
-        Entity room1upWall = EntityFactory.createWall("room1upWall", 4f, 21f, 9f, 1f);
-        Entity room1leftWall = EntityFactory.createWall("room1leftWall", 4f, 13f, 0.33f, 9f);
+        Entity room1downWall = EntityFactory.createWall("room1downWall", 4f, 14f, 9f, 0.25f);
+        Entity room1upWall = EntityFactory.createWall("room1upWall", 4f, 22f, 9f, 0.25f);
+        Entity room1leftWall = EntityFactory.createWall("room1leftWall", 4f, 14f, 0.33f, 8f);
         Entity room1rightWall = EntityFactory.createWall("room1rightWall", 12.66f, 18f, 0.33f, 4f);
         //Room2
-        Entity room2downWall1 = EntityFactory.createWall("room2downWall1", 24f, 26f, 7f, 1f);
-        Entity room2downWall2 = EntityFactory.createWall("room2downWall2", 33f, 26f, 10f, 1f);
-        Entity room2upWall = EntityFactory.createWall("room2upWall", 24f, 38f, 19f, 1f);
-        Entity room2leftWall = EntityFactory.createWall("room2leftWall", 24f, 26f, 0.33f, 13f);
-        Entity room2rightWall = EntityFactory.createWall("room2rightWall", 42.66f, 26f, 0.33f, 13f);
+        Entity room2downWall1 = EntityFactory.createWall("room2downWall1", 24f, 27f, 7f, 0.25f);
+        Entity room2downWall2 = EntityFactory.createWall("room2downWall2", 33f, 27f, 10f, 0.25f);
+        Entity room2upWall = EntityFactory.createWall("room2upWall", 24f, 39f, 19f, 0.25f);
+        Entity room2leftWall = EntityFactory.createWall("room2leftWall", 24f, 27f, 0.33f, 12f);
+        Entity room2rightWall = EntityFactory.createWall("room2rightWall", 42.66f, 27f, 0.33f, 12f);
         Entity marblePillar1 = EntityFactory.createWall("marblePillar1", 27f, 35f, 1f, 1.5f);
         Entity marblePillar2 = EntityFactory.createWall("marblePillar2", 27f, 29f, 1f, 1.5f);
         Entity marblePillar3 = EntityFactory.createWall("marblePillar3", 39f, 35f, 1f, 1.5f);
