@@ -1,6 +1,8 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.features;
 
-public class Dimension implements Component{
+import com.mygdx.labyrinth.entity.component.Component;
+
+public class Dimension implements Component {
 
     private float height;
     private float width;

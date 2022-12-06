@@ -1,6 +1,8 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.features;
 
-public class Argent implements Component{
+import com.mygdx.labyrinth.entity.component.Component;
+
+public class Argent implements Component {
 
     private int argent;
 

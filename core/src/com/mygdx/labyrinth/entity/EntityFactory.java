@@ -4,7 +4,27 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.labyrinth.Constante;
 import com.mygdx.labyrinth.Resource;
-import com.mygdx.labyrinth.entity.component.*;
+import com.mygdx.labyrinth.entity.component.camera.FollowingCamera;
+import com.mygdx.labyrinth.entity.component.collisions.CollisionHandler;
+import com.mygdx.labyrinth.entity.component.collisions.CollisionStatus;
+import com.mygdx.labyrinth.entity.component.collisions.DynamicBody;
+import com.mygdx.labyrinth.entity.component.collisions.HitBox;
+import com.mygdx.labyrinth.entity.component.features.Argent;
+import com.mygdx.labyrinth.entity.component.features.Dimension;
+import com.mygdx.labyrinth.entity.component.features.Vie;
+import com.mygdx.labyrinth.entity.component.collisions.Vision;
+import com.mygdx.labyrinth.entity.component.fonts.Font;
+import com.mygdx.labyrinth.entity.component.hud.HudLife;
+import com.mygdx.labyrinth.entity.component.movement.Direction;
+import com.mygdx.labyrinth.entity.component.movement.Position;
+import com.mygdx.labyrinth.entity.component.movement.Trajectory;
+import com.mygdx.labyrinth.entity.component.movement.Velocity;
+import com.mygdx.labyrinth.entity.component.sound.MusicLevel;
+import com.mygdx.labyrinth.entity.component.sound.SoundPlayer;
+import com.mygdx.labyrinth.entity.component.sprite.AnimatedSprite;
+import com.mygdx.labyrinth.entity.component.sprite.AnimatedSpriteList;
+import com.mygdx.labyrinth.entity.component.sprite.StaticSprite;
+import com.mygdx.labyrinth.entity.component.timer.TimerManager;
 
 
 import java.util.Map;
@@ -52,7 +72,8 @@ public final class EntityFactory {
         entity.addComponent(new SoundPlayer(Resource.HERO_WALK_SOUND, Constante.HERO_WALK_DELTASOUND));
         entity.addComponent(new DynamicBody());
         entity.addComponent(CollisionStatus.NONE);
-        entity.addComponent(new Vie(6));
+        Vie vie = new Vie(6);
+        entity.addComponent(vie);
         Argent arg = new Argent(0);
         entity.addComponent(arg);
 
@@ -61,6 +82,9 @@ public final class EntityFactory {
             if (e2.getGroupName().equals("coins")) {
                 arg.setArgent(arg.getArgent() + 1);
                 e2.getComponent(SoundPlayer.class).getSound().play(0.2f);
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            } else if (e2.getGroupName().equals("potions")) {
+                vie.setVie(6);
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
@@ -405,6 +429,12 @@ public final class EntityFactory {
             if (e2.getGroupName().equals("walls")) {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
+
+            if (e2.getGroupName().equals("coffres")) {
+                entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                Vie vieCoffre = e2.getComponent(Vie.class);
+                vieCoffre.setVie(0);
+            }
         };
 
         entity.setCollisionHandler(collisionHandler);
@@ -465,6 +495,35 @@ public final class EntityFactory {
         entity.addComponent(new Position(pos.x, pos.y));
         entity.addComponent(new Font(Resource.FONT_HUD, 17, 0.5f, Color.YELLOW, 1/16f));
         entity.addComponent(new StaticSprite(Resource.IMAGE_COIN_HUD));
+
+        return entity;
+    }
+
+    public static Entity createHealPotion(String name, Vector2 pos, float width, float height) {
+        Entity entity = new Entity(name, "potions");
+
+        entity.addComponent(new HitBox(pos.x, pos.y, width, height, true, false));
+        entity.addComponent(new StaticSprite(Resource.POPO_HEAL));
+
+        return entity;
+    }
+
+    public static Entity createChest(String name, Vector2 pos, float width, float height) {
+        Entity entity = new Entity(name, "coffres");
+
+        Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
+                "close", new AnimatedSpriteList.AnimationData(0.15f, 0, 1),
+                "opening", new AnimatedSpriteList.AnimationData(0.1f, 1, 3)
+        );
+
+        entity.addComponent(new HitBox(pos.x, pos.y, width, height, true, false));
+        AnimatedSpriteList animatedSpriteList = new AnimatedSpriteList(Resource.ANIMATION_COFFRE, 3, 1, animations);
+        animatedSpriteList.setCurrentAnimationName("close");
+        entity.addComponent(animatedSpriteList);
+        entity.addComponent(new Vie(1));
+        TimerManager timerManager =new TimerManager();
+        timerManager.createTimer("destruction");
+        entity.addComponent(timerManager);
 
         return entity;
     }

@@ -1,10 +1,11 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.labyrinth.engine.Engine;
+import com.mygdx.labyrinth.entity.component.Component;
 
 public final class FollowingCamera implements Component {
 

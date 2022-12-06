@@ -1,6 +1,7 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.sound;
 
 import com.badlogic.gdx.audio.Music;
+import com.mygdx.labyrinth.entity.component.Component;
 
 public final class MusicLevel implements Component {
 

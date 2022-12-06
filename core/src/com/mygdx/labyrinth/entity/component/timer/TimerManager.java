@@ -1,9 +1,11 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.timer;
+
+import com.mygdx.labyrinth.entity.component.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TimerManager implements Component{
+public class TimerManager implements Component {
 
     private Map<String, Timer> timers;
 
