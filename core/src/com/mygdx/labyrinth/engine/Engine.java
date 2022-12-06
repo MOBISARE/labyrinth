@@ -11,6 +11,7 @@ import com.mygdx.labyrinth.input.GamePadAction;
 import com.mygdx.labyrinth.input.InputManager;
 import com.mygdx.labyrinth.entity.EntityManager;
 import com.mygdx.labyrinth.screen.Level1Screen;
+import com.mygdx.labyrinth.screen.StartScreen;
 
 public final class Engine extends Game {
 
@@ -22,9 +23,9 @@ public final class Engine extends Game {
 
     public static final int TILE_SIZE = 16;
 
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
-    private final InputManager inputManager;
+    private InputManager inputManager;
 
     private SpriteBatch batch;
 
@@ -49,10 +50,18 @@ public final class Engine extends Game {
         this.inputManager.assignKey(Input.Keys.P, GamePadAction.PAUSE);
         this.inputManager.assignKey(Input.Keys.ESCAPE, GamePadAction.EXIT);
         this.inputManager.assignKey(Input.Keys.C, GamePadAction.DRAW_HITBOX);
+        this.inputManager.assignKey(Input.Keys.ENTER, GamePadAction.PLAY);
+        this.inputManager.assignKey(Input.Keys.TAB, GamePadAction.QUIT);
 
         //this.inputManager.assignCursor(0, CursorAction.ATTACK);
         Gdx.input.setInputProcessor(this.inputManager);
-        this.setScreen(new Level1Screen(this));
+        this.setScreen(new StartScreen(this));
+    }
+
+    public void clear() {
+        this.entityManager = new EntityManager();
+        this.inputManager = new InputManager();
+        this.create();
     }
 
     public SpriteBatch getBatch() {

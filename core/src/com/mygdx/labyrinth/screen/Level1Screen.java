@@ -1,6 +1,7 @@
 package com.mygdx.labyrinth.screen;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -82,7 +83,7 @@ public final class Level1Screen implements Screen {
         MapObject spawnHero = this.tileMap.getMap().getLayers().get("SpawnHero").getObjects().get("spawn_hero");
         float x = spawnHero.getProperties().get("x", float.class) / 16;
         float y = spawnHero.getProperties().get("y", float.class) / 16;
-        Entity hero = EntityFactory.createHero(10, 10);
+        Entity hero = EntityFactory.createHero(x, y);
         this.engine.getEntityManager().add(hero);
 
         // WEAPON
@@ -91,26 +92,27 @@ public final class Level1Screen implements Screen {
 
         // MONSTERS
         // MASKULL
-        for (int i = 0 ; i < 5 ; i++) {
-            Entity maskull = EntityFactory.createMaskull("maskull" + i, x + 3*i, y + 3*i);
+        for (int i = 1 ; i < 3 ; i++) {
+            String name = "spawn_mob" + i;
+            Entity maskull = EntityFactory.createMaskull("maskull" + i, this.tileMap.getMap().getLayers().get("SpawnEnnemies").getObjects().get(name).getProperties().get("x", float.class)/16, this.tileMap.getMap().getLayers().get("SpawnEnnemies").getObjects().get(name).getProperties().get("y", float.class)/16);
             this.engine.getEntityManager().add(maskull);
         }
 
         // LITTLE
         for (int i = 0 ; i < 10 ; i++) {
-            Entity little = EntityFactory.createLittle("little" + i, x + 3*i, y + 3*i);
+            Entity little = EntityFactory.createLittle("little" + i, 2, 2);
             this.engine.getEntityManager().add(little);
         }
 
         // BIG ZOMBIE
         for (int i = 0 ; i < 3 ; i++) {
-            Entity bigZombie = EntityFactory.createBigZombie("big_zombie" + i, x + 3*i, y + 3*i);
+            Entity bigZombie = EntityFactory.createBigZombie("big_zombie" + i, 2, 2);
             this.engine.getEntityManager().add(bigZombie);
         }
 
         // BIG DEVIL
         for (int i = 0 ; i < 1 ; i++) {
-            Entity bigDevil = EntityFactory.createBigDevil("big_devil" + i, x + 3*i, y + 3*i);
+            Entity bigDevil = EntityFactory.createBigDevil("big_devil" + i, 2, 2);
             this.engine.getEntityManager().add(bigDevil);
         }
 
@@ -140,10 +142,40 @@ public final class Level1Screen implements Screen {
         Entity downWall = EntityFactory.createWall("botWall", 0, 0, mapWidth, 1.25f);
         Entity leftWall = EntityFactory.createWall("leftWall", 0, 0, 0.25f, mapHeight);
         Entity rightWall = EntityFactory.createWall("rightWall", mapWidth - 0.25f, 0, 1f, mapHeight);
+        //Room1
+        Entity room1downWall = EntityFactory.createWall("room1downWall", 4f, 13f, 9f, 1f);
+        Entity room1upWall = EntityFactory.createWall("room1upWall", 4f, 21f, 9f, 1f);
+        Entity room1leftWall = EntityFactory.createWall("room1leftWall", 4f, 13f, 0.33f, 9f);
+        Entity room1rightWall = EntityFactory.createWall("room1rightWall", 12.66f, 18f, 0.33f, 4f);
+        //Room2
+        Entity room2downWall1 = EntityFactory.createWall("room2downWall1", 24f, 26f, 7f, 1f);
+        Entity room2downWall2 = EntityFactory.createWall("room2downWall2", 33f, 26f, 10f, 1f);
+        Entity room2upWall = EntityFactory.createWall("room2upWall", 24f, 38f, 19f, 1f);
+        Entity room2leftWall = EntityFactory.createWall("room2leftWall", 24f, 26f, 0.33f, 13f);
+        Entity room2rightWall = EntityFactory.createWall("room2rightWall", 42.66f, 26f, 0.33f, 13f);
+        Entity marblePillar1 = EntityFactory.createWall("marblePillar1", 27f, 35f, 1f, 1.5f);
+        Entity marblePillar2 = EntityFactory.createWall("marblePillar2", 27f, 29f, 1f, 1.5f);
+        Entity marblePillar3 = EntityFactory.createWall("marblePillar3", 39f, 35f, 1f, 1.5f);
+        Entity marblePillar4 = EntityFactory.createWall("marblePillar4", 39f, 29f, 1f, 1.5f);
+
         this.engine.getEntityManager().add(upWall);
         this.engine.getEntityManager().add(downWall);
         this.engine.getEntityManager().add(leftWall);
         this.engine.getEntityManager().add(rightWall);
+        this.engine.getEntityManager().add(room1downWall);
+        this.engine.getEntityManager().add(room1upWall);
+        this.engine.getEntityManager().add(room1leftWall);
+        this.engine.getEntityManager().add(room1rightWall);
+        this.engine.getEntityManager().add(room2downWall2);
+        this.engine.getEntityManager().add(room2upWall);
+        this.engine.getEntityManager().add(room2leftWall);
+        this.engine.getEntityManager().add(room2rightWall);
+        this.engine.getEntityManager().add(room2downWall1);
+        this.engine.getEntityManager().add(marblePillar1);
+        this.engine.getEntityManager().add(marblePillar2);
+        this.engine.getEntityManager().add(marblePillar3);
+        this.engine.getEntityManager().add(marblePillar4);
+
 
         //HUD
         Vector2 posHud = new Vector2(this.engine.getCamera().position.x - this.engine.getCamera().viewportWidth / 2f,
@@ -209,6 +241,7 @@ public final class Level1Screen implements Screen {
         if (this.drawHitboxes) {
             this.drawHitBox(this.engine.getCamera());
         }
+        if(this.engine.getEntityManager().findByName("hero").getComponent(Vie.class).getVie() == 0) this.gameOver();
     }
 
     @Override
@@ -235,10 +268,16 @@ public final class Level1Screen implements Screen {
 
     }
 
+    public void gameOver() {
+        this.engine.getEntityManager().findByName("camera").getComponent(MusicLevel.class).stop();
+        this.engine.clear();
+        this.engine.setScreen(new EndScreen(this.engine));
+        this.dispose();
+    }
+
     @Override
     public void dispose() {
         this.tileMap.dispose();
-        Resource.dispose();
     }
 
     private void drawHitBox(OrthographicCamera camera) {

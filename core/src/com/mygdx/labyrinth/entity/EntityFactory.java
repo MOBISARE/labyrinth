@@ -157,6 +157,10 @@ public final class EntityFactory {
                 hitBox.setY(hitBox.getOldPosition().y);
                 hitBox.setX(hitBox.getOldPosition().x);
             }
+            if (e2.getGroupName().equals("walls")) {
+                hitBox.setY(hitBox.getOldPosition().y);
+                hitBox.setX(hitBox.getOldPosition().x);
+            }
         };
 
         entity.setCollisionHandler(collisionHandler);

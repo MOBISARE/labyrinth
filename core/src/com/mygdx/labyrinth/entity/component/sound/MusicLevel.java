@@ -17,5 +17,9 @@ public final class MusicLevel implements Component {
         music.play();
     }
 
+    public void stop() {
+        music.stop();
+    }
+
     public Music getSound() { return music; }
 }

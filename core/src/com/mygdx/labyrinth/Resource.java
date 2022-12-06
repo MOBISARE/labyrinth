@@ -9,6 +9,10 @@ public final class Resource {
 
     private Resource instance = new Resource();
 
+    public static final Texture BACKGROUND_MENU = new Texture(Gdx.files.internal("textures/background.png"));
+
+    public static final Texture BACKGROUND_ENDMENU = new Texture(Gdx.files.internal("textures/backgroundEnd.png"));
+
     public static final String MAP_LEVEL_1 = "levels/map_test2.tmx";
 
     public static final Texture COIN_TEXTURE = new Texture(Gdx.files.internal("textures/animation_coin.png"));
@@ -21,10 +25,9 @@ public final class Resource {
 
     public static final Texture STAFF_TEXTURE =new Texture(Gdx.files.internal("textures/staff.png"));
 
-    public static final String ARROW_TEXTURE = "textures/arrow.png";
     public static final Texture ARROW_TEXTURE = new Texture(Gdx.files.internal("textures/arrow.png"));
 
-    public static final String MAGIC_TEXTURE = "textures/magic2.png";
+    public static final Texture MAGIC_TEXTURE = new Texture(Gdx.files.internal("textures/magic2.png"));
 
     public static final Sound HERO_WALK_SOUND = Gdx.audio.newSound(Gdx.files.internal("sound/sfx_step_grass_l.mp3"));
 
