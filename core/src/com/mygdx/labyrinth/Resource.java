@@ -17,6 +17,8 @@ public final class Resource {
 
     public static final Sound BIG_MONSTER = Gdx.audio.newSound(Gdx.files.internal("sound/LargeMonsterDeath.wav"));
 
+    public static final Sound ARROW_SOUND = Gdx.audio.newSound(Gdx.files.internal("sound/shoot.ogg"));
+
     public static final Sound CHEST = Gdx.audio.newSound(Gdx.files.internal("sound/Chest.wav"));
 
     public static final Sound MONSTER = Gdx.audio.newSound(Gdx.files.internal("sound/qubodupRatDeath.ogg"));

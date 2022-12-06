@@ -550,7 +550,7 @@ public final class Level1Screen implements Screen {
 
         long currentTime = System.currentTimeMillis();
         if (cursor.isPressed() && currentTime - timerTire > Constante.TEMPS_ENTRE_DEUX_TIRE) {
-
+            bow.getComponent(SoundPlayer.class).getSound().play(0.3f);
             // Attention renvoie l'origine en haut à gauche !!!
             HitBox bowHitBox = bow.getComponent(HitBox.class);
 
@@ -964,7 +964,7 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
-                enemy.getComponent(SoundPlayer.class).getSound().play();
+                enemy.getComponent(SoundPlayer.class).getSound().play(0.1f);
                 Entity coin1 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX(), hitBox.getY());
                 Entity coin2 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX() + 0.5f, hitBox.getY());
                 Entity coin3 = EntityFactory.createCoin("coin-" + UUID.randomUUID(), hitBox.getX() + 1f, hitBox.getY());
@@ -1081,7 +1081,7 @@ public final class Level1Screen implements Screen {
             Vie vie = enemy.getComponent(Vie.class);
 
             if (vie.getVie() == 0) {
-                enemy.getComponent(SoundPlayer.class).getSound().play();
+                enemy.getComponent(SoundPlayer.class).getSound().play(0.1f);
                 Entity chest = EntityFactory.createChest("chest-" + UUID.randomUUID(),
                         new Vector2(hitBox.getX(), hitBox.getY()), 1f, 1f);
                 this.engine.getEntityManager().add(chest);
