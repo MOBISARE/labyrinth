@@ -37,6 +37,7 @@ public final class Level1Screen implements Screen {
 
     private long timerTire;
 
+
     public Level1Screen(Engine engine) {
         this.engine = engine;
         this.drawHitboxes = false;
@@ -78,17 +79,36 @@ public final class Level1Screen implements Screen {
             this.engine.getEntityManager().add(maskull);
         }
 
+        // LITTLE
+        for (int i = 0 ; i < 10 ; i++) {
+            Entity little = EntityFactory.createLittle("little" + i, x + 3*i, y + 3*i);
+            this.engine.getEntityManager().add(little);
+        }
+
         // BIG ZOMBIE
-        for (int i = 0 ; i < 2 ; i++) {
+        for (int i = 0 ; i < 3 ; i++) {
             Entity bigZombie = EntityFactory.createBigZombie("big_zombie" + i, x + 3*i, y + 3*i);
             this.engine.getEntityManager().add(bigZombie);
         }
 
-        // MAGE
-        for (int i = 0 ; i < 3 ; i++) {
-            Entity mage = EntityFactory.createMage("mage" + i, x + 3*i, y + 3*i);
-            this.engine.getEntityManager().add(mage);
+        // BIG DEVIL
+        for (int i = 0 ; i < 1 ; i++) {
+            Entity bigDevil = EntityFactory.createBigDevil("big_devil" + i, x + 3*i, y + 3*i);
+            this.engine.getEntityManager().add(bigDevil);
         }
+
+        // MAGE
+//        for (int i = 0 ; i < 1 ; i++) {
+//            Entity mage = EntityFactory.createMage("mage" + i, x + 3*i, y + 3*i);
+//            Entity staff = EntityFactory.createStaff("staff" + i,
+//                    mage.getComponent(HitBox.class).getX() + 0.2f,
+//                    mage.getComponent(HitBox.class).getY(),
+//                    0.3f,
+//                    1f);
+//            this.engine.getEntityManager().add(mage);
+//            this.engine.getEntityManager().add(staff);
+//            this.timerEnemyAttack.add(0L);
+//        }
 
         // CAMERA
         Entity camera = EntityFactory.createCamera();
@@ -128,10 +148,14 @@ public final class Level1Screen implements Screen {
         this.updateCoins(delta);
         this.updateHero(delta);
         this.updateMaskull(delta);
+        this.updateLittle(delta);
         this.updateBigZombie(delta);
-        this.updateMage(delta);
+        this.updateBigDevil(delta);
+        //this.updateMage(delta);
         this.updateBow(delta);
+        //this.updateStaff(delta);
         this.updateArrow(delta);
+        //this.updateMagic(delta);
         this.updateHudLife(delta);
         this.updateHudArgent();
 
@@ -147,10 +171,14 @@ public final class Level1Screen implements Screen {
         this.renderCoin();
         this.renderHero();
         this.renderMaskull();
+        this.renderLittle();
         this.renderBigZombie();
-        this.renderMage();
+        this.renderBigDevil();
+        //this.renderMage();
         this.renderBow();
+        //this.renderStaff();
         this.renderArrow();
+        //this.renderMagic();
         this.renderHudLife();
         this.renderHudArgent();
 
@@ -336,7 +364,7 @@ public final class Level1Screen implements Screen {
         HitBox hitBox = bow.getComponent(HitBox.class);
 
         if (heroDirection.getValue().x > 0) {
-            hitBox.setX(heroHitBox.getX()+ 1f);
+            hitBox.setX(heroHitBox.getX() + 1f);
         }
 
         if (heroDirection.getValue().x < 0) {
@@ -374,53 +402,88 @@ public final class Level1Screen implements Screen {
 
     }
 
-    private void updateStaff(float deltaTime) {
-        Entity mage = this.engine.getEntityManager().findByName("mage");
-        Direction direction = mage.getComponent(Direction.class);
-        HitBox mageHitBox = mage.getComponent(HitBox.class);
-
-        Entity bow = this.engine.getEntityManager().findByName("bow");
-        AnimatedSpriteList animatedSpriteList = bow.getComponent(AnimatedSpriteList.class);
-        HitBox hitBox = bow.getComponent(HitBox.class);
-
-        if (direction.getValue().x > 0) {
-            hitBox.setX(mageHitBox.getX()+ 1f);
-        }
-
-        if (direction.getValue().x < 0) {
-            hitBox.setX(mageHitBox.getX() - 0.3f);
-        }
-
-        hitBox.setY(mageHitBox.getY());
-        animatedSpriteList.update(deltaTime);
-    }
-
-    private void renderStaff() {
-        Entity mage = this.engine.getEntityManager().findByName("mage");
-        AnimatedSpriteList heroAnimatedSpriteList = mage.getComponent(AnimatedSpriteList.class);
-
-        Entity staff = this.engine.getEntityManager().findByName("staff");
-        AnimatedSpriteList animatedSpriteList = staff.getComponent(AnimatedSpriteList.class);
-        HitBox hitBox = staff.getComponent(HitBox.class);
-
-        TextureRegion sprite = animatedSpriteList.getFrame(true);
-
-        if (heroAnimatedSpriteList.isFlipX() && !sprite.isFlipX()) {
-            sprite.flip(true, false);
-        }
-        if (!heroAnimatedSpriteList.isFlipX() && sprite.isFlipX()) {
-            sprite.flip(true, false);
-        }
-
-        this.engine.getBatch().draw(
-                sprite,
-                hitBox.getX(),
-                hitBox.getY(),
-                sprite.getRegionWidth() / 16f,
-                sprite.getRegionHeight() / 16f
-        );
-
-    }
+//    private void updateStaff(float deltaTime) {
+//        List<Entity> enemies = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("mage")) {
+//                enemies.add(e);
+//            }
+//        }
+//
+//        List<Entity> staffs = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("staff")) {
+//                staffs.add(e);
+//            }
+//        }
+//        int index = 0;
+//        for (Entity mage : enemies) {
+//            Direction direction = mage.getComponent(Direction.class);
+//            HitBox mageHitBox = mage.getComponent(HitBox.class);
+//
+//            Entity staff = this.engine.getEntityManager().findByName(staffs.get(index).getName());
+//            index++;
+//            AnimatedSpriteList animatedSpriteList = staff.getComponent(AnimatedSpriteList.class);
+//            HitBox hitBox = staff.getComponent(HitBox.class);
+//
+//            if (direction.getValue().x > 0) {
+//                hitBox.setX(mageHitBox.getX() + 0.5f);
+//            }
+//
+//            if (direction.getValue().x < 0) {
+//                hitBox.setX(mageHitBox.getX() -0.6f);
+//            }
+//
+//            hitBox.setY(mageHitBox.getY());
+//            animatedSpriteList.update(deltaTime);
+//        }
+//
+//    }
+//
+//    private void renderStaff() {
+//
+//        List<Entity> enemies = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("mage")) {
+//                enemies.add(e);
+//            }
+//        }
+//
+//        List<Entity> staffs = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("staff")) {
+//                staffs.add(e);
+//            }
+//        }
+//
+//        int index = 0;
+//        for (Entity mage : enemies) {
+//            AnimatedSpriteList heroAnimatedSpriteList = mage.getComponent(AnimatedSpriteList.class);
+//
+//            Entity staff = this.engine.getEntityManager().findByName(staffs.get(index).getName());
+//            index++;
+//            AnimatedSpriteList animatedSpriteList = staff.getComponent(AnimatedSpriteList.class);
+//            HitBox hitBox = staff.getComponent(HitBox.class);
+//
+//            TextureRegion sprite = animatedSpriteList.getFrame(true);
+//
+//            if (heroAnimatedSpriteList.isFlipX() && !sprite.isFlipX()) {
+//                sprite.flip(true, false);
+//            }
+//            if (!heroAnimatedSpriteList.isFlipX() && sprite.isFlipX()) {
+//                sprite.flip(true, false);
+//            }
+//
+//            this.engine.getBatch().draw(
+//                    sprite,
+//                    hitBox.getX(),
+//                    hitBox.getY(),
+//                    sprite.getRegionWidth() / 16f,
+//                    sprite.getRegionHeight() / 16f
+//            );
+//        }
+//
+//    }
 
     private void updateArrow(float deltaTime) {
         Entity bow = this.engine.getEntityManager().findByName("bow");
@@ -502,6 +565,92 @@ public final class Level1Screen implements Screen {
             );
         }
     }
+
+//    private void updateMagic(float deltaTime) {
+//
+//        List<Entity> enemies = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("mage")) {
+//                enemies.add(e);
+//            }
+//        }
+//
+//        Entity hero = this.engine.getEntityByName("hero");
+//
+//        List<Entity> staffs = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("staff")) {
+//                staffs.add(e);
+//            }
+//        }
+//        long currentTime = System.currentTimeMillis();
+//        int index = 0;
+//        for (Entity mage : enemies) {
+//
+//            Vector2 direction = hero.getComponent(Direction.class)
+//                    .getValue()
+//                    .sub(mage.getComponent(Direction.class).getValue());
+//
+//            HitBox mageHitBox = mage.getComponent(HitBox.class);
+//
+//            if (currentTime - this.timerEnemyAttack.get(index) <= System.currentTimeMillis()) {
+//                Entity magic = EntityFactory.createMagic(
+//                        "magic-" + UUID.randomUUID(),
+//                        "enemiesAttack",
+//                        mageHitBox.getX(),
+//                        mageHitBox.getY(),
+//                        0.5f,
+//                        0.5f,
+//                        direction.nor().scl(Constante.VELOCITY_ARROW)
+//                );
+//                this.engine.getEntityManager().add(magic);
+//                this.timerEnemyAttack.set(index, currentTime + 10000000);
+//                index++;
+//            }
+//        }
+//
+//        List<Entity> magics = this.engine.getEntityManager().findByGroupName("magics");
+//        for (Entity magic: magics) {
+//            HitBox hitBox = magic.getComponent(HitBox.class);
+//            Trajectory trajectory = magic.getComponent(Trajectory.class);
+//            Vector2 v = new Vector2(hitBox.getX(), hitBox.getY());
+//            v.add(trajectory.getVector());
+//            hitBox.setPosition(v.x, v.y);
+//        }
+//    }
+//
+//    private void renderMagic() {
+//        List<Entity> magics = this.engine.getEntityManager().findByGroupName("magics");
+//
+//        for (Entity magic : magics) {
+//            HitBox hitBox = magic.getComponent(HitBox.class);
+//            StaticSprite sprite = magic.getComponent(StaticSprite.class);
+//            TextureRegion texture = sprite.getTextureRegion();
+//            Trajectory trajectory = magic.getComponent(Trajectory.class);
+//            float x = hitBox.getX();
+//            float y = hitBox.getY();
+//            float w = texture.getRegionWidth() / 16f;
+//            float h = texture.getRegionHeight() / 16f;
+//            float ox = hitBox.getBox().getOriginX();
+//            float oy = hitBox.getBox().getOriginY();
+//            float sx = 1f;
+//            float sy = 1f;
+//            float r = trajectory.getAngle() - 90f;
+//
+//            this.engine.getBatch().draw(
+//                    texture,
+//                    x,
+//                    y,
+//                    ox,
+//                    oy,
+//                    w,
+//                    h,
+//                    sx,
+//                    sy,
+//                    r
+//            );
+//        }
+//    }
 
     private void updateMaskull(float deltaTime) {
         List<Entity> enemies = new ArrayList<>();
@@ -606,6 +755,108 @@ public final class Level1Screen implements Screen {
         }
     }
 
+    private void updateLittle(float deltaTime) {
+        List<Entity> enemies = new ArrayList<>();
+        for (Entity e : this.engine.getEntityManager().getEntities()) {
+            if (e.getName().contains("little")) {
+                enemies.add(e);
+            }
+        }
+
+        Entity hero = this.engine.getEntityByName("hero");
+        for (Entity enemy : enemies) {
+            //enemy = this.engine.getEntityByName("maskull" + cpt);
+            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+            animatedSpriteList.update(deltaTime);
+
+            Direction direction = enemy.getComponent(Direction.class);
+            HitBox hitBox = enemy.getComponent(HitBox.class);
+            HitBox heroHitBox = hero.getComponent(HitBox.class);
+            Velocity velocity = enemy.getComponent(Velocity.class);
+            Vision vision = enemy.getComponent(Vision.class);
+            Vie vie = enemy.getComponent(Vie.class);
+
+            if (vie.getVie() == 0) {
+                enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            }
+
+            TimerManager timers = enemy.getComponent(TimerManager.class);
+
+            if (timers.isActif("wait")) {
+                long currenTime = System.currentTimeMillis();
+                if (currenTime - timers.getLastTimeOf("wait") > 1000) {
+                    timers.setActif("wait",false);
+                }
+            } else {
+                hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
+                if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
+
+                    Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
+                    Vector2 posLittle = new Vector2(hitBox.getX(), hitBox.getY());
+
+                    direction.getValue().set(posHero.sub(posLittle));
+
+                } else {
+                    direction.getValue().x = 0;
+                    direction.getValue().y = 0;
+                }
+
+                if (direction.getValue().x != 0 && direction.getValue().y != 0) {
+                    direction.getValue().nor();
+                }
+
+                if (direction.getValue().x == 0 && direction.getValue().y == 0) {
+                    animatedSpriteList.setCurrentAnimationName("idle");
+                } else {
+                    animatedSpriteList.setCurrentAnimationName("run");
+                }
+
+                hitBox.setX(hitBox.getX() - direction.getValue().x * velocity.getValue());
+                vision.getValue().x -= direction.getValue().x * velocity.getValue();
+                hitBox.setY(hitBox.getY() - direction.getValue().y * velocity.getValue());
+                vision.getValue().y -= direction.getValue().y * velocity.getValue();
+
+                if (direction.getValue().x > 0) {
+                    animatedSpriteList.setFlipX(true);
+                }
+                if (direction.getValue().x < 0) {
+                    animatedSpriteList.setFlipX(false);
+                }
+            }
+        }
+    }
+
+    private void renderLittle() {
+        List<Entity> enemies = new ArrayList<>();
+        for (Entity e : this.engine.getEntityManager().getEntities()) {
+            if (e.getName().contains("little")) {
+                enemies.add(e);
+            }
+        }
+        for (Entity enemy : enemies) {
+
+            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+            TextureRegion sprite = animatedSpriteList.getFrame(true);
+            if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
+                sprite.flip(true, false);
+            }
+
+            if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
+                sprite.flip(true, false);
+            }
+
+            HitBox hitBox = enemy.getComponent(HitBox.class);
+            this.engine.getBatch().draw(
+                    sprite,
+                    hitBox.getX(),
+                    hitBox.getY(),
+                    sprite.getRegionWidth() / 16f,
+                    sprite.getRegionHeight() / 16f
+            );
+
+        }
+    }
+
     private void updateBigZombie(float deltaTime) {
         List<Entity> enemies = new ArrayList<>();
         for (Entity e : this.engine.getEntityManager().getEntities()) {
@@ -613,7 +864,6 @@ public final class Level1Screen implements Screen {
                 enemies.add(e);
             }
         }
-        System.out.println(enemies);
         Entity hero = this.engine.getEntityByName("hero");
         for (Entity enemy : enemies) {
 
@@ -708,17 +958,16 @@ public final class Level1Screen implements Screen {
         }
     }
 
-    private void updateMage(float deltaTime) {
+    private void updateBigDevil(float deltaTime) {
         List<Entity> enemies = new ArrayList<>();
         for (Entity e : this.engine.getEntityManager().getEntities()) {
-            if (e.getName().contains("mage")) {
+            if (e.getName().contains("big_devil")) {
                 enemies.add(e);
             }
         }
-
         Entity hero = this.engine.getEntityByName("hero");
         for (Entity enemy : enemies) {
-            //enemy = this.engine.getEntityByName("maskull" + cpt);
+
             AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
             animatedSpriteList.update(deltaTime);
 
@@ -764,10 +1013,10 @@ public final class Level1Screen implements Screen {
                     animatedSpriteList.setCurrentAnimationName("run");
                 }
 
-                hitBox.setX(hitBox.getX() - direction.getValue().x * velocity.getValue());
-                vision.getValue().x -= direction.getValue().x * velocity.getValue();
-                hitBox.setY(hitBox.getY() - direction.getValue().y * velocity.getValue());
-                vision.getValue().y -= direction.getValue().y * velocity.getValue();
+                hitBox.setX(hitBox.getX() + direction.getValue().x * velocity.getValue());
+                vision.getValue().x += direction.getValue().x * velocity.getValue();
+                hitBox.setY(hitBox.getY() + direction.getValue().y * velocity.getValue());
+                vision.getValue().y += direction.getValue().y * velocity.getValue();
 
                 if (direction.getValue().x > 0) {
                     animatedSpriteList.setFlipX(false);
@@ -779,10 +1028,10 @@ public final class Level1Screen implements Screen {
         }
     }
 
-    private void renderMage() {
+    private void renderBigDevil() {
         List<Entity> enemies = new ArrayList<>();
         for (Entity e : this.engine.getEntityManager().getEntities()) {
-            if (e.getName().contains("mage")) {
+            if (e.getName().contains("big_devil")) {
                 enemies.add(e);
             }
         }
@@ -801,7 +1050,7 @@ public final class Level1Screen implements Screen {
             HitBox hitBox = enemy.getComponent(HitBox.class);
             this.engine.getBatch().draw(
                     sprite,
-                    hitBox.getX(),
+                    hitBox.getX() - 0.5f,
                     hitBox.getY(),
                     sprite.getRegionWidth() / 16f,
                     sprite.getRegionHeight() / 16f
@@ -809,6 +1058,108 @@ public final class Level1Screen implements Screen {
 
         }
     }
+
+//    private void updateMage(float deltaTime) {
+//        List<Entity> enemies = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("mage")) {
+//                enemies.add(e);
+//            }
+//        }
+//
+//        Entity hero = this.engine.getEntityByName("hero");
+//        for (Entity enemy : enemies) {
+//            //enemy = this.engine.getEntityByName("maskull" + cpt);
+//            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+//            animatedSpriteList.update(deltaTime);
+//
+//            Direction direction = enemy.getComponent(Direction.class);
+//            HitBox hitBox = enemy.getComponent(HitBox.class);
+//            HitBox heroHitBox = hero.getComponent(HitBox.class);
+//            Velocity velocity = enemy.getComponent(Velocity.class);
+//            Vision vision = enemy.getComponent(Vision.class);
+//            Vie vie = enemy.getComponent(Vie.class);
+//
+//            if (vie.getVie() == 0) {
+//                enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+//            }
+//
+//            TimerManager timers = enemy.getComponent(TimerManager.class);
+//
+//            if (timers.isActif("wait")) {
+//                long currenTime = System.currentTimeMillis();
+//                if (currenTime - timers.getLastTimeOf("wait") > 1000) {
+//                    timers.setActif("wait",false);
+//                }
+//            } else {
+//                hitBox.getOldPosition().set(hitBox.getX(), hitBox.getY());
+//                if (Intersector.overlaps(vision.getValue(), heroHitBox.getBox().getBoundingRectangle())) {
+//
+//                    Vector2 posHero = new Vector2(heroHitBox.getX(), heroHitBox.getY());
+//                    Vector2 posMaskull = new Vector2(hitBox.getX(), hitBox.getY());
+//
+//                    direction.getValue().set(posHero.sub(posMaskull));
+//
+//                } else {
+//                    direction.getValue().x = 0;
+//                    direction.getValue().y = 0;
+//                }
+//
+//                if (direction.getValue().x != 0 && direction.getValue().y != 0) {
+//                    direction.getValue().nor();
+//                }
+//
+//                if (direction.getValue().x == 0 && direction.getValue().y == 0) {
+//                    animatedSpriteList.setCurrentAnimationName("idle");
+//                } else {
+//                    animatedSpriteList.setCurrentAnimationName("run");
+//                }
+//
+//                hitBox.setX(hitBox.getX() - direction.getValue().x * velocity.getValue());
+//                vision.getValue().x -= direction.getValue().x * velocity.getValue();
+//                hitBox.setY(hitBox.getY() - direction.getValue().y * velocity.getValue());
+//                vision.getValue().y -= direction.getValue().y * velocity.getValue();
+//
+//                if (direction.getValue().x > 0) {
+//                    animatedSpriteList.setFlipX(false);
+//                }
+//                if (direction.getValue().x < 0) {
+//                    animatedSpriteList.setFlipX(true);
+//                }
+//            }
+//        }
+//    }
+//
+//    private void renderMage() {
+//        List<Entity> enemies = new ArrayList<>();
+//        for (Entity e : this.engine.getEntityManager().getEntities()) {
+//            if (e.getName().contains("mage")) {
+//                enemies.add(e);
+//            }
+//        }
+//        for (Entity enemy : enemies) {
+//
+//            AnimatedSpriteList animatedSpriteList = enemy.getComponent(AnimatedSpriteList.class);
+//            TextureRegion sprite = animatedSpriteList.getFrame(true);
+//            if (animatedSpriteList.isFlipX() && !sprite.isFlipX()) {
+//                sprite.flip(true, false);
+//            }
+//
+//            if (!animatedSpriteList.isFlipX() && sprite.isFlipX()) {
+//                sprite.flip(true, false);
+//            }
+//
+//            HitBox hitBox = enemy.getComponent(HitBox.class);
+//            this.engine.getBatch().draw(
+//                    sprite,
+//                    hitBox.getX(),
+//                    hitBox.getY(),
+//                    sprite.getRegionWidth() / 16f,
+//                    sprite.getRegionHeight() / 16f
+//            );
+//
+//        }
+//    }
 
 
     private void updateCamera() {

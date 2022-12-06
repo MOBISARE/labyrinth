@@ -140,6 +140,58 @@ public final class EntityFactory {
         return entity;
     }
 
+    public static Entity createLittle(String name, float startXPosition, float startYPosition) {
+        Entity entity = new Entity(name, "enemies");
+        Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
+                "idle", new AnimatedSpriteList.AnimationData(0.15f, 0, 4),
+                "run", new AnimatedSpriteList.AnimationData(0.105f, 4, 8)
+        );
+        entity.addComponent(new AnimatedSpriteList(Resource.LITTLE_TEXTURE, 8, 1, animations));
+        HitBox hitBox = new HitBox(startXPosition, startYPosition, 0.9f, 1f, true, true);
+        entity.addComponent(hitBox);
+        entity.addComponent(new Direction(0, 0));
+        entity.addComponent(new Velocity(0.09f));
+        entity.addComponent(new Vision(
+                startXPosition ,
+                startYPosition,
+                5f));
+        entity.addComponent(new DynamicBody());
+        entity.addComponent(CollisionStatus.NONE);
+        Vie vie = new Vie(1);
+        entity.addComponent(vie);
+        TimerManager timers = new TimerManager();
+        timers.createTimer("wait");
+        entity.addComponent(timers);
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            if (e2.getGroupName().equals("heroArrows")) {
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                vie.setVie(vie.getVie() - 1);
+            }
+            if (e2.getGroupName().equals("walls")) {
+                hitBox.getBox().setPosition(hitBox.getX(), hitBox.getY());
+            }
+
+            if (e2.getName().equals("hero")) {
+                if (!timers.isActif("wait")) {
+                    Vie vieHero = e2.getComponent(Vie.class);
+                    vieHero.setVie(vieHero.getVie() - 1);
+                    timers.resetOf("wait");
+                    timers.setActif("wait", true);
+                }
+            }
+
+            if ("walls".equals(e2.getGroupName())) {
+                hitBox.setY(hitBox.getOldPosition().y);
+                hitBox.setX(hitBox.getOldPosition().x);
+            }
+        };
+
+        entity.setCollisionHandler(collisionHandler);
+
+        return entity;
+    }
+
     public static Entity createBigZombie(String name, float startXPosition, float startYPosition) {
         Entity entity = new Entity(name, "enemies");
         Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
@@ -175,6 +227,57 @@ public final class EntityFactory {
                 if (!timers.isActif("wait")) {
                     Vie vieHero = e2.getComponent(Vie.class);
                     vieHero.setVie(vieHero.getVie() - 2);
+                    timers.resetOf("wait");
+                    timers.setActif("wait", true);
+                }
+            }
+
+            if ("walls".equals(e2.getGroupName())) {
+                hitBox.setY(hitBox.getOldPosition().y);
+                hitBox.setX(hitBox.getOldPosition().x);
+            }
+        };
+
+        entity.setCollisionHandler(collisionHandler);
+
+        return entity;
+    }
+
+    public static Entity createBigDevil(String name, float startXPosition, float startYPosition) {
+        Entity entity = new Entity(name, "enemies");
+        Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
+                "idle", new AnimatedSpriteList.AnimationData(0.15f, 0, 4),
+                "run", new AnimatedSpriteList.AnimationData(0.105f, 4, 8)
+        );
+        entity.addComponent(new AnimatedSpriteList(Resource.BIGDEVIL_TEXTURE, 8, 1, animations));
+        HitBox hitBox = new HitBox(startXPosition, startYPosition, 1.3f, 1.5f, true, true);
+        entity.addComponent(hitBox);
+        entity.addComponent(new Direction(0, 0));
+        entity.addComponent(new Velocity(0.05f));
+        entity.addComponent(new Vision(
+                startXPosition,
+                startYPosition,
+                50f));
+        entity.addComponent(new DynamicBody());
+        entity.addComponent(CollisionStatus.NONE);
+        Vie vie = new Vie(20);
+        entity.addComponent(vie);
+        TimerManager timers = new TimerManager();
+        timers.createTimer("wait");
+        entity.addComponent(timers);
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            if (e2.getGroupName().equals("heroArrows")) {
+                e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                vie.setVie(vie.getVie() - 1);
+            }
+            if (e2.getGroupName().equals("walls")) {
+                hitBox.getBox().setPosition(hitBox.getX(), hitBox.getY());
+            }
+            if (e2.getName().equals("hero")) {
+                if (!timers.isActif("wait")) {
+                    Vie vieHero = e2.getComponent(Vie.class);
+                    vieHero.setVie(vieHero.getVie() - Constante.VIE_HERO_MAX);
                     timers.resetOf("wait");
                     timers.setActif("wait", true);
                 }
@@ -263,6 +366,18 @@ public final class EntityFactory {
         return entity;
     }
 
+    public static Entity createStaff(String name, float positionX, float positionY, float width, float height) {
+        Entity entity = new Entity(name);
+
+        Map<String, AnimatedSpriteList.AnimationData> animations = Map.of(
+                "idle", new AnimatedSpriteList.AnimationData(0.105f, 0, 1)
+        );
+
+        entity.addComponent(new HitBox(positionX, positionY, width, height, false, false));
+        entity.addComponent(new AnimatedSpriteList(Resource.STAFF_TEXTURE, 1, 1, animations));
+        return entity;
+    }
+
     public static Entity createArrow(String name,
                                      String groupName,
                                      float positionX,
@@ -283,6 +398,40 @@ public final class EntityFactory {
 
         CollisionHandler collisionHandler = (e1, e2) -> {
             if (e2.getGroupName().equals("enemies")) {
+                entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
+//                Vie vie = e2.getComponent(Vie.class);
+//                vie.setVie(vie.getVie() - 1);
+            }
+            if (e2.getGroupName().equals("walls")) {
+                entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
+            }
+        };
+
+        entity.setCollisionHandler(collisionHandler);
+        return entity;
+
+    }
+
+    public static Entity createMagic(String name,
+                                     String groupName,
+                                     float positionX,
+                                     float positionY,
+                                     float width,
+                                     float height,
+                                     Vector2 direction) {
+        Entity entity = new Entity(name, groupName);
+        HitBox hb = new HitBox(positionX, positionY, width, height, true, true);
+        entity.addComponent(hb);
+        entity.addComponent(new StaticSprite(Resource.MAGIC_TEXTURE));
+        entity.addComponent(new Velocity(2f));
+        entity.addComponent(new DynamicBody());
+        Trajectory tj = new Trajectory(direction , ARROW_DISTANCE);
+        entity.addComponent(tj);
+        entity.addComponent(CollisionStatus.NONE);
+        hb.getBox().setRotation(tj.getAngle() - 90f);
+
+        CollisionHandler collisionHandler = (e1, e2) -> {
+            if (e2.getName().equals("hero")) {
                 entity.addComponent(CollisionStatus.MARK_AS_REMOVE);
 //                Vie vie = e2.getComponent(Vie.class);
 //                vie.setVie(vie.getVie() - 1);
