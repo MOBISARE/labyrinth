@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -56,6 +57,13 @@ public final class Level1Screen implements Screen {
 
     private long timerTire;
 
+    private List<Vector2> spawnsEnemies;
+    private int manche = 1;
+    private int countEnemies = 0;
+    private Map<String, Integer> enemiesPerWave;
+
+
+
     public Level1Screen(Engine engine) {
         this.engine = engine;
         this.drawHitboxes = false;
@@ -90,44 +98,6 @@ public final class Level1Screen implements Screen {
         Entity bow = EntityFactory.createBow("bow", x + 0.2f, y, 0.3f, 1);
         this.engine.getEntityManager().add(bow);
 
-        // MONSTERS
-        // MASKULL
-        for (int i = 1 ; i < 3 ; i++) {
-            String name = "spawn_mob" + i;
-            Entity maskull = EntityFactory.createMaskull("maskull" + i, this.tileMap.getMap().getLayers().get("SpawnEnnemies").getObjects().get(name).getProperties().get("x", float.class)/16, this.tileMap.getMap().getLayers().get("SpawnEnnemies").getObjects().get(name).getProperties().get("y", float.class)/16);
-            this.engine.getEntityManager().add(maskull);
-        }
-
-        // LITTLE
-        for (int i = 0 ; i < 10 ; i++) {
-            Entity little = EntityFactory.createLittle("little" + i, 2, 2);
-            this.engine.getEntityManager().add(little);
-        }
-
-        // BIG ZOMBIE
-        for (int i = 0 ; i < 3 ; i++) {
-            Entity bigZombie = EntityFactory.createBigZombie("big_zombie" + i, 2, 2);
-            this.engine.getEntityManager().add(bigZombie);
-        }
-
-        // BIG DEVIL
-        for (int i = 0 ; i < 1 ; i++) {
-            Entity bigDevil = EntityFactory.createBigDevil("big_devil" + i, 2, 2);
-            this.engine.getEntityManager().add(bigDevil);
-        }
-
-        // MAGE
-//        for (int i = 0 ; i < 1 ; i++) {
-//            Entity mage = EntityFactory.createMage("mage" + i, x + 3*i, y + 3*i);
-//            Entity staff = EntityFactory.createStaff("staff" + i,
-//                    mage.getComponent(HitBox.class).getX() + 0.2f,
-//                    mage.getComponent(HitBox.class).getY(),
-//                    0.3f,
-//                    1f);
-//            this.engine.getEntityManager().add(mage);
-//            this.engine.getEntityManager().add(staff);
-//            this.timerEnemyAttack.add(0L);
-//        }
 
         // CAMERA
         Entity camera = EntityFactory.createCamera();
@@ -185,11 +155,32 @@ public final class Level1Screen implements Screen {
         this.engine.getEntityManager().add(hudLife);
         this.engine.getEntityManager().add(hudArgent);
 
+        //INIT SPAWN
+        this.spawnsEnemies = new ArrayList<>();
+        MapObjects spawns = this.tileMap.getMap().getLayers().get("SpawnEnnemies").getObjects();
+        for (MapObject sp: spawns) {
+            Vector2 newSpawn = new Vector2(sp.getProperties().get("x", float.class) /16,
+                    sp.getProperties().get("x", float.class) / 16);
+            this.spawnsEnemies.add(newSpawn);
+        }
+
+        this.enemiesPerWave = new HashMap<>();
+        this.enemiesPerWave.put("maskull", 5);
+        this.enemiesPerWave.put("bigZombie", 2);
+        this.enemiesPerWave.put("monster", 1);
+        this.enemiesPerWave.put("little", 10);
+
+        this.spawnEnemies();
+
         this.engine.getEntityManager().sortBodies();
     }
 
     @Override
     public void render(float delta) {
+
+        //Spawn
+        this.nextWave();
+        this.spawnEnemies();
 
         // UPDATE
         this.updateCamera();
@@ -740,6 +731,7 @@ public final class Level1Screen implements Screen {
                 float proba = random.nextFloat();
 
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                this.countEnemies--;
             }
 
             TimerManager timers = enemy.getComponent(TimerManager.class);
@@ -850,6 +842,7 @@ public final class Level1Screen implements Screen {
                     this.engine.getEntityManager().add(popo);
                 }
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                this.countEnemies--;
             }
 
             TimerManager timers = enemy.getComponent(TimerManager.class);
@@ -982,6 +975,7 @@ public final class Level1Screen implements Screen {
                 }
 
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                this.countEnemies--;
             }
 
             TimerManager timers = enemy.getComponent(TimerManager.class);
@@ -1086,6 +1080,7 @@ public final class Level1Screen implements Screen {
                         new Vector2(hitBox.getX(), hitBox.getY()), 1f, 1f);
                 this.engine.getEntityManager().add(chest);
                 enemy.addComponent(CollisionStatus.MARK_AS_REMOVE);
+                this.countEnemies--;
             }
 
             TimerManager timers = enemy.getComponent(TimerManager.class);
@@ -1490,6 +1485,80 @@ public final class Level1Screen implements Screen {
                 animatedSpriteList.setCurrentAnimationName("close");
             }
 
+        }
+    }
+
+    private void spawnEnemies() {
+        if (this.countEnemies == 0) {
+
+            //Spawn maskull
+            for (int i = 0; i < this.enemiesPerWave.get("maskull"); i++) {
+                Vector2 spawn = getRandomSpawn();
+                Entity enemy = EntityFactory.createMaskull("maskull-" + UUID.randomUUID(), spawn.x, spawn.y);
+                this.engine.getEntityManager().add(enemy);
+                countEnemies++;
+            }
+
+            //Spawn little
+            for (int i = 0; i < this.enemiesPerWave.get("little"); i++) {
+                Vector2 spawn = getRandomSpawn();
+                Entity enemy = EntityFactory.createLittle("little-" + UUID.randomUUID(), spawn.x, spawn.y);
+                this.engine.getEntityManager().add(enemy);
+                countEnemies++;
+            }
+
+            //Spawn bigZombie
+            for (int i = 0; i < this.enemiesPerWave.get("bigZombie"); i++) {
+                Vector2 spawn = getRandomSpawn();
+                Entity enemy = EntityFactory.createBigZombie("big_zombie-" + UUID.randomUUID(), spawn.x, spawn.y);
+                this.engine.getEntityManager().add(enemy);
+                countEnemies++;
+            }
+
+            //Spawn monster
+            for (int i = 0; i < this.enemiesPerWave.get("monster"); i++) {
+                Vector2 spawn = getRandomSpawn();
+                Entity enemy = EntityFactory.createBigDevil("big_devil" + UUID.randomUUID(), spawn.x, spawn.y);
+                this.engine.getEntityManager().add(enemy);
+                countEnemies++;
+            }
+        }
+    }
+
+    private Vector2 getRandomSpawn() {
+        Random rd = new Random();
+        Vector2 spawn = this.spawnsEnemies.get(rd.nextInt(this.spawnsEnemies.size()));
+        HitBox hero = this.engine.getEntityByName("hero").getComponent(HitBox.class);
+        Vector2 posHero = new Vector2(hero.getX(), hero.getY());
+
+        if (spawn.dst(posHero) < 5f) {
+            return getRandomSpawn();
+        } else {
+            return spawn;
+        }
+    }
+
+    private void nextWave() {
+
+        if (this.countEnemies == 0) {
+            this.manche++;
+            Random rd = new Random();
+
+            int nbMaskull = this.enemiesPerWave.get("maskull");
+            nbMaskull += this.manche * 3;
+            this.enemiesPerWave.put("maskull", nbMaskull);
+
+            int nbLittle = this.enemiesPerWave.get("little");
+            nbLittle += this.manche * 5;
+            this.enemiesPerWave.put("little", nbLittle);
+
+            int nbBigZombie = this.enemiesPerWave.get("bigZombie");
+            nbBigZombie += this.manche;
+            this.enemiesPerWave.put("bigZombie", nbBigZombie);
+
+            int nbMonster = this.enemiesPerWave.get("monster");
+            nbMonster = rd.nextInt(this.manche) + 1;
+            this.enemiesPerWave.put("monster", nbMonster);
         }
     }
 }
