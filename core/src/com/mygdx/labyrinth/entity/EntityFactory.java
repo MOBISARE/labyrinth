@@ -85,7 +85,9 @@ public final class EntityFactory {
                 e2.getComponent(SoundPlayer.class).getSound().play(0.2f);
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
             } else if (e2.getGroupName().equals("potions")) {
-                vie.setVie(6);
+                if (vie.getVie() < 6) {
+                    vie.setVie(vie.getVie() + 1);
+                }
                 e2.addComponent(CollisionStatus.MARK_AS_REMOVE);
             }
 
