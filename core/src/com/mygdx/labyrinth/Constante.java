@@ -11,4 +11,6 @@ public final class Constante {
     public static float VELOCITY_ARROW = 0.3f;
 
     public static long TEMPS_ENTRE_DEUX_TIRE = 400;
+
+    public static int VIE_HERO_MAX = 6;
 }

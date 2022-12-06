@@ -162,6 +162,20 @@ Nouvelle architecture complexe à prendre en main, ce qui à énormément ralent
 - Ajout de potions de soin.
 - Les monstres donnent des récompenses au sol quand ils meurent.
 
+## Sprint Review
+
+Faits :
+ - Affichage d'un menu de début.          - 3  
+ - Affichage d'un menu de fin.            - 3  
+ - Ajout de plusieurs monstres.           - 6  
+ - Création du premier niveau.            - 8  
+ - Ajout de potions de soin.              - 3  
+ - Les monstres donnent des récompenses   - 8  
+  
+## Retrospective
+
+Maintenant que l'équipe est officiellement constitué de trois personnes uniquement, que l'architecture implantée dans le sprint précédent est opérationnelle et que nous nous y sommes adaptés, toutes les tâches ont étés faites dans les temps, avec quelques ajouts supplémentaires comme divers ajouts audio par exemple.
+
 ### Outils utilisés :
 
 Langage : JAVA 11.  

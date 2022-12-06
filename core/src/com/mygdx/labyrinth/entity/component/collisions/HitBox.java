@@ -1,6 +1,7 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.collisions;
 
 import com.badlogic.gdx.math.*;
+import com.mygdx.labyrinth.entity.component.Component;
 
 public final class HitBox implements Component {
 

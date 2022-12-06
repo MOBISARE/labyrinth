@@ -1,6 +1,9 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.hud;
 
-public class HudLife implements Component{
+import com.mygdx.labyrinth.entity.component.Component;
+import com.mygdx.labyrinth.entity.component.sprite.StaticSprite;
+
+public class HudLife implements Component {
 
     private final StaticSprite[] hearts;
     private final float height;

@@ -1,4 +1,6 @@
-package com.mygdx.labyrinth.entity.component;
+package com.mygdx.labyrinth.entity.component.movement;
+
+import com.mygdx.labyrinth.entity.component.Component;
 
 public final class Velocity implements Component {
 
